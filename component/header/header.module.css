@@ -1,0 +1,161 @@
+
+.header{
+    padding: 20px 20px;
+    color: #081B1C;
+    /* gap: 10px; */
+}
+
+.container{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.container:nth-child(1){
+    justify-content: end;
+}
+
+.hamburger {
+    width: 30px;
+    height: 3px;
+    background: #fff;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgb(255, 101, 47,.2);
+    transition: all 0.5s ease-in-out;
+}
+
+.hamburger::before{
+    content: "''";
+    position: absolute;
+    width: 30px;
+    height: 3px;
+    background: #fff;
+    border-radius: 5px;
+    transition: all 0.5s ease-in-out;
+    transform: translateY(-10px);
+}
+
+.hamburger::after{
+    content: "''";
+    position: absolute;
+    width: 30px;
+    height: 3px;
+    background: #fff;
+    border-radius: 5px;
+    transition: all 0.5s ease-in-out;
+    transform: translateY(10px);
+}
+
+.activeHamburger{
+    width: 30px;
+    height: 3px;
+    border-radius: 3px;
+    transform: translateX(-50px);
+    background: transparent;
+    transition: all 0.5s ease-in-out;
+}
+
+.activeHamburger::before{
+    content: "''";
+    position: absolute;
+    width: 30px;
+    height: 3px;
+    background: #fff;
+    border-radius: 5px;
+    transition: all 0.5s ease-in-out;
+    transform: rotate(45deg) translate(35px, -35px);
+}
+
+.activeHamburger::after{
+    content: "''";
+    position: absolute;
+    width: 30px;
+    height: 3px;
+    background: #fff;
+    border-radius: 5px;
+    transition: all 0.5s ease-in-out;
+    transform: rotate(-45deg) translate(35px, 35px);
+}
+
+.navbar-list{
+    display: flex;
+    justify-content: center;
+}   
+
+.ul {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+    list-style: none;
+    gap: 40px;
+}
+
+.li {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+    list-style: none;
+}
+
+.navitem{
+    position: relative;
+    text-decoration: none;
+    color: #fff;
+    font-weight: 400;
+    font-size: 15px;
+}
+
+.navitem::before{
+    content: "";
+    position: absolute;
+    width: 0%;
+    bottom: -5px;
+    left: 0;
+    height: 2px;
+    transition: all 0.2s;
+    background-color: #94B60F;
+}
+
+.navitem:hover::before{
+    color:#94B60F;
+    width: 100%;
+}
+
+.navitem:hover{
+    color: #94B60F;
+}
+
+.navbarbrand{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 10px;
+    gap: 10px;
+
+}
+
+.srccart{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 0px;
+    gap: 25px;
+}
+
+.iconJ{
+    width: 1.4rem;
+    height: 1.4rem;
+    color: #94B60F;
+}
+
+.iconJ:hover{
+    color: #94B60F;
+}
+
+.barakhlogo{
+    width: 150%;
+    height: auto;
+}
