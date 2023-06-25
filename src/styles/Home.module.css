@@ -1,0 +1,145 @@
+
+.container{
+    display: inline-flex;
+    justify-content: center;
+    width: 100%;
+    margin: 40px 0px;
+    
+}
+
+.hero{
+    display: flex;
+    width: 85%;
+}
+
+.content{
+    width:50%;
+    color:#fff;
+    padding-left: 2rem;
+    padding-right: 3rem;
+    padding-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 19px;
+
+}
+
+.titleHero{
+    font-size: 38px;
+    font-weight: 800;
+    font-style: normal;
+    line-height: 59px;
+    letter-spacing: 0.05em;
+    margin: 0;
+}
+
+.description{
+    font-style: normal;
+    font-weight: 100;           
+    font-size: 19px;
+    line-height: 36px;
+
+}
+
+.button{
+    font-size: 17px;
+    font-weight: 700;
+    width: 30%;
+    background-color: #94B60F;
+    color: #fff;
+    border: none;
+    border-radius:5px;
+    padding: 18px 24px;
+    cursor: pointer;
+}
+
+.contentImage{
+    width: 50%;
+
+}
+
+.imageProduct{
+    width: 90%;
+    height: 90%;
+    /* border-radius: 10px; */
+}
+
+@media screen and (max-width: 935px){
+    .hero {
+        margin: 50px 30px;
+        row-gap: 40px;
+        justify-content: space-between;
+    }
+
+    .content{
+        padding: 0px;
+    }
+
+    .titleHero{
+        font-size: 30px;
+        line-height: 45px;
+        margin-bottom: 0.5rem ;
+
+    }
+
+    .contentImage
+    {
+        width: 50%;
+    }
+
+    .imageProduct{     
+        width: 100%;
+        height:100%;
+    }
+}
+
+
+
+@media screen and (max-width: 480px){ 
+    .hero {
+        display: flex;
+        flex-direction: column-reverse;
+        margin: 50px 20px;
+        row-gap: 40px;
+    }
+
+    .content{
+        width:100%;
+        color:#fff;
+        padding: 0px;
+    }
+
+    .titleHero{
+        font-size: 30px;
+        line-height: 45px;
+        margin-bottom: 0.5rem ;
+
+    }
+
+    .description{
+        font-style: normal;
+        font-weight: 400;
+        font-size: 15px;
+        line-height: 180%;
+        margin-bottom: 1rem;
+    }
+
+    .button{
+        font-size: 13px;
+        font-weight: 700;
+        padding: 14px 20px;
+    }
+
+    .contentImage{
+        display: flex;
+        justify-content: center;
+        width: 100%;
+    }
+
+    .imageProduct{
+        width: 98%;
+        height: 98%;
+    }
+
+}
+

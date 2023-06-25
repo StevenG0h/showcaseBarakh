@@ -1,0 +1,73 @@
+.container{
+    display: flex;
+    flex-direction: column;
+    background-color: #fff;
+    width: 320px;
+    height: auto;
+    border-radius: 25px;
+    /* gap: 20px; */
+}
+
+.fieldCommand{
+    padding:  70px 59px 40px 40px; 
+}
+
+.picktwo{
+    font-size: 29px;
+    margin: 0px;
+    letter-spacing: 0.1rem;
+    line-height: 0.2rem;
+    color: linear-gradient(255.96deg, #000302 0%, #2788CD 100%);
+}
+.text{
+    padding-left: 30px;
+}
+
+.fieldProfile{
+    padding: 20px 40px 40px 40px;
+    display: flex;
+    flex-direction: row;
+    gap: 7px;
+    align-items: center;
+}
+
+.imageProfile{
+    background-color: aqua;
+    border-radius: 100%;
+    width: 35px;
+    height: 35px;
+}
+
+.name{
+    font-size: 12px;
+    font-weight: 700;
+    margin: 0px;
+}
+
+.asname{
+    font-size: 10px;
+    font-style: italic;
+    margin: 0px;
+    color: #667085
+}
+
+@media screen and (max-width: 480px){
+    .container{
+        width: 100px;
+        border-radius: 15px;
+    }
+
+    .fieldCommand{
+        padding:  10px 10px 10px 10px; 
+    }
+
+    .picktwo{
+        font-size: 19px;
+        margin: 0px;
+        letter-spacing: 0.05rem;
+    }
+
+    .text{
+        font-size: 8px;
+    }
+}
