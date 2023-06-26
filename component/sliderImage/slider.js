@@ -23,7 +23,7 @@ const SliderImages = () => {
         accessibility: false  
     };
     return (
-        <div>
+        <div className="slider_image">
             <Slider {...settings}>
                 <div>
                 <Image className={style.imageProduct} src={ProductImage} alt="ProductImage"/>

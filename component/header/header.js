@@ -34,7 +34,7 @@ const Header = () => {
                             <Link className={style.navitem} href="../">Beranda</Link>
                         </li>
                         <li>
-                            <Link className={style.navitem} href="/visimisi">Profil</Link>
+                            <Link className={style.navitem} href="/profil">Profil</Link>
                         </li>
                         <li>
                             <Link className={style.navitem} href="/usaha">Unit Usaha</Link>

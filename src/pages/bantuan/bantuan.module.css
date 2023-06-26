@@ -1,0 +1,97 @@
+.container{
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    background-color: #fff;
+}
+
+.containerBeranda{
+    display: flex;
+    width: 85%;
+    justify-content: center;
+}
+
+.wrapForm{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    width: auto;
+    height: auto;
+    border: 5px solid #94B60F;
+    gap: 40px;
+    padding: 55px 40px;
+    margin: 50px 0px 70px 0px;
+}
+
+.title{
+    font-size: 38px;
+    font-weight: 700;
+    color: #081B1C;
+    margin: 0px;
+    letter-spacing: 0.08rem;
+}
+
+.map{
+    width: 428px;
+    height: 494px;
+    background-color: aquamarine;
+}
+
+.titleContact{
+    font-size: 20px;
+    color: #94B60F;
+    font-weight: 700;
+    letter-spacing: 0.08rem;
+    margin: 0px;
+}
+
+.hr{
+    margin: 0px;
+}
+
+.contactDetail > p {
+    color: #000;
+    font-size: 13px;
+}
+
+.formInput{
+    display: flex;
+    flex-direction: column;
+    gap: 38px;
+    margin-top: 30px;
+}
+
+.input{
+    color: #303030;
+    font-size: 16px; 
+    padding: 16px;
+    border-radius: 10px;
+    border: 1.38835px solid #CDCDCD;
+}
+
+.Button{
+    display: flex;
+    flex-direction: row;
+    justify-content: end;
+    gap: 10px;
+
+}
+
+.batal{
+    font-size: 15px;
+    padding: 10px 20px;
+    background-color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.kirim{
+    font-size: 17px;
+    padding: 10px 20px;
+    background-color: #94B60F;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}

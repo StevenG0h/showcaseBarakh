@@ -1,0 +1,246 @@
+.container{
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin: 50px 0px;
+}
+
+.containerCart{
+    width: 80%;
+}
+
+.title{
+    font-size: 38px;
+    color: #94B60F;
+    margin: 0px;
+}
+
+.topCart{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin: 40px 0px;
+}
+
+.pilih{
+    display: flex;
+    gap: 18px;
+}
+
+.input{
+    width: 28px;
+}
+
+.textPilih{
+    font-size: 28px;
+    color: #fff;
+    margin: 0px;
+}
+
+.buttonHapus{
+    font-size: 28px;
+    font-weight: 400;
+    background-color: #081B1C;
+    border: none;
+    color: #94B60F;
+    cursor: pointer;
+}
+
+.garis{
+    border-bottom: 1.16628px solid #FFFFFF;
+}
+
+.mainCart{
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}
+
+.fieldList{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.fieldListProduct{
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+
+}
+.inputt{
+    width: 28px;
+}
+
+.list{
+    display: flex;
+    flex-direction: row;
+    gap: 15px;
+    background-color: #fff;
+    width: 647px;
+    height: auto;
+    border-radius: 7px;
+    padding: 20px 20px;
+}
+
+.image{
+    width: auto;
+    height: 100%;
+}
+
+.detailProductCart{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.link{
+    text-decoration: none;
+}
+
+.titleProduct:hover{
+    color: #94B60F;
+}
+
+.titleProduct{
+    color:#081B1C ;
+    font-size: 26px;
+    font-weight: 700;
+    margin: 0px;
+    letter-spacing: 0.08rem;
+    transition: 0.2s;
+}
+
+.remaining{
+    display: flex;
+    flex-direction: column;
+    margin: 0px;
+    gap: 5px;
+}
+
+.remainingCheck{
+    color: red;
+    margin: 0px;
+}
+
+.price{
+    margin: 0px;
+    color: #081B1C;
+    font-size: 1.1rem;
+    font-weight: 700;
+    letter-spacing: 0.08rem;
+}
+
+.detailSetProduct{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.hapus{
+    width: 40px;
+    height: 40px;
+}
+
+.setAmount{
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    align-items: center;
+}
+
+.tambah{
+    border: 3.11111px solid #CDCDCD;
+    border-radius: 62.2222px;
+    width: 40px;
+    height: 40px;
+    background-color: #fff;
+    font-size: 28px;
+    color: #CDCDCD;
+    transition: 0.2s;
+}
+
+.tambah:hover{
+    border-color: #94B60F;
+    color: #94B60F;
+}
+
+.amount{
+    color: #081B1C;
+    font-size: 28px;
+}
+
+.kurang{
+    border: 3.11111px solid #CDCDCD;
+    border-radius: 62.2222px;
+    width: 40px;
+    height: 40px;
+    background-color: #fff;
+    font-size: 38px;
+    color: #CDCDCD;
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    transition: 0.2s;
+}
+
+.kurang:hover{
+    border-color: #94B60F;
+    color: #94B60F;
+}
+
+.ringkasanBelanja{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: auto;
+    background-color: #fff;
+    border-radius: 7px;
+    padding: 20px;
+    gap: 70px;
+}
+
+.descRingkasan {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+}
+
+.titleRingkasan{
+    color: #081B1C;
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: 0.08rem;
+    margin: 0px;
+}
+
+.detailPrice{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.textTotal{
+    color: #081B1C;
+    font-size: 18px;
+    letter-spacing: 0.09rem;
+    font-weight: 700;
+}
+
+.total{
+    font-size: 18px;
+    letter-spacing: 0.09rem;
+    font-weight: 700;
+    color: #94B60F;
+}
+
+.buttonBuy{
+    padding: 15px;
+    color: #fff;
+    font-size: 20px;
+    background-color: #94B60F;
+    border-color: #fff;
+    border-radius: 5px;
+    cursor: pointer;
+}

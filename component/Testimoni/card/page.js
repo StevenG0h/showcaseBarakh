@@ -16,7 +16,6 @@ const CardTestimoni = () => {
             </div>
         </div>
     )
-    
 }
 
 export default CardTestimoni;

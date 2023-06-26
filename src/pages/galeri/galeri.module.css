@@ -1,0 +1,76 @@
+.container{
+    display: flex;
+    justify-content: center;
+    width:100% ;
+    height: auto;
+    background-color: #fff;
+}
+
+.containerBase{
+    display: flex;
+    justify-content: center;
+    width: 80%;
+    align-items: center;
+    flex-direction: column;
+    margin: 50px 0px;
+}
+
+.textGaleri{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    flex-direction: column;
+    width: 50%;
+    margin-bottom:40px;
+}
+
+.title{
+    color:#94B60F ;
+    font-weight: 700;
+    font-size: 38px;
+    margin: 0px;
+    margin-bottom: 10px;
+}
+
+.subtitle{
+    color: #081B1C;
+    font-weight: 400;
+    font-size: 17px;
+    line-height: 180%;
+    margin: 0px;
+}
+
+.listWrap{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+}
+
+.navigation{
+    display: flex;
+    flex-direction: row;
+    gap: 30px;
+}
+
+.navLink{
+    text-decoration: none;
+    color: #344054;
+    transition: 0.8ms;
+    font-weight: 400;
+    font-size: 14px;
+}
+
+.navLink:hover{
+    color: #94B60F;
+}
+
+.Mui-selected{
+    color: #94B60F;
+}
+
+@media screen and (max-width: 480px){
+    
+}

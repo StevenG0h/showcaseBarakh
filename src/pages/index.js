@@ -6,7 +6,7 @@ import { Poppins } from 'next/font/google'
 import style from '../styles/Home.module.css'
 import SliderImages from "../../component/sliderImage/slider";
 import ProductCategory from "../../component/KategorProduct/kategori";
-import Testimoni from "../../component/Testimoni/slider"
+import Testimoni from "../../component/Testimoni/testimonislider"
 
 
 const poppins = Poppins({

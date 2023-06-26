@@ -2,8 +2,7 @@
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-// import style from "./slider.module.css"
-import "../../app/slider.css"
+import "../../app/testimonislider.css";
 import Card from "./card/page";
 
 const theme = {
@@ -29,6 +28,7 @@ export default function Testimoni() {
         ]
     };
     return (
+        <div className="container">
         <div className="containerTest">
             <h2 className="titleTest">Komentar Mereka</h2>
             <Slider  {...settings}>
@@ -36,9 +36,8 @@ export default function Testimoni() {
                 <Card />
                 <Card />
                 <Card />
-                <Card />
-                <Card />
             </Slider>
+        </div>
         </div>
     );
 }
