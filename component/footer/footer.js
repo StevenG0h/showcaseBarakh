@@ -1,7 +1,7 @@
 "use client"
 import style from "./footer.module.css";
 import Image from 'next/image';
-import ImageNavBrand from "../../public/assets/images/Brand.png";
+import ImageNavBrand from "../../public/assets/images/White.svg";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFacebookF } from '@fortawesome/free-brands-svg-icons';
 import { faInstagram } from '@fortawesome/free-brands-svg-icons';

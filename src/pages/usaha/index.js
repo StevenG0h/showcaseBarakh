@@ -10,7 +10,7 @@ const poppins = Poppins({
     weight: '500',
     subsets: ['latin'],
     // display: 'swap'
-  })
+    })
 
 
 const UnitUsaha = ()=> {
@@ -21,6 +21,20 @@ const UnitUsaha = ()=> {
                 <div className={style.containerUsaha}>
                     <p className={style.titleUnitUsaha}>Unit Usaha</p>
                     <div className={style.containerCard}>
+                        <Link href="/detailKategori" className={style.link}>
+                            <div className={style.cardUsaha}>
+                                <Image src={imageJeruk} alt="Gambar" className={style.image}/>
+                                <p className={style.titleCard}>Pertanian</p>
+                                <p className={style.cardDescription}>Unit Usaha Ibnu Al-Mubarok dalam bidang pertanian menumbuh kan tanaman yang bermutu dan sehat menggunakan bibit unggul..  Selengkapnya</p>
+                            </div>
+                        </Link>
+                        <Link href="/detailKategori" className={style.link}>
+                            <div className={style.cardUsaha}>
+                                <Image src={imageJeruk} alt="Gambar" className={style.image}/>
+                                <p className={style.titleCard}>Pertanian</p>
+                                <p className={style.cardDescription}>Unit Usaha Ibnu Al-Mubarok dalam bidang pertanian menumbuh kan tanaman yang bermutu dan sehat menggunakan bibit unggul..  Selengkapnya</p>
+                            </div>
+                        </Link>
                         <Link href="/detailKategori" className={style.link}>
                             <div className={style.cardUsaha}>
                                 <Image src={imageJeruk} alt="Gambar" className={style.image}/>

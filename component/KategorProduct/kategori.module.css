@@ -1,13 +1,18 @@
-.containerCategory{
+.container{
+    display: flex;
+    justify-content: center;
+    width: 100%;
     background-color: #fff;
+    border-radius: 100px 100px 0px 0px;
+    padding: 40px 0px;
+}
+
+.containerCategory{
+    width: 75%;
     flex-direction: column;
     display: flex;
     justify-content: center;
-    /* width: 100%; */
-    justify-content: center;
     align-items: center;
-    border-radius: 100px 100px 0px 0px;
-    padding: 60px 114px;
 }
 
 .textCategory{
@@ -21,7 +26,7 @@
 }
 
 .titleCategory{
-    font-size: 38px;
+    font-size: 33px;
     font-weight: 700;
     font-style: normal;
     color: #94B60F;
@@ -30,7 +35,7 @@
 
 .descriptionTitle{
     color:#303030 ;
-    font-size: 17px;
+    font-size: 16px;
     font-weight: 400;
     text-align: center;
     margin: 0;
@@ -38,13 +43,11 @@
 
 .containerKatalog{
     width: 100%;
-    margin: 100px 0px;
-    gap: 30px;
+    margin: 80px 0px;
     display: flex;
     flex-wrap: wrap;
-    justify-content: center;
-    align-items: center;
-    gap: 50px;
+    /* justify-content: space-between; */
+    gap: 40px;
 }
 
 .link{
@@ -52,21 +55,20 @@
 }
 
 .katalogWrapper{
-    width: 396px;
-    height: 398px;
+    width: 346px;
+    height: 348px;
     background: #FFFFFF;
-    box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.25);
+    box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.1);
     border-radius: 40px;
     color: #333333;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    font-weight: 400;
 }
 
 .katalogWrapper:hover{
-    box-shadow: 0px 9px 20px rgba(0, 0, 0, 0.25);
+    box-shadow: 0px 9px 20px rgba(0, 0, 0, 0.15);
 }
 
 .imageKatalog{
@@ -74,22 +76,22 @@
     border-top-left-radius: 40px;
     border-top-right-radius: 40px;
     margin-bottom: 15px;
-    width: 396px;
-    height: 398px;
+    width: 346px;
+    height: 348px;
 }
 
 .titleKatalog{
     margin: 0;
-    font-size: 18px;
+    font-size: 16px;
     margin-bottom: 10px;
 }
 
 .descriptionKatalog{
-    font-size: 11px;
+    font-size: 10px;
     margin: 0;
     text-align: center;
-    margin: 0px 35px 15px 35px;
-    line-height: 23px;
+    margin: 0px 35px 20px 35px;
+    line-height: 20px;
 }
 
 @media screen and (max-width: 935px){

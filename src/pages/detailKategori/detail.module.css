@@ -1,0 +1,32 @@
+.container{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    background-color: #fff;
+}
+
+.containerDetail{
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    width: 70%;
+    margin: 2em 0px;
+    gap: 2em;
+}
+
+.titleUnitUsaha{
+    color: #94B60F;
+    font-size: 2em;
+    font-weight: 700;
+    letter-spacing: 0.08rem;
+    margin : 0;
+}
+
+.imageDetail{
+    width: 100%;
+    height: auto;
+}
+
+.description{
+    font-size: 1.1em;
+}

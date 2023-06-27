@@ -8,6 +8,7 @@ import Tab from '@mui/material/Tab';
 import Typography from "@mui/material/Typography";
 import { lightGreen } from "@mui/material/colors";
 import { Poppins } from 'next/font/google'
+import ImageGaleri from "../../../component/ImageGaleri/image"
 
 const poppins = Poppins({
     weight: '500',
@@ -78,13 +79,13 @@ const GaleriTestimoni = () => {
                                     }}
                                     TabIndicatorProps={{ style: { backgroundColor: "#94B60F" } }}
                                 >
-                                    <Tab label="Item One" {...a11yProps(0)} />
-                                    <Tab label="Item Two" {...a11yProps(1)} />
-                                    <Tab label="Item Three" {...a11yProps(2)} />
+                                    <Tab sx={{textTransform: "none"}} label="Semua" {...a11yProps(0)} />
+                                    <Tab sx={{textTransform: "none"}} label="Foto" {...a11yProps(1)} />
+                                    <Tab sx={{textTransform: "none"}} label="Video" {...a11yProps(2)} />
                                 </Tabs>
                             </Box>
                             <TabPanel value={value} index={0}>
-                                Item Two
+                                <ImageGaleri/>
                             </TabPanel>
                             <TabPanel value={value} index={1}>
                                 Item Two

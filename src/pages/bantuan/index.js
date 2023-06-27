@@ -1,13 +1,12 @@
 import Header from "../../../component/header/header";
 import Footer from "../../../component/footer/footer";
-import style from "./bantuan.module.css"
-import { Poppins } from 'next/font/google'
+import style from "./bantuan.module.css";
+import { Poppins } from 'next/font/google';
 
 const poppins = Poppins({
     weight: '500',
     subsets: ['latin'],
-    // display: 'swap'
-  })
+    })
 
 const Bantuan = ()=> {
     return(
@@ -22,7 +21,7 @@ const Bantuan = ()=> {
                             </div>
                             <div className={style.row2}>
                                 <div className={style.contact}>
-                                    <p className={style.titleContact}>Contantct Detail</p>
+                                    <p className={style.titleContact}>Detail Kontak</p>
                                     <hr className={style.hr}/>
                                     <div className={style.contactDetail}>
                                         <p>Jl. Sri Palas, Rumbai Bukit, Kec. Rumbai, Kota Pekanbaru, Riau 28264</p>

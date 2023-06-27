@@ -22,8 +22,8 @@ export default function Testimoni() {
         centerMode: true,
         responsive: [
             {
-                breakpoint: 380,
-                settings: { slidesToShow: 1, slidesToScroll: 1, infinite: false }
+                breakpoint: 768,
+                settings: { slidesToShow: 2, slidesToScroll: 1, infinite: false }
             },
         ]
     };

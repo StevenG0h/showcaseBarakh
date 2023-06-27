@@ -1,0 +1,5 @@
+.containerard {
+    display: flex;
+    flex-direction: column;
+}
+

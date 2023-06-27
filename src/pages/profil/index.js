@@ -23,8 +23,7 @@ const Profile = () => {
                         <div className={style.fieldSekilasEx}>
                             <p className={style.sekilas} >Sekilas Tentang</p>
                             <div className={style.wrapDescSekilas} >
-                                <p className={style.descriptions}>Lorem ipsum dolor sit amet consectetur adipiscing elit Ut et massa mi. Aliquam in hendrerit urna.
-                                    Pellentesque sit amet sapien fringilla, mattis ligula consectetur, ultrices mauris. Maecenas vitae mattis tellus. Nullam quis imperdiet augue. Vestibulum auctor ornare leo, non suscipit magna interdum eu. Curabitur pellentesque nibh nibh, at maximus ante.</p>
+                                <p className={style.descriptions}>Pesantren Ibnu Al - Mubarok Pekanbaru, Riau merupakan pesantren yang memiliki berbagai macam bidang usaha. Pesantren ini ingin mentransisikan bisnisnya ke industri digital dalam bentuk showcase bidang usaha.</p>
                             </div>
                         </div>
                     </div>

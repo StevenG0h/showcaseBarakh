@@ -2,11 +2,10 @@
     display: flex;
     flex-direction: column;
     background-color: #fff;
-    width: 320px;
     height: auto;
     border-radius: 25px;
+    width: 95%;
     padding: 0;
-    margin: 0 20px;
 }
 
 .fieldCommand{

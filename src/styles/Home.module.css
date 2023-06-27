@@ -9,48 +9,51 @@
 
 .hero{
     display: flex;
-    width: 85%;
+    width: 75%;
 }
 
 .content{
     width:50%;
     color:#fff;
-    padding-left: 2rem;
-    padding-right: 3rem;
+    /* padding-left: 2rem; */
+    padding-right: 3.9rem;
     padding-top: 20px;
     display: flex;
     flex-direction: column;
-    gap: 19px;
+    gap: 17px;
 
 }
 
 .titleHero{
-    font-size: 38px;
+    font-size: 33px;
     font-weight: 800;
     font-style: normal;
-    line-height: 59px;
-    letter-spacing: 0.05em;
+    line-height: 48px;
+    letter-spacing: 0.07em;
     margin: 0;
 }
 
 .description{
     font-style: normal;
-    font-weight: 100;           
-    font-size: 19px;
-    line-height: 36px;
+    font-weight: 300;           
+    font-size: 16px;
+    line-height: 34px;
 
 }
 
 .button{
+    display: flex;
+    justify-content: center;
     font-size: 17px;
-    font-weight: 700;
+    font-weight: 600;
     width: 30%;
     background-color: #94B60F;
     color: #fff;
     border: none;
     border-radius:5px;
-    padding: 18px 24px;
+    padding: 15px 30px;
     cursor: pointer;
+    letter-spacing: 0.03rem;
 }
 
 .contentImage{

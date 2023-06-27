@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import style from './header.module.css';
 import Image from 'next/image';
-import ImageBrand from '../../public/assets/images/Brand.png';
+import ImageBrand from '../../public/assets/images/White.svg';
 import Link from 'next/link';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {

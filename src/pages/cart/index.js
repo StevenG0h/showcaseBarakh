@@ -10,13 +10,13 @@ const poppins = Poppins({
     weight: '500',
     subsets: ['latin'],
     // display: 'swap'
-  })
+})
 
 
 const Cart = () => {
     return (
         <main className={poppins.className}>
-        <Header/>
+            <Header />
             <div className={style.container}>
                 <div className={style.containerCart}>
                     <p className={style.title}>Keranjang</p>
@@ -31,16 +31,16 @@ const Cart = () => {
                     <div className={style.mainCart}>
                         <div className={style.fieldList}>
                             <div className={style.fieldListProduct}>
-                                <input className={style.inputt} type="checkbox"/>
+                                <input className={style.inputt} type="checkbox" />
                                 <div className={style.list}>
                                     <div className={style.image}>
-                                    <Image src={imageCart} alt="Gambar"/>
+                                        <Image src={imageCart} alt="Gambar" className={style.imageCart} />
                                     </div>
                                     <div className={style.detailProductCart}>
                                         <Link href="/detailProduct" className={style.link}>
                                             <p className={style.titleProduct}>Goodie Bag Rajut</p>
                                         </Link>
-                                        <div className={style.remaining}>                                            
+                                        <div className={style.remaining}>
                                             <p className={style.remainingCheck}>sisa 5</p>
                                             <p className={style.price}>Rp.80.000,00-.</p>
                                         </div>
@@ -69,7 +69,7 @@ const Cart = () => {
                     </div>
                 </div>
             </div>
-        <Footer/>
+            <Footer />
         </main>
     )
 }

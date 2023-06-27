@@ -7,7 +7,7 @@
 
 .containerBeranda{
     display: flex;
-    width: 85%;
+    width: 75%;
     justify-content: center;
 }
 
@@ -15,55 +15,55 @@
     display: flex;
     flex-direction: row;
     justify-content: center;
-    width: auto;
+    width: 100%;
     height: auto;
     border: 5px solid #94B60F;
-    gap: 40px;
-    padding: 55px 40px;
-    margin: 50px 0px 70px 0px;
+    gap: 2.3em;
+    padding: 4em 3em;
+    margin: 4em 0 5em    0;
 }
 
 .title{
-    font-size: 38px;
+    font-size: 2.4em;
     font-weight: 700;
     color: #081B1C;
     margin: 0px;
-    letter-spacing: 0.08rem;
+    letter-spacing: 0.06em;
 }
 
 .map{
-    width: 428px;
-    height: 494px;
+    width: 30em;
+    height: 34em;
     background-color: aquamarine;
 }
 
 .titleContact{
-    font-size: 20px;
+    font-size: 1.3em;
     color: #94B60F;
     font-weight: 700;
     letter-spacing: 0.08rem;
-    margin: 0px;
+    margin: 0;
 }
 
 .hr{
-    margin: 0px;
+    margin: 0;
 }
 
 .contactDetail > p {
     color: #000;
-    font-size: 13px;
+    font-size: 0.8em;
 }
 
 .formInput{
     display: flex;
     flex-direction: column;
-    gap: 38px;
-    margin-top: 30px;
+    gap: 2.2em;
+    margin-top: 2em;
 }
 
 .input{
     color: #303030;
-    font-size: 16px; 
+    font-size: 1em; 
     padding: 16px;
     border-radius: 10px;
     border: 1.38835px solid #CDCDCD;

@@ -9,10 +9,10 @@
 .containerBase{
     display: flex;
     justify-content: center;
-    width: 80%;
+    width: 75%;
     align-items: center;
     flex-direction: column;
-    margin: 50px 0px;
+    margin: 4em 0;
 }
 
 .textGaleri{
@@ -22,21 +22,21 @@
     text-align: center;
     flex-direction: column;
     width: 50%;
-    margin-bottom:40px;
+    margin-bottom:3em;
 }
 
 .title{
     color:#94B60F ;
     font-weight: 700;
-    font-size: 38px;
+    font-size: 2.2em;
     margin: 0px;
-    margin-bottom: 10px;
+    margin-bottom: 0.5em;
 }
 
 .subtitle{
     color: #081B1C;
     font-weight: 400;
-    font-size: 17px;
+    font-size: 1.1em;
     line-height: 180%;
     margin: 0px;
 }

@@ -3,7 +3,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 30px 70px;
+    padding: 20px 70px;
     gap: 10px;
     color: #081B1C;
     /* gap: 10px; */
@@ -111,7 +111,7 @@
     font-size: 15px;
 }
 
-.navitem::before{
+/* .navitem::before{
     content: "";
     position: absolute;
     width: 0%;
@@ -120,7 +120,7 @@
     height: 2px;
     transition: all 0.2s;
     background-color: #94B60F;
-}
+} */
 
 .navitem:hover::before{
     color:#94B60F;
@@ -161,7 +161,7 @@
 }
 
 .barakhlogo{
-    width: 100;
+    width:8.2em;
     height: auto;
 }
 

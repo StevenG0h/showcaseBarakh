@@ -5,6 +5,7 @@ import Link from 'next/link';
 
 const ProductCategory = () => {
     return (
+        <div className={style.container}>
         <div className={style.containerCategory}>
             <div className={style.textCategory}>
                 <p className={style.titleCategory}>Unit Usaha</p>
@@ -54,6 +55,7 @@ const ProductCategory = () => {
                     </div>
                 </Link>
             </div>
+        </div>
         </div>
     )
 
