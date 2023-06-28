@@ -1,5 +1,55 @@
-.containerard {
+.containerCard {
     display: flex;
     flex-direction: column;
+    box-shadow: 0px 5px 20px 0px rgba(0, 0, 0, 0.25);
+    border-radius: 1rem;
+
 }
 
+.image{
+    object-fit: cover;
+    width: 100%;
+    height: auto;
+}
+
+.fieldDetail{
+    padding: 1em 1em;
+}
+.titleDetail{
+    font-size: 0.8em;
+    font-weight: 600;
+    color: #94B60F;
+    letter-spacing: 0.08em;
+    margin: 0;
+    line-height: 2.5em;
+}
+
+.description{
+    font-size: 0.5em;
+    margin: 0;
+    line-height: 2.5em;
+}
+
+.directiveCard{
+    display: flex;
+    flex-direction: row;
+    justify-content: end;
+    gap: 0.8em;
+    margin-top: 1.5em;
+}
+
+.price{
+    font-size: 0.55em;
+}
+
+.masukKeranjang{
+    font-size: 0.6em;
+    color:  #FFF ;
+    background-color: #081B1C;
+    border-radius: 0.3em;
+    letter-spacing: 0.08em;
+    /* line-height: 1em; */
+    padding: 0 1em;
+    border: #FFF;
+    cursor: pointer;
+}

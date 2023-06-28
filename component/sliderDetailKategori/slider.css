@@ -1,0 +1,51 @@
+.container{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 0.3em;
+}
+
+.title{
+    font-size: 2em;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    margin: 0;
+}
+
+.underline{
+    width: 31%;
+    border: 2px solid #94B60F;
+    border-radius: 99px;
+}
+
+.containerSlider{
+    display: block;
+    justify-content: center;
+}
+
+.containerSlider .slick-slider{
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.containerSlider .slick-track{
+    gap:1.5em;
+    display:flex;
+    padding: 50px 20px;
+}
+
+.containerSlider .slick-arrow {
+	width: 30px;
+	height: 30px;
+    margin: 0 -40px;
+}
+
+.containerSlider .slick-arrow:before {
+	font-size: 30px;
+    color: #000000;
+    z-index: 999;
+    /* position: absolute; */
+}

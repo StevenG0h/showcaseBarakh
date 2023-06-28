@@ -17,7 +17,9 @@ const Bantuan = ()=> {
                         <div className={style.wrapForm}>
                             <div className={style.row1}>
                                 <p className={style.title}>Hubungi Kami</p>
-                                <div className={style.map}></div>
+                                <div className={style.map}>
+                                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d18238.718508641505!2d101.4272258765038!3d0.5635607349747724!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31d454dd9d8c53cf%3A0xf507745c953234a!2sPondok%20Pesantren%20Ibnu%20Al%20Mubarok!5e0!3m2!1sid!2sid!4v1687922378153!5m2!1sid!2sid" style={{width : "100%", height: "100%", border: "#fff"}}  allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                                </div>
                             </div>
                             <div className={style.row2}>
                                 <div className={style.contact}>

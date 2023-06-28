@@ -5,18 +5,22 @@ import Image from 'next/image';
 import ImageBrand from '../../public/assets/images/White.svg';
 import Link from 'next/link';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import Search from "../../component/search/search"
 import {
     faSearch,
     faCartShopping
 } from "@fortawesome/free-solid-svg-icons";
 
 const Header = () => {
-    const [active, setActive] = useState(true);
+    // if (!Visible) return null;
+    const [active, setActive] = useState(false);
 
-    function seacrhActive() {
-        setActive(!active)
-        console.log("search activ")
-    }
+    const [searchActive, setSearchActive] = useState(false);
+
+    // function seacrhActive() {
+    //     setActive(!active)
+    //     console.log("search activ")
+    // }
     return (
         <div className={style.header}>
             <div className={style.container}>
@@ -26,7 +30,7 @@ const Header = () => {
                 {/* <div onClick={() => setActive(!active)}>
                     <div
                         className={active ? style.activeHamburger : style.hamburger}
-                    />
+                        />
                 </div> */}
                 <div className={style.navbarList}>
                     <ul className={style.ul}>
@@ -51,12 +55,13 @@ const Header = () => {
                     </ul>
                 </div>
                 <div className={style.srccart}>
-                    <a href="" className={style.iconL} onClick={seacrhActive}><FontAwesomeIcon className={style.iconJ} icon={faSearch}/></a>
-                    <Link href="/cart" className={style.iconL}><FontAwesomeIcon className={style.iconJ} icon={faCartShopping}/></Link>
+                    <button href="" className={style.iconL} onClick={() => setSearchActive(true)}><FontAwesomeIcon className={style.iconJ} icon={faSearch}/></button>
+                    <Link href="/cart" ><FontAwesomeIcon className={style.iconJ} icon={faCartShopping}/></Link>
                 </div> 
+                <Search Visible={searchActive} closeClick={() => setSearchActive(false)}/>
                 {/* <div className={style.searchBox}>
                     <input className={style.input} placeholder="Cari barang"></input>                   
-                </div> */}
+                </div>  */}
             </div>
         </div>
     )

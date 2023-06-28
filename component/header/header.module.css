@@ -149,6 +149,10 @@
     gap: 25px;
 }
 
+.iconL{
+    background-color: #081B1C;
+    border: #081B1C;
+}
 .iconJ{
     width: 1.4rem;
     height: 1.4rem;
@@ -160,12 +164,13 @@
     transition: 0.55s;
 }
 
+
 .barakhlogo{
     width:8.2em;
     height: auto;
 }
 
-.searchBox{
+/* .searchBox{
     display: flex;
     align-items: center;
     max-width: 700px;
@@ -188,4 +193,4 @@
 
 .input:focus{
     outline: none;
-}
+} */

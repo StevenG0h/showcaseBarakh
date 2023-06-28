@@ -7,10 +7,10 @@ const Card = () => {
     return (
         <div className={style.containerCard}>
             <Image src={imageDetail} alt="Gambar" className={style.image}/>
-            <div className={style.fieldDetaul}>
+            <div className={style.fieldDetail}>
                 <p className={style.titleDetail}>Goodiebag</p>
                 <p className={style.description}>100% Hasil penggunaan daur ulang dan produk natural</p>
-                <div className={style.directiveCarf}>
+                <div className={style.directiveCard}>
                     <p className={style.price}>Rp 40. 000</p>
                     <button className={style.masukKeranjang}>Masuk Ke Keranjang</button>
                 </div>

@@ -1,7 +1,9 @@
 import style from "./cart.module.css"
+import { useState } from "react";
 import Header from "../../../component/header/header";
 import Footer from "../../../component/footer/footer";
-import imageCart from "../../../public/assets/images/cart.png"
+import imageCart from "../../../public/assets/images/cart.png";
+import NoticeModal from "../../../component/NoticeModal/notice_modal"
 import Image from "next/image";
 import Link from "next/link";
 import { Poppins } from 'next/font/google'
@@ -14,6 +16,8 @@ const poppins = Poppins({
 
 
 const Cart = () => {
+    const [showNotice, setShowNotice] = useState(false);
+
     return (
         <main className={poppins.className}>
             <Header />
@@ -64,12 +68,13 @@ const Cart = () => {
                                     <div className={style.total}>Rp.180.000,00-.</div>
                                 </div>
                             </div>
-                            <button className={style.buttonBuy}>Lanjutkan Pembayaran</button>
+                            <button className={style.buttonBuy} onClick={() => setShowNotice(true)}>Lanjutkan Pembayaran</button>
                         </div>
                     </div>
                 </div>
             </div>
             <Footer />
+            <NoticeModal isVisible={showNotice} CloseClick={() => setShowNotice(false)}/>
         </main>
     )
 }

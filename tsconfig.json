@@ -29,7 +29,7 @@
     ".next/types/**/*.ts",
     "**/*.ts",
     "**/*.tsx"
-, "src/pages/usaha/index.js", "src/pages/katalog/index.js", "src/pages/galeri/index.js", "src/pages/bantuan/index.js", "src/pages/cart/index.js", "src/pages/detailProduct/index.js", "src/pages/detailKategori/index.js"  ],
+, "src/pages/usaha/index.js", "src/pages/katalog/index.js", "src/pages/galeri/index.js", "src/pages/bantuan/index.js", "src/pages/cart/index.js", "src/pages/detailProduct/index.js", "src/pages/detailKategori/index.js", "component/NoticeModal/notice_modal.js"  ],
   "exclude": [
     "node_modules"
   ]
