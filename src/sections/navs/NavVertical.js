@@ -17,7 +17,7 @@ export default function NavVertical({data}){
     let [openList,setOpenList] = useState(false);
     return (
         <>
-            <Drawer PaperProps={{sx:{backgroundColor:"#091B1C",color:"white",width:"20vw",position:"sticky", height:'100vh'}}} open={true} variant="persistent">
+            <Drawer PaperProps={{sx:{backgroundColor:"#091B1C",color:"white",width:"250px",position:"sticky", height:'100vh'}}} open={true} variant="persistent">
                 <Box sx={{display:'flex',flexDirection:"column",justifyContent:'space-between',overflowY:'hidden',height:"100%"}}>
                 <List>
                     <List sx={{display:'flex',justifyContent:'center',marginBottom:'1em', marginTop:'1em'}}>

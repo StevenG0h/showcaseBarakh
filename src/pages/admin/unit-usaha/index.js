@@ -9,20 +9,26 @@ import RHFTextField from "@/components/form/RHFTextField";
 import * as yup from "yup";
 import {yupResolver} from "@hookform/resolvers/yup";
 import { useRouter } from "next/router";
+import Image from "next/image";
+import RHFDnd from "@/components/form/RHFDnd";
+import ArrowBack  from "@mui/icons-material/ArrowLeft";
+import ArrowNext  from "@mui/icons-material/ArrowRight";
 
 export async function getServerSideProps(context){
 
     let UnitUsaha = await axios.get('http://127.0.0.1:8000/api/unit-usaha');
-    console.log(UnitUsaha.data.data)
+    
     return {
         props: {
-            data: UnitUsaha.data.data
+            data: UnitUsaha?.data?.data
         }
     }
 }
 
 export default function admin({data}){
-
+    
+    let [unitUsaha, setUnitUsaha] = useState(data.data);
+    let [unitUsahaLink, setUnitUsahaLink] = useState(data.links);
     //Next router
     const router = useRouter();
 
@@ -30,7 +36,17 @@ export default function admin({data}){
     const schema = yup.object().shape({
         usahaName: yup.string().required('Nama unit usaha tidak boleh kosong'),
         usahaDesc: yup.string().required('Deskripsi unit usaha tidak boleh kosong'),
-        usahaImage: yup.mixed().required('Gambar tidak boleh kosong')
+        usahaImage: yup.mixed()
+        .test("filesize", "Gambar tidak boleh kosong", (value) => {
+            if(editMode == false){
+                if(value.name === undefined){
+                    return false;
+                }
+                return true;
+            }else{
+                return true;
+            }
+          })
     })
 
     const { control, handleSubmit, setValue, reset, register , formState:{errors}} = useForm({
@@ -50,18 +66,23 @@ export default function admin({data}){
                 }
             });
         }else{
-            const createUnitUsaha = await axios.put('/api/unit-usaha/'+usahaId,data,{
+            if(data.usahaImage == ''){
+                delete data.usahaImage;
+            }
+            console.log(data);
+            const createUnitUsaha = await axios.post('/api/unit-usaha/'+usahaId,data,{
                 headers:{
                     'Content-Type': 'multipart/form-data'
                 }
             });
             
         }
-        router.replace(router.asPath)
-        setAddForm(false);
+        router.reload()
+        handleCloseAddForm()
       }
       
       //states
+    const [showImage, setShowImage] = useState('');
     const [AddForm, setAddForm] = useState(false);
     const [editMode, setEditMode] = useState(false);
     const [usahaId, setUsahaId] = useState('');
@@ -70,7 +91,7 @@ export default function admin({data}){
     async function handleDelete(id){
         const csrf = await axios.get('/sanctum/csrf-cookie')
         const deleteUnitUsaha = await axios.delete('/api/unit-usaha/'+id);
-        router.replace(router.asPath)
+        router.reload()
     }
 
     //state handler
@@ -96,18 +117,35 @@ export default function admin({data}){
         setEditMode(true);
         setValue('usahaName',data.usahaName);
         setValue('usahaDesc',data.usahaDesc);
-        setValue('usahaImage',data.usahaImage);
         setUsahaId(data.id);
         setAddForm(true)
+    }
+   
+    let handleShowImage = (data)=>{
+        setShowImage(process.env.NEXT_PUBLIC_BACKEND_URL+'/storage/unitUsaha/'+data)
+    }
+    
+    let handleCloseShowImage = (data)=>{
+        setShowImage('')
+    }
+
+    let handleChangePage = async (link)=>{
+        let unitUsaha = await axios.get(link);
+        setUnitUsaha(unitUsaha?.data?.data?.data)
+        console.log(unitUsaha)
+        setUnitUsahaLink(unitUsaha?.data?.data?.links)
     }
 
     //utils
 
     let TABLEHEAD = [
-        {value: 'No',align:'left'},
-        {value: 'Nama Unit Usaha',align:'left'},
-        {value: 'Gambar',align:'left'},
-        {value:'Action',align:'center'}
+        {value: 'No',align: 'left'},
+        {value: 'Dibuat pada',align: 'left'},
+        {value: 'Nama unit usaha',align: 'left'},
+        {value: 'Deskripsi',align: 'left'},
+        {value: 'Jumlah Produk',align: 'left'},
+        {value: 'Gambar',align: 'left'},
+        {value: 'Action',align: 'center'}
     ]
     
     let num = 0;
@@ -115,18 +153,21 @@ export default function admin({data}){
     return (
         <>
             <AdminLayout>
+                <Dialog open={showImage != ''} onClose={handleCloseShowImage} fullWidth maxWidth={'md'}>
+                        <img height={"100%"} style={{objectFit:'contain'}} src={showImage}></img>
+                </Dialog>
                 <Dialog open={AddForm} onClose={handleCloseAddForm} fullWidth maxWidth='xs'>
                     <DialogContent>
-                        <Typography>Tambah Unit Usaha</Typography>
+                        <Typography variant="h5" sx={{marginBottom:'1em'}} fontWeight={600}>Tambah Unit Usaha</Typography>
                         <form onSubmit={handleSubmit(onSubmit)}>
-                            <FormControl sx={{width:'100%', paddinyY:'1em'}}>
-                                <RHFTextField label={'Nama Unit Usaha'} name={"usahaName"} control={control}></RHFTextField>
+                            <FormControl sx={{width:'100%', marginY:'0.5em'}}>
+                                <RHFTextField hiddenLabel={true} label={'Nama Unit Usaha'} name={"usahaName"} control={control}></RHFTextField>
                             </FormControl>
-                            <FormControl sx={{width:'100%', paddinyY:'1em'}}>
-                                <RHFTextField label={'Deskripsi Unit Usaha'} name={"usahaDesc"} control={control}></RHFTextField>
+                            <FormControl sx={{width:'100%', marginY:'0.5em'}}>
+                                <RHFTextField hiddenLabel={true} label={'Deskripsi Unit Usaha'} name={"usahaDesc"} control={control}></RHFTextField>
                             </FormControl>
-                            <FormControl sx={{width:'100%', paddinyY:'1em'}}>
-                                <Controller
+                            <FormControl sx={{width:'100%', marginY:'0.5em'}}>
+                            <Controller
                                 control={control}
                                 name={'usahaImage'}
                                 rules={{required:'Foto unit usaha tidak boleh kosong'}}
@@ -135,16 +176,16 @@ export default function admin({data}){
                                         <>
                                         <Input type="file" onChange={(event)=>{
                                         onChange(event.target.files[0])
-                                    }} value={value?.filename} name="usahaImage" {...field}></Input>
+                                    }} value={value?.filename} name={'usahaImage'} {...field}></Input>
                                         <Typography>{error?.message}</Typography>
                                         </>
                                     )
                                 }}
                                 >
-                                    
+                                
                                 </Controller>
                             </FormControl>
-                            <Button type="submit">Submit</Button>
+                            <Button variant="contained" color="success" sx={{width:'100%'}} type="submit">{editMode ? 'Simpan Perubahan' : 'Tambah Unit Usaha'}</Button>
                         </form>
                     </DialogContent>
                 </Dialog>
@@ -169,11 +210,13 @@ export default function admin({data}){
                             <CustomTableHead tableHead={TABLEHEAD}></CustomTableHead>
                             <TableBody>
                                 {
-                                    data.map((map)=>{
+                                    unitUsaha === [] || unitUsaha==='' || unitUsaha === undefined ? 'data kosong' :
+                                    unitUsaha?.map((map)=>{
                                         return (
                                             <UsahaTableRow key={map.id} 
                                             onDelete={() => handleDelete(map.id)} 
                                             onEdit={() => handleOpenEditForm(map)} 
+                                            onShowImage={()=> handleShowImage(map.usahaImage)}
                                             num={++num} row={map}>
 
                                             </UsahaTableRow>
@@ -183,6 +226,15 @@ export default function admin({data}){
                             </TableBody>
                         </Table>
                     </TableContainer>
+                    {
+                        unitUsahaLink.map((link)=>{
+                            return (
+                                <Button key={link.label} sx={{color:link.active ? '' : 'grey' }} onClick={()=> handleChangePage(link.url)}>{
+                                    link.label == '&laquo; Previous'? '' : link.label == 'Next &raquo;' ? '' : link.label
+                                }</Button>
+                            )
+                        })
+                    }
                 </Card>
             </AdminLayout>
         </>
