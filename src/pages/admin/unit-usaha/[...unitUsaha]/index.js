@@ -106,6 +106,8 @@ export default function product({unitUsaha}){
             });
             
         }
+        handleCloseAddForm();
+        router.reload();
       }
       
       //states
