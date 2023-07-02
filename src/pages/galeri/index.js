@@ -1,5 +1,5 @@
-import Header from "../../../component/header/header";
-import Footer from "../../../component/footer/footer";
+import Header from "../../components/header/header";
+import Footer from "../../components/footer/footer";
 import style from "./galeri.module.css"
 import React, { useState } from 'react';
 import Box from '@mui/material/Box';
@@ -8,7 +8,7 @@ import Tab from '@mui/material/Tab';
 import Typography from "@mui/material/Typography";
 import { lightGreen } from "@mui/material/colors";
 import { Poppins } from 'next/font/google'
-import ImageGaleri from "../../../component/ImageGaleri/image"
+import ImageGaleri from "../../components/ImageGaleri/image"
 
 const poppins = Poppins({
     weight: '500',
@@ -85,7 +85,7 @@ const GaleriTestimoni = () => {
                                 </Tabs>
                             </Box>
                             <TabPanel value={value} index={0}>
-                                <ImageGaleri/>
+                                {/* <ImageGaleri/> */}
                             </TabPanel>
                             <TabPanel value={value} index={1}>
                                 Item Two

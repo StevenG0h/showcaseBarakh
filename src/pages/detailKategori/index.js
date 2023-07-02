@@ -1,10 +1,10 @@
 
-import Header from "../../../component/header/header";
-import Footer from "../../../component/footer/footer";
+import Header from "../../components/header/header";
+import Footer from "../../components/footer/footer";
 import style from "./detail.module.css";
 import Image from "next/image";
 import imageDetail from "../../../public/assets/images/imageDetail.png";
-import SliderDetail from "../../../component/sliderDetailKategori/slider"
+import SliderDetail from "../../components/sliderDetailKategori/slider"
 import { Poppins } from 'next/font/google'
 
 const poppins = Poppins({

@@ -1,6 +1,6 @@
 import Image from "next/image";
 import style from "./card.module.css";
-import imageDetail from "../../../public/assets/images/imageDetailUsaha.png"
+import imageDetail from "../../../../public/assets/images/imageDetailUsaha.png"
 
 
 const Card = () => {

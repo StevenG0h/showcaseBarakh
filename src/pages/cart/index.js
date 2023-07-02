@@ -1,9 +1,9 @@
 import style from "./cart.module.css"
 import { useState } from "react";
-import Header from "../../../component/header/header";
-import Footer from "../../../component/footer/footer";
+import Header from "../../components/header/header";
+import Footer from "../../components/footer/footer";
 import imageCart from "../../../public/assets/images/cart.png";
-import NoticeModal from "../../../component/NoticeModal/notice_modal"
+import NoticeModal from "../../components/NoticeModal/notice_modal"
 import Image from "next/image";
 import Link from "next/link";
 import { Poppins } from 'next/font/google'

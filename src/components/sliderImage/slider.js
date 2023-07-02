@@ -6,7 +6,7 @@ import "slick-carousel/slick/slick-theme.css";
 // import './slider.css'
 import style from "./slider.module.css"
 import Image from "next/image";
-import ProductImage from "../../public/assets/images/Free_Toiletry.png";
+import ProductImage from "../../../public/assets/images/Free_Toiletry.png";
 
 const SliderImages = () => {
     const settings = {

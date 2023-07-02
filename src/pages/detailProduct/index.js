@@ -1,5 +1,5 @@
-import Header from "../../../component/header/header";
-import Footer from "../../../component/footer/footer";
+import Header from "../../components/header/header";
+import Footer from "../../components/footer/footer";
 import style from "./product.module.css"
 import imageDetail from "../../../public/assets/images/imgDetailProduct.png"
 import Image from "next/image";

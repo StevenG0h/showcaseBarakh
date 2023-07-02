@@ -1,5 +1,5 @@
-import Header from "../../../component/header/header";
-import Footer from "../../../component/footer/footer";
+import Header from "../../components/header/header";
+import Footer from "../../components/footer/footer";
 import style from "./bantuan.module.css";
 import { Poppins } from 'next/font/google';
 

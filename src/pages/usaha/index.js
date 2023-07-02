@@ -1,5 +1,5 @@
-import Header from "../../../component/header/header";
-import Footer from "../../../component/footer/footer"
+import Header from "../../components/header/header";
+import Footer from "../../components/footer/footer"
 import style from "./usaha.module.css"
 import Image from "next/image";
 import imageJeruk from "../../../public/assets/images/UsahaPertanian.png";

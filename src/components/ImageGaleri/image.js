@@ -2,9 +2,9 @@ import Image from "next/image";
 import style from "./image.module.css"
 const ImageGaleri = () => {
     return (
-        <main>
+        <div>
             <div className={style.wrapImage}></div>
-        </main>
+        </div>
     )
 }
 

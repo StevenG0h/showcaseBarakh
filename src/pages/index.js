@@ -1,12 +1,12 @@
 
 import { Inter } from 'next/font/google'
-import Header from '../../component/header/header'
-import Footer from '../../component/footer/footer'
+import Header from '../components/header/header'
+import Footer from '../components/footer/footer'
 import { Poppins } from 'next/font/google'
 import style from '../styles/Home.module.css'
-import SliderImages from "../../component/sliderImage/slider";
-import ProductCategory from "../../component/KategorProduct/kategori";
-import Testimoni from "../../component/Testimoni/testimonislider"
+import SliderImages from "../components/sliderImage/slider";
+import ProductCategory from "../components/KategorProduct/kategori";
+import Testimoni from "../components/Testimoni/testimonislider"
 
 
 const poppins = Poppins({

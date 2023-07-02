@@ -1,22 +1,18 @@
-import CustomTableHead from "@/components/table/CustomTableHead"
-import AdminLayout from "@/layouts/adminLayout/AdminLayout"
-import UsahaTableRow from "@/sections/UnitUsaha/UsahaTableRow";
+import CustomTableHead from "../../../components/table/CustomTableHead"
+import AdminLayout from "../../../layouts/adminLayout/AdminLayout"
+import UsahaTableRow from "../../../sections/UnitUsaha/UsahaTableRow";
 import { Box, Button, Card, Dialog, DialogContent, DialogTitle, FormControl, Input, MenuItem, MenuList, Select, Table, TableBody, TableContainer, TextField, Typography } from "@mui/material"
-import axios from "@/utils/axios";
+import axios from "../../../utils/axios";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import RHFTextField from "@/components/form/RHFTextField";
+import RHFTextField from "../../../components/form/RHFTextField";
 import * as yup from "yup";
 import {yupResolver} from "@hookform/resolvers/yup";
 import { useRouter } from "next/router";
-import Image from "next/image";
-import RHFDnd from "@/components/form/RHFDnd";
-import ArrowBack  from "@mui/icons-material/ArrowLeft";
-import ArrowNext  from "@mui/icons-material/ArrowRight";
 
-export async function getServerSideProps(context){
+export async function getServerSideProps(){
 
-    let UnitUsaha = await axios.get('http://127.0.0.1:8000/api/unit-usaha');
+    let UnitUsaha = await axios.get(process.env.NEXT_PUBLIC_BACKEND_URL+'/api/unit-usaha');
     
     return {
         props: {

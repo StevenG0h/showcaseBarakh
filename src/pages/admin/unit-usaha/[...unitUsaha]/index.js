@@ -1,17 +1,17 @@
-import axios from "@/utils/axios";
+import axios from "../../../../utils/axios";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import * as yup from "yup";
 import {yupResolver} from "@hookform/resolvers/yup";
 import { Controller, useForm } from "react-hook-form";
-import AdminLayout from "@/layouts/adminLayout/AdminLayout";
+import AdminLayout from "../../../../layouts/adminLayout/AdminLayout";
 import { Box, Button, Card, Dialog, DialogContent, FormControl, Grid, IconButton, ImageList, ImageListItem, ImageListItemBar, Input, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
-import RHFTextField from "@/components/form/RHFTextField";
-import CustomTableHead from "@/components/table/CustomTableHead";
-import ProductTableRow from "@/sections/product/ProductTableRow";
+import RHFTextField from "../../../../components/form/RHFTextField";
+import CustomTableHead from "../../../../components/table/CustomTableHead";
+import ProductTableRow from "../../../../sections/product/ProductTableRow";
 import  Delete  from "@mui/icons-material/Delete";
 import  Star  from "@mui/icons-material/Star";
-import RHFDnd from "@/components/form/RHFDnd";
+import RHFDnd from "../../../../components/form/RHFDnd";
 
 export async function getServerSideProps(context){
     let UnitUsaha = await axios.get('http://127.0.0.1:8000/api/unit-usaha/'+context.query.unitUsaha);
@@ -167,7 +167,7 @@ export default function product({unitUsaha}){
     let handleDeletePreview = (id)=>{
         if(id != undefined){
             let deleteImage = deletedImage;
-            deleteImage.push(id);x``
+            deleteImage.push(id);
             setDeletedImage(deleteImage);
         }
     }

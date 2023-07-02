@@ -1,6 +1,6 @@
 import style from './kategori.module.css';
 import Image from 'next/image';
-import Masjid from '../../public/assets/images/MasjidAlBarakh.png';
+import Masjid from '../../../public/assets/images/MasjidAlBarakh.png';
 import Link from 'next/link';
 
 const ProductCategory = () => {

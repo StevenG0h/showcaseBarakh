@@ -3,7 +3,7 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import "../../app/testimonislider.css";
-import Card from "./card/page";
+import Card from "../card/page";
 
 const theme = {
     
