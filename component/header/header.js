@@ -12,15 +12,11 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 const Header = () => {
-    // if (!Visible) return null;
+
     const [active, setActive] = useState(false);
 
     const [searchActive, setSearchActive] = useState(false);
 
-    // function seacrhActive() {
-    //     setActive(!active)
-    //     console.log("search activ")
-    // }
     return (
         <div className={style.header}>
             <div className={style.container}>

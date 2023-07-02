@@ -40,6 +40,7 @@ const Bantuan = ()=> {
                                     <input type="text" placeholder="Masukkan Alamat" className={style.input}/>
                                     <input type="text" placeholder="Masukkan No. Hp" className={style.input}/>
                                     <input type="text" placeholder="Masukan Email" className={style.input}/>
+                                    <input type="text" placeholder="Masukan Penjelasan" className={style.input}/>
                                     <div className={style.Button}>
                                         <button className={style.batal}>Batal</button>
                                         <button className={style.kirim}>Kirim</button>

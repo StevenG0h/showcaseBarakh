@@ -40,6 +40,7 @@
     width: 50%;
     background: #E5EBEA;
     border: 5px solid #94B60F;  
+    border-radius: 1em;
 }
 
 .descriptions{
@@ -117,7 +118,7 @@
     font-size: 1.7em;
     margin: 0px;
     color: #94B60F;
-    margin-bottom: 13px;
+    margin-bottom: 0.2em;
 }
 
 .description{
@@ -148,7 +149,7 @@
 .titleAspek{
     font-weight: 700;
     font-size:  1.7em;
-    margin: 1.2em 0px 0.8em 0px;
+    margin: 1.2em 0px 0.3em 0px;
 }
 
 .descriptionAspek{
