@@ -1,0 +1,113 @@
+.container{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin: 4em 0px 9em 0px;
+}
+
+.containerDetailProduct{
+    width: 75%;
+    height: auto;
+    display: flex;
+    flex-direction: row;
+    /* justify-content: space-between; */
+    gap: 2em;
+}
+
+.fieldImage{
+    width: 50%;
+}
+
+.imageDetail{
+    object-fit: cover;
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+}
+
+.fieldDetailProduct{
+    width: 50%;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+}
+
+.titleProduct{
+    margin: 0px;
+    font-size: 2em;
+    font-weight: 700;
+    color: #94B60F;
+    letter-spacing: 0.08rem;
+}
+
+.stockProduct{
+    margin: 0px;
+    font-size: 1em;
+    color: #fff;
+    
+}
+
+.stockAmount{
+    color: #94B60F;
+}
+
+.priceProduct{
+    margin: 0px;
+    font-size: 1em;
+    color: #fff;
+    letter-spacing: 0.09rem;
+}
+
+.priceAmount{
+    font-weight: 700 ;
+}
+
+.unitUsaha{
+    margin: 0px;
+    font-size: 1em;
+    color: #94B60F;
+}
+
+.nameUnitUsaha{
+    font-weight: 700;
+}
+
+.weightProduct{
+    margin: 0px;
+    font-size: 1em;
+    color: #fff;
+    font-weight: 400;
+}
+
+.descriptionProduct{
+    margin: 0px;
+    font-size: 1em;
+    color: #fff;
+}
+
+.buttonContainer{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4em;
+}
+
+.cartButton{
+    padding: 0.8em 0;
+    font-size: 0.9em;
+    color: #fff;
+    background-color: #94B60F;
+    border-radius: 5px;
+    border: #081B1C;
+    cursor: pointer;
+    width: auto;
+}
+
+.cartButton:hover{
+    background-color: #D5F06B;
+}
+
+
+
+

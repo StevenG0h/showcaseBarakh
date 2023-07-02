@@ -1,0 +1,69 @@
+.container{
+    position: fixed;
+    inset: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.42) ;
+
+
+}
+
+.card{
+    display: flex;
+    flex-direction: column;
+    width: 28em;
+    height: 14em;
+    padding: 2em 3em 3em 3em;
+    background-color: #fff;
+    border-radius: 15px;
+}
+
+.buttonContainer{
+    cursor: pointer;
+}
+
+.buttonClose{
+    margin: 0;
+    float: right;
+    font-size: 1.3em;
+    line-height: 0.8em;
+}
+
+.title{
+    color: #94B60F;
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: 0.10em;
+}
+
+.description{
+    color: #333;
+    font-size: 1rem;
+}
+
+.fieldTotal{
+    color: #333;
+    margin-top: 50px;
+    margin-bottom: 10px;
+    font-size: 12px;
+    font-weight: 700;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.button{
+    padding: 11px;
+    border-radius: 4px;
+    color: #fff;
+    background-color: #94B60F;
+    border: none;
+    cursor: pointer;
+    font-weight: 700;
+    /* letter-spacing: 0.1rem; */
+}
+
+.button:hover{
+    background-color: #D5F06B;
+}

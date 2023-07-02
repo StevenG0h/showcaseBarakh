@@ -1,0 +1,110 @@
+.container{
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    background-color: #fff;
+}
+
+.containerBeranda{
+    display: flex;
+    width: 75%;
+    justify-content: center;
+}
+
+.wrapForm{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    width: 100%;
+    height: auto;
+    border: 5px solid #94B60F;
+    gap: 2.3em;
+    padding: 2em 0em;
+    margin: 4em 0 5em 0;
+    border-radius: 1em;
+}
+
+.row1{
+    padding: 1em 0;
+}
+
+.row2{
+    padding: 2.6em 0;
+}
+
+.title{
+    font-size: 2.4em;
+    font-weight: 700;
+    color: #081B1C;
+    margin: 0px;
+    letter-spacing: 0.06em;
+}
+
+.map{
+    width: 30em;
+    height: 34em;
+    background-color: aquamarine;
+}
+
+.titleContact{
+    font-size: 1.3em;
+    color: #94B60F;
+    font-weight: 700;
+    letter-spacing: 0.08rem;
+    margin: 0;
+}
+
+.hr{
+    margin: 0;
+}
+
+.contactDetail > p {
+    color: #000;
+    font-size: 0.8em;
+}
+
+.formInput{
+    display: flex;
+    flex-direction: column;
+    gap: 1.4em;
+    margin-top: 2em;
+}
+
+.input{
+    color: #303030;
+    font-size: 1em; 
+    padding: 0.9em;
+    border-radius: 10px;
+    border: 1.38835px solid #CDCDCD;
+}
+
+.Button{
+    display: flex;
+    flex-direction: row;
+    justify-content: end;
+    gap: 10px;
+
+}
+
+.batal{
+    font-size: 15px;
+    padding: 10px 20px;
+    background-color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.kirim{
+    font-size: 17px;
+    padding: 10px 20px;
+    background-color: #94B60F;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.kirim:hover{
+    background-color: #D5F06B;
+}
