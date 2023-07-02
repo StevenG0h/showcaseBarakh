@@ -2,46 +2,40 @@
 import style from "./footer.module.css";
 import Image from 'next/image';
 import ImageNavBrand from "../../public/assets/images/White.svg";
+import Pertamnina from "../../public/assets/images/PERTAMINA 1.png"
+import Yayasan from "../../public/assets/images/YAYSAN 1.png";
+import PCR from "../../public/assets/images/my-image 1.png"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFacebookF } from '@fortawesome/free-brands-svg-icons';
 import { faInstagram } from '@fortawesome/free-brands-svg-icons';
 import { faYoutube } from '@fortawesome/free-brands-svg-icons';
 import Link from 'next/link';
 
-const Footer = ()=> {
+const Footer = () => {
     return (
-            <>
-        <footer className={style.footer}>
-            <div className={style.columns}>
-                <div className={style.column}>
-                    <Image className={style.logoBrand} src={ImageNavBrand} alt='LogoAlbarakh' />
+        <>
+            <footer className={style.footer}>
+                <div className={style.columnContainer}>
+                    <div className={style.columns}>
+                        <div className={style.column}>
+                            <Image className={style.logoBrand} src={Pertamnina} alt='LogoAlbarakh' />
+                            <Image className={style.logoBrand} src={Yayasan} alt='LogoAlbarakh' />
+                            <Image className={style.logoBrand} src={PCR} alt='LogoAlbarakh' />
+                        </div>
+                        <div className={style.column}>
+                            <div className={style.sosmed}>
+                                <p>Ikuti Kami:</p>
+                                <div className={style.sosmedIcon}>
+                                    <Link href="" className={style.facebook_icon}><FontAwesomeIcon icon={faFacebookF} className={style.icon} /></Link>
+                                    <Link href="" className={style.instagram_icon}><FontAwesomeIcon icon={faInstagram} className={style.icon} /></Link>
+                                    <Link href="" className={style.youtube_icon}><FontAwesomeIcon icon={faYoutube} className={style.icon} /></Link>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <p className={style.copyright}>Copyright @2023 Al-Mubarok | Politeknik Caltex Riau</p>
                 </div>
-                <div className={style.column}>
-                    <div className={style.identitas}>
-                        <p className={style.title}>Alamat</p>
-                        <p className={style.titleex}>Jl. Singgalang V Perum BMP Blok K.No. 10</p>
-                    </div>
-                    <div className={style.identitas}>
-                        <p className={style.title}>No.Telp</p>
-                        <p className={style.titleex}>08127379214710</p>
-                    </div>
-                    <div className={style.identitas}>
-                        <p className={style.title}>Email</p>
-                        <p className={style.titleex}>mubarok@sch.id</p>
-                    </div>
-                </div>
-                <div className={style.column}>
-                    <div className={style.sosmed}>
-                        <p>Follow Us:</p>  
-                        <div className={style.sosmedIcon}>
-                            <Link href="" className={style.facebook_icon}><FontAwesomeIcon icon={faFacebookF} className={style.icon}/></Link>
-                            <Link href="" className={style.instagram_icon}><FontAwesomeIcon icon={faInstagram} className={style.icon}/></Link>
-                            <Link href="" className={style.youtube_icon}><FontAwesomeIcon icon={faYoutube} className={style.icon}/></Link>
-                        </div>                      
-                    </div>
-                </div>
-            </div>     
-        </footer>
+            </footer>
         </>
     )
 }
