@@ -7,7 +7,7 @@ import NoticeModal from "../../components/NoticeModal/notice_modal"
 import Image from "next/image";
 import Link from "next/link";
 import { Poppins } from 'next/font/google'
-import { getCookie } from "cookies-next";
+import { getCookie, setCookie } from "cookies-next";
 import axios from "../../utils/axios";
 import {formatCurrency} from "../../helper/currency";
 
@@ -23,21 +23,57 @@ export async function getServerSideProps({req,res}){
     let products = cookie.map((data)=>{
         return data.productId
     })
+    
     let productsData = await axios.post('/api/produk/get-cart',{data:products});
+    let cart = [];
+    cookie.map((data)=>{
+        productsData.data.data.map((product)=>{
+            if(data.productId === product.id){
+                cart.push({
+                    item: data.item,
+                    product: product
+                })
+            }
+        })
+    })
+    console.log(cart)
     return {
         props:{
-            data: productsData.data.data
+            cart: cart,
+            cookie: cookie
         }
     }
 }
 
-const Cart = ({data}) => {
+const Cart = ({cart,cookie}) => {
 
-    let [product, setProduct] = useState(data);
+    let [cartList, setCart] = useState(cart);
     let [total, setTotal] = useState(0);
 
     const [showNotice, setShowNotice] = useState(false);
     
+    const handleChangeItem = (id, change)=>{
+        let newCartList = cartList.map((cart)=>{
+            if(cart.product.id === id){
+                cart.item+=change
+                if(cart.item > 0 == false){
+                    cart.item = 1;
+                }
+                let newCookie = cookie.map((map)=>{
+                    if(map.productId === id){
+                        map.item = cart.item
+                    }
+                    return map;
+                })
+                setCookie('barakh-cart-cookie',newCookie)
+            }
+            return cart
+        })
+        setCart(newCartList);
+        
+    }
+
+
     return (
         <main className={poppins.className}>
             <Header />
@@ -55,28 +91,28 @@ const Cart = ({data}) => {
                     <div className={style.mainCart}>
                         <div className={style.fieldList}>
                             {
-                                product.map((data)=>{
+                                cartList.map(({product,item})=>{
                                     return (
-                                        <div className={style.fieldListProduct}>
+                                        <div key={product.id} className={style.fieldListProduct}>
                                             <input className={style.inputt} type="checkbox" />
                                             <div className={style.list}>
                                                 <div className={style.image}>
-                                                    <img src={process.env.NEXT_PUBLIC_BACKEND_URL+"/storage/product/"+data.product_images[0].path} alt="Gambar" className={style.imageCart} />
+                                                    <img style={{aspectRatio:'3/2', objectFit:'cover',margin:'auto'}} src={process.env.NEXT_PUBLIC_BACKEND_URL+"/storage/product/"+product.product_images[0].path} alt="Gambar" className={style.imageCart} />
                                                 </div>
                                                 <div className={style.detailProductCart}>
                                                     <Link href="/detailProduct" className={style.link}>
-                                                        <p className={style.titleProduct}>Goodie Bag Rajut</p>
+                                                        <p className={style.titleProduct}>{product.productName}</p>
                                                     </Link>
                                                     <div className={style.remaining}>
-                                                        <p className={style.remainingCheck}>sisa {data.productStock}</p>
-                                                        <p className={style.price}>{formatCurrency(Number(data.productPrice))}</p>
+                                                        <p className={style.remainingCheck}>sisa {product.productStock}</p>
+                                                        <p className={style.price}>{formatCurrency(Number(product.productPrice))}</p>
                                                     </div>
                                                     <div className={style.detailSetProduct}>
                                                         <button className={style.hapus}></button>
                                                         <div className={style.setAmount}>
-                                                            <button className={style.kurang}>-</button>
-                                                            <p className={style.amount}>1</p>
-                                                            <button className={style.tambah}>+</button>
+                                                            <button onClick={()=>handleChangeItem(product.id,-1)} className={style.kurang}>-</button>
+                                                            <p className={style.amount}>{item}</p>
+                                                            <button onClick={()=>handleChangeItem(product.id,1)} className={style.tambah}>+</button>
                                                         </div>
                                                     </div>
                                                 </div>
