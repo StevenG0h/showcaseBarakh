@@ -2,11 +2,15 @@
 .header{
     /* position: sticky; */
     display: flex;
+    position: sticky;
+    top: 0rem;
     justify-content: center;
     align-items: center;
     padding: 20px 70px;
     gap: 10px;
     color: #081B1C;
+    background-color: #081B1C;
+    box-shadow: 0.1em 0.1em 0.1em 0.1em #000000;
     /* gap: 10px; */
 }
 
