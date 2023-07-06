@@ -27,7 +27,7 @@ export default function KatalogCard({style, row}){
     };
 
     function productDetail(id){
-        router.push('/productDetail/'+id);
+        router.push('/detail-produk/'+id);
     }
 
     return(

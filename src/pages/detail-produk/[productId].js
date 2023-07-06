@@ -16,6 +16,7 @@ const poppins = Poppins({
 
 export async function getServerSideProps({query}){
     let product = await axios.get(process.env.NEXT_PUBLIC_BACKEND_URL+'/api/produk/'+query.productId);
+    console.log(product.data)
     return{
         props:{
             data:product.data
@@ -29,7 +30,7 @@ const detailProduct = ({data}) => {
         let cookie = getCookie('barakh-cart-cookie');
         if(cookie === undefined){
             let cart = [
-                {productId: data.id, item: 1}
+                {productId: data.id, item: 1, productData: data}
             ]
             setCookie('barakh-cart-cookie',cart);
         }else{
@@ -41,7 +42,7 @@ const detailProduct = ({data}) => {
                 }
             })
             if(isInCart == false){
-                cookieDatas.push({productId: data.id, item: 1});
+                cookieDatas.push({productId: data.id, item: 1, productData: data});
                 setCookie('barakh-cart-cookie',cookieDatas);
             }
             console.log(cookieDatas);

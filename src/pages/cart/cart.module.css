@@ -1,4 +1,5 @@
 .container{
+    font-size: 16px;
     display: flex;
     justify-content: center;
     width: 100%;
@@ -10,10 +11,9 @@
 }
 
 .title{
-    font-size: 2.2em;
+    font-size: 2.5em;
     color: #94B60F;
     margin: 0;
-    padding-left: 1em;
 }
 
 .topCart{
@@ -33,13 +33,13 @@
 }
 
 .textPilih{
-    font-size: 1.5em;
+    font-size: 1em;
     color: #fff;
     margin: 0px;
 }
 
 .buttonHapus{
-    font-size: 1.5em;
+    font-size: 1em;
     font-weight: 400;
     background-color: #081B1C;
     border: none;
@@ -92,7 +92,7 @@
 }
 
 .image{
-    width: auto;
+    width: 40%;
 }
 
 .image .imageCart{
@@ -116,7 +116,7 @@
 
 .titleProduct{
     color:#081B1C ;
-    font-size: 1.4em;
+    font-size: 1.3em;
     font-weight: 700;
     margin: 0px;
     letter-spacing: 0.08rem;
@@ -127,6 +127,7 @@
     flex-direction: column;
     margin: 0px;
     gap: 0.4em;
+    font-size: 1em;
 }
 
 .remainingCheck{
@@ -152,8 +153,8 @@
 }
 
 .hapus{
-    width: 40px;
-    height: 40px;
+    width: 1.5em;
+    height: 1.5em;
 }
 
 .setAmount{
@@ -165,11 +166,12 @@
 
 .tambah{
     border: 3.11111px solid #CDCDCD;
-    border-radius: 62.2222px;
-    width: 1.25em;
-    height: 1.25em;
+    border-radius: 100%;
+    padding:0.1em;
+    padding-left: 0.4em;
+    padding-right: 0.4em;
     background-color: #fff;
-    font-size: 1.9em;
+    font-size: 1.5em;
     color: #CDCDCD;
     transition: 0.2s;
     /* display: flex;
@@ -189,15 +191,14 @@
 
 .kurang{
     border: 3.11111px solid #CDCDCD;
-    border-radius: 62.2222px;
-    width: 1.25em;
-    height: 1.25em;
+    border-radius: 100%;
+    padding:0.1em;
+    padding-left: 0.5em;
+    padding-right: 0.5em;
     background-color: #fff;
-    font-size: 1.9em;
+    font-size: 1.5em;
     color: #CDCDCD;
-    align-items: center;
-    display: flex;
-    justify-content: center;
+    transition: 0.2s;
 }
 
 .kurang:hover{
@@ -252,13 +253,9 @@
 }
 
 .buttonBuy{
-    padding: 15px;
     color: #fff;
-    font-size: 20px;
     background-color: #94B60F;
-    border-radius: 5px;
     cursor: pointer;
-    border: #FFFFFF;
 }
 
 .buttonBuy:hover{
