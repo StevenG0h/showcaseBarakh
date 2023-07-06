@@ -23,13 +23,15 @@ const Profile = () => {
                         <div className={style.fieldSekilasEx}>
                             <p className={style.sekilas} >Sekilas Tentang</p>
                             <div className={style.wrapDescSekilas} >
-                                <p className={style.descriptions}>Pesantren Ibnu Al - Mubarok Pekanbaru, Riau merupakan pesantren yang memiliki berbagai macam bidang usaha. Pesantren ini ingin mentransisikan bisnisnya ke industri digital dalam bentuk showcase bidang usaha.</p>
+                                <p className={style.descriptions}>Al-Mubarok merupakan unit usaha yang dimiliki oleh pesantren Ibnu Al-Mubarkh, yang berdiri sejak 2020. Awal mula terbentuknya Unit Usaha ini adalah karena ide dari orang tua siswa dan pemilik yayasan. Al-Mubarakh bergerak di bidang agama dan produk yang dimiliki merupakan produk lokal yang ramah lingkungan.</p>
                             </div>
                         </div>
                     </div>
                     <div className={style.fieldProfileUmkm}>
-                        <p className={style.profileUmkm}>Profil UMKM</p>
-                        <div className={style.underLine}></div>
+                        <div className={style.profileUmkm}>
+                            <p className={style.titleUnit}>Profil Unit Usaha</p>
+                            <div className={style.underline}></div>
+                        </div>
                     </div>
                     <div className={style.containerInformation}>
                         <Image src={profileImg} alt="Gambar"  className={style.profileImage}/>

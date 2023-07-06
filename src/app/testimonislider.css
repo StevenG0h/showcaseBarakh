@@ -2,7 +2,7 @@
     width: 100%;
     display: flex;
     justify-content: center;
-    margin-bottom: 25em;
+    margin-bottom: 9em;
 }
 .containerTest{
     display: flex;
@@ -37,7 +37,7 @@
 }
 
 .containerTest  .slick-slide {
-    margin: 50px -1px;
+    margin: 50px 0px;
 }
 
 /* the parent */
@@ -93,7 +93,6 @@
 	font-size: 30px;
     color: #fff;
     z-index: 999;
-    /* position: absolute; */
 }
 
 /* SLIDER IMAGE */
@@ -106,7 +105,7 @@
 /* the parent */
 .slider_image  .slick-list {
     /* display: inline; */
-    margin: 0 -20px; 
+    margin: 0 0px; 
 }
 .slider_image  .slick-dots{
     position: absolute;
@@ -142,32 +141,187 @@
     transition: 0.4s;
 }
 
-@media screen and (max-width: 480px) {
+@media screen and (max-width: 768px){
+    .container{
+        margin-bottom: 6em;
+    }
     .containerTest{
-        margin : 40px 20px;
+        width: 90%;
     }
 
     .titleTest{
-        font-size: 30px;
+        font-size: 1.7em;
+    }
+    /* SLIDER IMAGE */
+    .slider_image .slick-slide > div {
+        margin: 0;
     }
 
-    .slick-slide > div {
-        margin:0px 60px;
+    .slider_image  .slick-slide{
+        margin: 0 0;
+        padding: 0;
     }
     
     /* the parent */
-    .slick-list {
-        margin: 0 30px; 
+    .slider_image  .slick-list {
+        /* display: inline; */
+        margin: 0 0; 
+    }
+
+    .slider_image  .slick-dots{
+        position: absolute;
+        right: 0;
+        top: 70%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        padding: 0;
+    }
+
+    .slider_image  .slick-dots > li{
+        margin: 0 0.4rem;
     }
     
+    .slider_image  .slick-dots li > button{
+        width: 0.3rem;
+        height: 0.3rem;
+    }
+
+    /* SLIDER TESTIMONI */
+
     .slick-arrow {
         width: 30px;
         height: 30px;
+        margin: 0 -11px
     }
-    
+
     .slick-arrow:before {
         font-size: 20px;
         color: #fff;
     }
+
+    .containerTest .slick-dots{
+        top: 80%;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .container{
+        margin-bottom: 5em;
+    }
+
+    .containerTest{
+        margin : 40px 0;
+        width: 80%;
+    }
+
+    .titleTest{
+        font-size: 1.6em;
+    }
     
+    .slick-arrow {
+        width: 20px;
+        height: 20px;
+        margin: 0 -8px
+    }
+    
+    .slick-arrow:before {
+        font-size: 23px;
+        color: #fff;
+    }
+
+      /* the slides */
+    .containerTest .slick-slider{
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .containerTest .slick-track{
+        gap:1em;
+        display:flex
+    }
+
+    .containerTest  .slick-slide {
+        margin: 50px -1px;
+    }
+
+    /* the parent */
+    .containerTest  .slick-list {
+        /* display: inline; */
+        top: 0;
+        left: 0;
+        margin: 0 0px; 
+        /* max-width: 1300px; */
+    }
+
+    .containerTest  .slick-dots{
+        top: 90%;
+        padding: 0;
+        height: 50%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    .containerTest  .slick-dots > li{
+        margin: 0 0.4rem;
+    }
+
+    .containerTest  .slick-dots li > button{
+        display: block;
+        width: 0.4rem;
+        height: 0.4rem;
+        padding: 0;   
+        border: none;
+        border-radius: 100%;
+        background-color: rgb(255, 255, 255);
+        text-indent: -9999px;   
+    }
+
+    .containerTest  .slick-dots > li.slick-active button{
+        background-color: #94B60F;
+        /* width: 1.3rem;
+        border-radius: 10px; */
+        transition: 0.4s;
+    }
+
+    /* SLIDER IMAGE */
+    
+    .slider_image .slick-slide > div {
+        margin: 0;
+    }
+
+    .slider_image  .slick-slide{
+        /* position: relative; */
+        /* width: 10%; */
+        margin: 0 0;
+        padding: 0;
+    }
+    
+    /* the parent */
+    .slider_image  .slick-list {
+        /* display: inline; */
+        margin: 0 0; 
+    }
+
+    .slider_image  .slick-dots{
+        position: absolute;
+        right: 0;
+        top: 70%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        padding: 0;
+    }
+
+    .slider_image  .slick-dots > li{
+        margin: 0 0.4rem;
+    }
+    
+    .slider_image  .slick-dots li > button{
+        width: 0.3rem;
+        height: 0.3rem;
+    }
 }

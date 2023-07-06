@@ -112,7 +112,6 @@
     height: auto;
     justify-content: start;
     row-gap: 30px;
-    padding-left: 20px;
     margin: 30px 0px;
     }
 
@@ -129,11 +128,27 @@
         margin-bottom: 0px;
     }
 
-    .logoBrand{
-        justify-content: start;
-        width: 300px;
-        height: 91px;
-        left: 0px;
-        top: 72px;
+    .columnLogo{
+        display: flex;
+        flex-direction: column;
+        gap: 1em;
     }
+    
+    .rowsLogo{
+        display: flex;
+        flex-direction: row;
+        gap: 1.6em;
+        align-items: center;
+    }
+    
+    .logoBrand:nth-child(2){
+        width: 40%;
+        height: 70%;
+    }
+    
+    .logoBrand:nth-child(3){
+        width: 8%;
+        height: 70%;
+    }
+    
 }

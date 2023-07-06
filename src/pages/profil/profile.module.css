@@ -36,11 +36,13 @@
 }
 
 .wrapDescSekilas{
-    padding: 70px 40px;
+    padding: 2.9em 2em;
     width: 50%;
-    background: #E5EBEA;
+    background: #fff;
     border: 5px solid #94B60F;  
     border-radius: 1em;
+    box-shadow: 10px 11px 26px 0px rgba(0, 0, 0, 0.25);
+
 }
 
 .descriptions{
@@ -52,23 +54,30 @@
 }
 
 .fieldProfileUmkm{
-    width: 100%;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     margin: 50px;
+    width: auto;
+;
 }
 
 .profileUmkm{
+
+    display: flex;
+    flex-direction: column;
+}
+
+.titleUnit{
     font-weight: 800;
     font-size: 2.2em;
     line-height: 2em;
-    margin-bottom: 5px;
+    margin: 0;
 }
 
-.underLine{
-    width: 20%;
+.underline{
+    width: 100%;
     border: 4px solid #94B60F;
     border-radius: 99px;
 }
