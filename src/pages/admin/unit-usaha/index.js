@@ -49,7 +49,8 @@ export default function admin({data}){
         defaultValues: {
           usahaName: "",
           usahaDesc: "",
-          usahaImage: ""
+          usahaImage: "",
+          usahaPicNumber: ""
         },
         resolver: yupResolver(schema)
       })
@@ -101,10 +102,12 @@ export default function admin({data}){
         setValue('usahaName','');
         setValue('usahaDesc','');
         setValue('usahaImage','');
+        setValue('usahaPicNumber','');
         setUsahaId('');
         reset({
             usahaDesc:'',
             usahaName:'',
+            usahaPicNumber:'',
             usahaImage:''
         });
     }
@@ -113,6 +116,7 @@ export default function admin({data}){
         setEditMode(true);
         setValue('usahaName',data.usahaName);
         setValue('usahaDesc',data.usahaDesc);
+        setValue('usahaPicNumber',data.usahaPicNumber)
         setUsahaId(data.id);
         setAddForm(true)
     }
@@ -128,7 +132,6 @@ export default function admin({data}){
     let handleChangePage = async (link)=>{
         let unitUsaha = await axios.get(link);
         setUnitUsaha(unitUsaha?.data?.data?.data)
-        console.log(unitUsaha)
         setUnitUsahaLink(unitUsaha?.data?.data?.links)
     }
 
@@ -161,6 +164,9 @@ export default function admin({data}){
                             </FormControl>
                             <FormControl sx={{width:'100%', marginY:'0.5em'}}>
                                 <RHFTextField hiddenLabel={true} label={'Deskripsi Unit Usaha'} name={"usahaDesc"} control={control}></RHFTextField>
+                            </FormControl>
+                            <FormControl sx={{width:'100%', marginY:'0.5em'}}>
+                                <RHFTextField hiddenLabel={true} label={'Nomor WhatsApp admin'} name={"usahaPicNumber"} control={control}></RHFTextField>
                             </FormControl>
                             <FormControl sx={{width:'100%', marginY:'0.5em'}}>
                             <Controller
@@ -213,8 +219,8 @@ export default function admin({data}){
                                             onDelete={() => handleDelete(map.id)} 
                                             onEdit={() => handleOpenEditForm(map)} 
                                             onShowImage={()=> handleShowImage(map.usahaImage)}
-                                            num={++num} row={map}>
-
+                                            num={++num} row={map}
+                                            >
                                             </UsahaTableRow>
                                         )
                                     })

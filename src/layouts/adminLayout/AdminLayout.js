@@ -7,6 +7,7 @@ import NavVertical from "../../sections/navs/NavVertical"
 
 
 export default function AdminLayout({children}){
+
   return (
       <>
         <Box sx={{display:'flex'}}>

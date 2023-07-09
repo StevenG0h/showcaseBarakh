@@ -1,11 +1,14 @@
 import Header from "../../components/header/header";
 import Footer from "../../components/footer/footer";
+import KatalogCard from "../../components/card/KatalogCard/KatalogCard";
 import style from "./katalog.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCartShopping } from "@fortawesome/free-solid-svg-icons";
 import Keripik from "../../../public/assets/images/Keripik.png";
 import Image from "next/image";
 import { Poppins } from 'next/font/google'
+import axios from "../../utils/axios";
+import { Grid } from "@mui/material";
 
 const poppins = Poppins({
     weight: '500',
@@ -13,7 +16,17 @@ const poppins = Poppins({
     // display: 'swap'
   })
 
-const Katalog = () => {
+export async function getServerSideProps({context}){
+    let produk = await axios.get('/api/produk');
+    console.log(produk.data);
+    return {
+        props:{
+            products:produk.data.data
+        }
+    }
+}
+
+const Katalog = ({products}) => {
     return (
         <main className={poppins.className}>
         <Header/>
@@ -29,21 +42,17 @@ const Katalog = () => {
                             <li className={style.li}><a className={style.a} href="">Nuture</a></li>
                         </ul>
                     </div>
-                    <div className={style.card}>
-                        <div className={style.imageCarousel}>
-                            <Image src={Keripik} alt="Gambar" className={style.image}/>
-                        </div>
-                        <div className={style.caption}>
-                            <p className={style.kategoriProduct}>GALERI OLEH-OLEH</p>
-                            <p className={style.titleCard}>Kerajinan</p>
-                            <p className={style.price}>Harga : <span className={style.nominal}>Rp.25.000</span></p>
-                            <p className={style.descriptionCard}>Keripik bayam menjadi salah satu cemilan baru yang diminati masyarakat karena bahan baku pembuatannya dapat dikembangkan pada daerah dataran tinggi ataupun daerah dataran rendah</p>
-                            <div className={style.directButton}>
-                                <a href="" className={style.detil}>Selengkapnya</a>
-                                <a href="" className={style.cart}><FontAwesomeIcon icon={faCartShopping} /></a>
-                            </div>
-                        </div>
-                    </div>
+                    <Grid container gap={'1em'}>
+                        {
+                            products.map((product)=>{
+                                return (
+                                    <Grid item xs={3} key={product.id}>
+                                        <KatalogCard style={style} row={product}></KatalogCard>
+                                    </Grid>
+                                )
+                            })
+                        }
+                    </Grid>
                 </div>
             </div>
         <Footer/>
