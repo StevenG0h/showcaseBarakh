@@ -4,19 +4,19 @@ import Footer from "../../components/footer/footer";
 import style from './profile.module.css';
 import Image from "next/image";
 import profileImg from '../../../public/assets/images/Profile.png';
-import { Poppins } from 'next/font/google'
+import { Poppins } from 'next/font/google';
+import ImageVisiMisi from "../../../public/assets/images/Imagevisimisi.png";
+import Link from "next/link";
 
 const poppins = Poppins({
     weight: '500',
     subsets: ['latin'],
-    // display: 'swap'
-  })
-  
+})
 
 const Profile = () => {
     return (
         <main className={poppins.className}>
-        <Header/>
+            <Header />
             <div className={style.container}>
                 <div className={style.containerProfile}>
                     <div className={style.fieldSekilas}>
@@ -34,7 +34,7 @@ const Profile = () => {
                         </div>
                     </div>
                     <div className={style.containerInformation}>
-                        <Image src={profileImg} alt="Gambar"  className={style.profileImage}/>
+                        <Image src={profileImg} alt="Gambar" className={style.profileImage} />
                         <div className={style.wrapInformation}>
                             <div className={style.field1}>
                                 <div className={style.columInfo}>
@@ -47,7 +47,7 @@ const Profile = () => {
                                 </div>
                                 <div className={style.columInfo}>
                                     <p className={style.titleInfo}>Email</p>
-                                    <p className={style.description}>pondokpesantrenibnualmubarok@gmail.com</p>
+                                    <p className={style.description}>Mubarakh@gmail.com</p>
                                 </div>
                                 <div className={style.columInfo}>
                                     <p className={style.titleInfo}>Alamat</p>
@@ -60,11 +60,15 @@ const Profile = () => {
                             <div className={style.field3}>
                                 <div className={style.columInfo}>
                                     <p className={style.titleInfo}>Bidang Usaha</p>
-                                    <p className={style.description}>FnB, fashion and craft, ternak , perkebunan dan lainnya</p>
-                                </div>
-                                <div className={style.columInfo}>
-                                    <p className={style.titleInfo}>Website</p>
-                                    <p className={style.description}>Lorem ipsum dolor sit amet consectetur</p>
+                                    <ul className={style.ul}>
+                                        <li className={style.li}><Link href="">Rumah Jahit</Link></li>
+                                        <li className={style.li}><Link href="">Pendidikan</Link></li>
+                                        <li className={style.li}><Link href="">Pertanian</Link></li>
+                                        <li className={style.li}><Link href="">Perternakan</Link></li>
+                                        <li className={style.li}><Link href="">Perikanan</Link></li>
+                                        <li className={style.li}><Link href="">Dapur UTI</Link></li>
+                                        <li className={style.li}><Link href="">Bank Sampah</Link></li>
+                                    </ul>
                                 </div>
                                 <div className={style.columInfo}>
                                     <p className={style.titleInfo}>Instagram</p>
@@ -76,28 +80,37 @@ const Profile = () => {
                                 </div>
                             </div>
                         </div>
-                        <div className={style.wrapAspek}>
-                            <div className={style.columnAspek}>
-                                <p className={style.titleAspek}>Aspek Produksi</p>
-                                <p className={style.descriptionAspek}>Melalui kegiatan kurasi produk kreatif UMKM Barkh Sentra Usaha oleh Pesantren Al - Mubarok Pekanbaru, sehingga desain produk lebih variatif mengikuti tren yang kekinian, diminati pasar, dan bernilai jual tinggi.</p>
-                                <p className={style.titleAspek}>Aspek Permodalan dan Pengelolaan Keuangan</p>
-                                <p className={style.descriptionAspek}>Melalui Pencatatan Transaksi Keuangan.</p>
+                    </div>
+                    <div className={style.containerVisiMisi}>
+                        <div className={style.fieldImage}>
+                            <Image src={ImageVisiMisi} alt="Gambar" className={style.ImageVisiMisi} />
+                        </div>
+                        <div className={style.fieldVisiMisi}>
+                            <div className={style.visi}>
+                                <div className={style.titleSection}>
+                                    <div className={style.titleVisiMisi}>Visi</div>
+                                </div>
+                                <div className={style.descriptionVisi}>
+                                Menjadikan sebuah lembaga pendidikan yang menghasilkan generasi pengusaha muslim Entrepeneur.
+                                </div>
                             </div>
-                            <div className={style.field2}>
-                                <div className={style.garisTegak2}></div>
-                            </div>
-                            <div className={style.columnAspek}>
-                                <p className={style.titleAspek}>Aspek Pemasaran</p>
-                                <p className={style.descriptionAspek}>Melalui fasilitasi perluasan akses pasar seperti diluar aplikasi Whatsapp, pameran, dan branding produk ke masyakarat yang lebih luas.</p>
-                                <p className={style.titleAspek}>Aspek Kewirausahaan dan Peningkatan Kapasitas</p>
-                                <p className={style.descriptionAspek}>Melalui fasilitasi untuk meningkatkan kapasitas wirausaha UMKM khususnya dalam rangka akses pasar ekspor.</p>
+                            <div className={style.misi}>
+                                <div className={style.titleSection}>                                    
+                                    <div className={style.titleVisiMisi}>Misi</div>
+                                </div>
+                                <div className={style.descriptionMisi}>
+                                    <ol className={style.ol}>
+                                        <li className={style.list}>Menghidupkan semangat Beragama 'Islam'</li>
+                                        <li className={style.list}>Menciptakan UMKM bersyarikat Islam dnegan Produk yang mengikuti tren terkini</li>
+                                        <li className={style.list}>Membantu pengngguran mendapatkan pekerjaan melalui banyaknya unit usaha</li>
+                                    </ol>
+                                </div>
                             </div>
                         </div>
-                    </div>  
+                    </div>                
                 </div>
             </div>
-        <Footer/>
-        
+            <Footer />
         </main>
     )
 }

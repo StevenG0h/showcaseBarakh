@@ -4,12 +4,13 @@
     display: flex;
     justify-content: center;
     background-color: #fff;
+
 }
 
 .containerProfile{
     width: 75%;
     justify-content: center;
-    /* position: relative; */
+    margin-bottom: 4em ;
 }
 
 .fieldSekilas{
@@ -60,11 +61,10 @@
     align-items: center;
     margin: 50px;
     width: auto;
-;
+
 }
 
 .profileUmkm{
-
     display: flex;
     flex-direction: column;
 }
@@ -130,6 +130,20 @@
     margin-bottom: 0.2em;
 }
 
+.ul{
+    padding-inline-start: 1.6em;
+}
+
+.li{
+    font-size: 1.1em;
+    font-style: italic;
+    margin-bottom: 0.4em;
+}
+
+.ul > .li::marker{
+    font-size: 0.7em;
+}
+
 .description{
     font-weight: 300;
     font-size: 1.1em;
@@ -143,28 +157,55 @@
     border-radius: 99px;
 }
 
-.wrapAspek{
+.containerVisiMisi{
     display: flex;
-    flex-direction: row; 
-    /* gap: 30px; */
-    margin: 2em 0 5em 0;
+    flex-direction: row;
+    column-gap: 3em;
 }
 
-.columnAspek{
-    width: 50%;
-
+.fieldImage{
+    width: 45%;
 }
 
-.titleAspek{
+.ImageVisiMisi{
+    width: 100%;
+    height: auto;
+}
+
+.fieldVisiMisi{
+    width: 55%;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+}
+
+.titleSection{
+    width: auto;
+    
+}
+
+.titleVisiMisi{
+    font-size: 2.5em;
     font-weight: 700;
-    font-size:  1.7em;
-    margin: 1.2em 0px 0.3em 0px;
+    text-decoration: underline;
+    text-underline-offset: 0.3em;
+    text-decoration-color: #94B60F;
+    border-radius: 1em;
+    margin-bottom: 0.3em ;
 }
 
-.descriptionAspek{
-    font-weight: 400;
+.descriptionVisi{
     font-size: 1.1em;
-    margin: 0px;
+    font-weight: 100;
+}
+
+.ol{
+    padding-inline-start: 1em;
+    margin: 0;
+}
+
+.list{
+    font-size: 1.1em;
 }
 
 @media screen and (max-width: 935px){

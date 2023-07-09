@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useRouter } from "next/router";
 import style from './header.module.css';
 import Image from 'next/image';
-import ImageBrand from '../../../public/assets/images/White.svg';
+import ImageBrand from '../../../public/assets/images/LogoBarakhFix_1.png';
 import Link from 'next/link';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Search from "../../components/search/search"
@@ -42,8 +42,8 @@ const router = useRouter();
                                 onClick={() => handleLinkClick('/')} href="../">Beranda</Link>
                         </li>
                         <li>
-                            <Link className={`${style.navitem} ${router.pathname === '/profil' ? style.active : ''}`}
-                                onClick={() => handleLinkClick('/profil')} href="/profil">Profil</Link>
+                            <Link className={`${style.navitem} ${router.pathname === '/profil/yayasan' ? style.active : ''}`}
+                                onClick={() => handleLinkClick('/profil/yayasan')} href="/profil/yayasan">Profil</Link>
                         </li>
                         <li>
                             <Link className={`${style.navitem} ${router.pathname === '/usaha' ? style.active : ''}`}

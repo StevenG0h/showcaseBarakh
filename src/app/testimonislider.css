@@ -46,7 +46,6 @@
     top: 0;
     left: 0;
     margin: 0 0px; 
-    /* max-width: 1300px; */
 }
 
 .containerTest  .slick-dots{
@@ -69,7 +68,7 @@
     display: block;
     width: 0.4rem;
     height: 0.4rem;
-    padding: 0;   
+    padding: 0;
     border: none;
     border-radius: 100%;
     background-color: rgb(255, 255, 255);
@@ -78,8 +77,6 @@
 
 .containerTest  .slick-dots > li.slick-active button{
     background-color: #94B60F;
-    /* width: 1.3rem;
-    border-radius: 10px; */
     transition: 0.4s;
 }
 
@@ -157,9 +154,15 @@
         margin: 0;
     }
 
+    .slider_image .slick-track{
+        gap: 0.5em;
+        display: flex;
+    }
+
     .slider_image  .slick-slide{
         margin: 0 0;
         padding: 0;
+
     }
     
     /* the parent */
