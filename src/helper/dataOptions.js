@@ -11,6 +11,18 @@ export async function getAllUnitUsaha(){
     return unitUsahas;
 }
 
+export async function getAllUnitUsahaProduct(id){
+    let unitUsahas = await axios.get(process.env.NEXT_PUBLIC_BACKEND_URL+'/api/unit-usaha/'+id);
+    unitUsahas = unitUsahas?.data.products.map((product)=>{
+        return {
+            id: product.id,
+            label: product.productName,
+            price: product.productPrice
+        }
+    })
+    return unitUsahas;
+}
+
 export async function getAllProvinsi(){
     let provinsis = await axios.get(process.env.NEXT_PUBLIC_BACKEND_URL+'/api/provinsi/');
     provinsis = provinsis?.data?.data.map((provinsi)=>{

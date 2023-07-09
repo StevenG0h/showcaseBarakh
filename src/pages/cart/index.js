@@ -29,8 +29,9 @@ const poppins = Poppins({
 export async function getServerSideProps({req,res}){
     let cookie = getCookie('barakh-cart-cookie',{req,res})
     let provinsi = await getAllProvinsi();
-    cookie = JSON.parse(cookie)
-    console.log(cookie)
+    if(cookie != undefined){
+        cookie = JSON.parse(cookie)
+    }
     return {
         props:{
             cookie: cookie === undefined ? [] : cookie,
@@ -119,7 +120,6 @@ const Cart = ({cookie, option}) => {
         data.product = cartList;
         data.transactionAddress = data.clientAddress;
         data.kelurahan_id = data.clientKelurahan;
-        console.log(createproduk.data);
         data.client_id = createproduk.data.id;
         const createTransaction =  await axios.post('/api/transaksi',data,{
             Headers: {

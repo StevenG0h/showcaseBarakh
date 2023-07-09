@@ -8,10 +8,11 @@ import Image from "next/image";
 import style from "./slider.module.css"
 import { Button } from "@mui/material";
 import { useRouter } from "next/router";
+import { getCookie, setCookie } from "cookies-next";
 
 export default function KatalogCard({style, row}){
     const router = useRouter();
-    let {id, product_images, productName, productDesc, productPrice, unit_usaha, onAddItem} = row;
+    let {id, product_images, productName, productDesc, productPrice, unit_usaha} = row;
     const settings = {
         arrows: false,
         dots: true,
@@ -28,6 +29,29 @@ export default function KatalogCard({style, row}){
 
     function productDetail(id){
         router.push('/detail-produk/'+id);
+    }
+
+    function addItem(data){
+        let cookie = getCookie('barakh-cart-cookie');
+        if(cookie === undefined){
+            let cart = [
+                {productId: data.id, item: 1, productData: data}
+            ]
+            setCookie('barakh-cart-cookie',cart);
+        }else{
+            let cookieDatas = JSON.parse(cookie);
+            let isInCart = false;
+            cookieDatas.map((cookieData)=>{
+                if(data.id === cookieData.productId){
+                    isInCart = true;
+                }
+            })
+            if(isInCart == false){
+                cookieDatas.push({productId: data.id, item: 1, productData: data});
+                setCookie('barakh-cart-cookie',cookieDatas);
+            }
+            console.log(cookieDatas);
+        }
     }
 
     return(
@@ -50,7 +74,7 @@ export default function KatalogCard({style, row}){
             }</p>
             <div className={style.directButton}>
                 <button onClick={()=>{productDetail(id)}} className={style.detil}>Selengkapnya</button>
-                <button onClick={onAddItem} className={style.cart}><FontAwesomeIcon icon={faCartShopping} /></button>
+                <button onClick={()=>{addItem(row)}} className={style.cart}><FontAwesomeIcon icon={faCartShopping} /></button>
             </div>
         </div>
     </div>
