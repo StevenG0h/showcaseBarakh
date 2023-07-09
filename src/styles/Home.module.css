@@ -1,10 +1,8 @@
-
 .container{
-    display: inline-flex;
+    display: flex;
     justify-content: center;
     width: 100%;
     margin: 40px 0px;
-    
 }
 
 .hero{
@@ -15,13 +13,11 @@
 .content{
     width:50%;
     color:#fff;
-    /* padding-left: 2rem; */
     padding-right: 3.9rem;
     padding-top: 20px;
     display: flex;
     flex-direction: column;
-    gap: 17px;
-
+    gap: 0.5em;
 }
 
 .titleHero{
@@ -36,7 +32,7 @@
 .description{
     font-style: normal;
     font-weight: 300;           
-    font-size: 16px;
+    font-size: 1.1em;
     line-height: 34px;
 
 }
@@ -64,25 +60,32 @@
 .imageProduct{
     width: 90%;
     height: 90%;
-    /* border-radius: 10px; */
 }
 
-@media screen and (max-width: 935px){
+@media screen and (max-width: 768px){
     .hero {
-        margin: 50px 30px;
+        margin: 0;
         row-gap: 40px;
         justify-content: space-between;
+        padding: 0;
+        width: 90%;
     }
 
     .content{
-        padding: 0px;
+        padding: 0;
+        padding-right: 1em;
     }
 
     .titleHero{
-        font-size: 30px;
-        line-height: 45px;
-        margin-bottom: 0.5rem ;
+        font-size: 1.5em;
+        line-height: 1.4em;
+    }
 
+
+    .description{         
+        font-size: 0.7em;
+        line-height: 2em;
+        margin: 0.6em 0;
     }
 
     .contentImage
@@ -94,37 +97,51 @@
         width: 100%;
         height:100%;
     }
+
+    .button{
+        font-size: 0.6em;
+        padding: 1.4em 2em;
+    }
 }
 
 
-
 @media screen and (max-width: 480px){ 
+    .container{
+        display: flex;
+        justify-content: center;
+        width: 100%;
+        margin: 3em 0em;
+    }
+
     .hero {
         display: flex;
         flex-direction: column-reverse;
-        margin: 50px 20px;
-        row-gap: 40px;
+        margin: 0px 0px;
+        row-gap: 2em;
+        padding: 0;
+        width: 85%;
     }
 
     .content{
         width:100%;
         color:#fff;
         padding: 0px;
+        gap: 1.2em;
     }
 
     .titleHero{
-        font-size: 30px;
-        line-height: 45px;
-        margin-bottom: 0.5rem ;
+        font-size: 1.6em;
+        line-height: 1.5em;
+        margin-bottom: 0 ;
 
     }
 
     .description{
         font-style: normal;
         font-weight: 400;
-        font-size: 15px;
+        font-size: 0.8em;
         line-height: 180%;
-        margin-bottom: 1rem;
+        margin: 0;
     }
 
     .button{
@@ -134,14 +151,16 @@
     }
 
     .contentImage{
-        display: flex;
-        justify-content: center;
         width: 100%;
     }
 
     .imageProduct{
         width: 98%;
         height: 98%;
+    }
+
+    .button{
+        font-size: 0.8em;
     }
 
 }

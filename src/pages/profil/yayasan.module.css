@@ -1,0 +1,118 @@
+.container {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    background-color: #fff;
+}
+
+.containerYayasan{
+    display: flex;
+    width: 75%;
+    flex-direction: column;
+    justify-content: center;
+    row-gap: 3em;
+    margin: 3em 0 6em 0;
+}
+
+.colTentangYayasan{
+    display: flex;
+    flex-direction: column;
+    row-gap: 1em;
+}
+
+.title{
+    font-size:2.2em;
+    font-weight: 700;
+    text-decoration: underline;
+    text-underline-offset: 0.6em;
+    text-decoration-color: #94B60F;
+    margin: 0;
+}
+
+.colDescription{
+    display: flex;
+    flex-direction: column;
+    /* row-gap: 0.5em; */
+}
+
+.description{
+    text-indent: 1.5em;
+    font-size: 1.1em;
+    line-height: 1.7em;
+}
+
+.colVisiMisi{
+    display: flex;
+    flex-direction: column;
+}
+
+.colDetailVisiMisi{
+    display: flex;
+    flex-direction: column;
+    row-gap: 1em;
+}
+
+.descriptionVisi{
+    font-size: 1.1em;
+}
+
+.ol{
+    padding-inline-start: 1.3em;
+}
+
+.li{
+    font-size: 1.1em;
+}   
+
+.colTeamYayasan{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    row-gap: 3.5em;
+    width: 100% ;
+}
+
+.rowProfile{
+    display: flex;
+    flex-direction: row;
+    gap: 1em;
+}
+
+.wrapProfile{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 0 2em;
+    width: auto;
+    height: auto;
+    row-gap: 1em;
+}
+
+.Image{
+    width: auto;
+}
+
+.ImageTeamProfile{
+    width: auto;   
+}
+
+.identitas{
+    display: flex;
+    flex-direction: column;
+    row-gap: 0.5em;
+}
+
+.name{
+    font-size: 1.5em;
+    font-weight: 700;
+    margin: 0;
+    text-align: center;
+}
+
+.as{
+    font-size: 1em;
+    margin: 0;
+    text-align: center;
+
+}

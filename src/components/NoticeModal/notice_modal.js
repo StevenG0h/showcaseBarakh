@@ -1,6 +1,6 @@
 import style from './notice.module.css'
 
-const Message = ({ isVisible, CloseClick }) => {
+const Message = ({ isVisible, CloseClick, handleNext }) => {
     if (!isVisible) return null;
 
     const handleClose = (e) => {
@@ -19,7 +19,7 @@ const Message = ({ isVisible, CloseClick }) => {
                     <div className={style.textTotal}>Total Belanja Anda</div>
                     <div className={style.Total}>Rp.180.000,00.</div>
                 </div>
-                <button className={style.button}>Lanjutkan Pembayaran</button>
+                <button onClick={()=>handleNext()} className={style.button}>Lanjutkan Pembayaran</button>
             </div>
         </div>
     )

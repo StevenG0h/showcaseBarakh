@@ -1,13 +1,14 @@
 
 .header{
-    /* position: sticky; */
     display: flex;
+    position: sticky;
+    top: 0rem;
     justify-content: center;
     align-items: center;
     padding: 20px 70px;
     gap: 10px;
-    color: #081B1C;
-    /* gap: 10px; */
+    background: #081B1C;
+    box-shadow: 18px 18px 25px 0px rgba(0, 0, 0, 0.25);
 }
 
 .container{
@@ -110,6 +111,21 @@
     color: #fff;
     font-weight: 400;
     font-size: 15px;
+    padding: 0.4em 0;
+    transition: 0.5s ease;
+
+}
+
+.navitem.active{
+    color: #ffffff;
+}
+
+.navitem.active{
+    color: #fff;
+    position: relative;
+    transition: 0.5s ease;
+    border-bottom: solid 3px #94B60F;
+    border-radius: 1px;   
 }
 
 /* .navitem::before{
@@ -195,3 +211,15 @@
 .input:focus{
     outline: none;
 } */
+
+@media screen and (max-width: 480px){
+    .header{
+        display: none;
+    }
+}
+
+@media screen and (max-width: 935px){
+    .header{
+        display: none;
+    }
+}

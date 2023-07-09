@@ -1,15 +1,15 @@
-import axios from "@/utils/axios";
+import axios from "../../../utils/axios";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import * as yup from "yup";
 import {yupResolver} from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
-import AdminLayout from "@/layouts/adminLayout/AdminLayout";
+import AdminLayout from "../../../layouts/adminLayout/AdminLayout";
 import { Button, Card, Dialog, DialogContent, FormControl, Grid, IconButton, ImageList, ImageListItem, ImageListItemBar, Input, MenuItem, Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
-import RHFTextField from "@/components/form/RHFTextField";
-import CustomTableHead from "@/components/table/CustomTableHead";
-import { getAllUnitUsaha } from "@/helper/dataOptions";
-import StockTableRow from "@/sections/stock/StockTableRow";
+import RHFTextField from "../../../components/form/RHFTextField";
+import CustomTableHead from "../../../components/table/CustomTableHead";
+import { getAllUnitUsaha } from "../../../helper/dataOptions";
+import StockTableRow from "../../../sections/stock/StockTableRow";
 
 export async function getServerSideProps(){
     let produk = await axios.get('http://127.0.0.1:8000/api/produk');
