@@ -23,8 +23,12 @@ export default function Testimoni() {
         responsive: [
             {
                 breakpoint: 768,
-                settings: { slidesToShow: 2, slidesToScroll: 1, infinite: false }
+                settings: { slidesToShow: 2, slidesToScroll: 1, infinite: true }
             },
+            {
+                breakpoint: 480,
+                settings: { slidesToShow: 1, slidesToScroll: 1, infinite: true }
+            }
         ]
     };
     return (

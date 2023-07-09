@@ -4,7 +4,6 @@
     background-color: #fff;
     height: auto;
     border-radius: 25px;
-    width: 95%;
     padding: 0;
 }
 
@@ -51,23 +50,60 @@
     color: #667085
 }
 
-@media screen and (max-width: 480px){
-    .container{
-        width: 100px;
-        border-radius: 15px;
+@media screen and(max-width: 768px){
+    .fieldCommand{
+        padding:  2em 1em 3em 1em; 
     }
 
-    .fieldCommand{
-        padding:  10px 10px 10px 10px; 
+    .fieldProfile{
+        padding:  1em 1.5em
     }
 
     .picktwo{
-        font-size: 19px;
+        font-size: 1.5em;
         margin: 0px;
-        letter-spacing: 0.05rem;
+        letter-spacing: 0.1rem;
+        line-height: 0.2rem;
     }
 
     .text{
-        font-size: 8px;
+        padding-left: 1.5em;
+        font-size: 0.9em;
+    }
+
+    .imageProfile{
+        background-color: aqua;
+        border-radius: 100%;
+        width: 1.8em;
+        height: 1.8em;
+    }
+}
+
+@media screen and (max-width: 480px){
+    .fieldCommand{
+        padding:  4em 1.5em 3em 1.5em; 
+    }
+
+    .fieldProfile{
+        padding:  1em 1.5em
+    }
+
+    .picktwo{
+        font-size: 1.5em;
+        margin: 0px;
+        letter-spacing: 0.1rem;
+        line-height: 0.2rem;
+    }
+
+    .text{
+        padding-left: 1.5em;
+        font-size: 0.9em;
+    }
+
+    .imageProfile{
+        background-color: aqua;
+        border-radius: 100%;
+        width: 1.8em;
+        height: 1.8em;
     }
 }

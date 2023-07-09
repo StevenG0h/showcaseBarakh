@@ -50,8 +50,8 @@
 }
 
 .image{
-    width: 31em;
-    height: 22em;
+    width: 100%;
+    height: auto;
     margin-bottom: 1em;
 }
 
@@ -76,46 +76,57 @@
     margin-bottom: 14px;
 }
 
-@media screen and (max-width: 480px){
-    .container{
-        width: 100%;
-        display: flex;
-        justify-content: center;
-        height: auto;
-        margin-bottom: 100px;
-    }
-
+@media screen and (max-width: 768px){
     .containerUsaha{
         width: 90%;
     }
 
+    .titleUnitUsaha{
+        font-size:2em ;
+        margin-bottom: 0.6em;
+    }
+
     .containerCard{
-        display: flex;
-        flex-direction: row;
-        flex-wrap: wrap;
-        width: 100%;
-        height: auto;
-        gap: 40px;
+        /* width: ; */
+        gap: 1.5em;
     }
 
     .cardUsaha{
-        width: 100%;
-        height: 255px;
-        border-radius: 8px;
-        padding: 18px 15px;
+        width: 18em;
+        height: auto;
+        padding: 0.9em 0.9em;
     }
 
     .image{
-        width: 100%;
-        margin-bottom: 0px;
+        margin: 0;
     }
 
     .titleCard{
-        font-size: 17px;
-        margin-bottom: 0px;
+        font-size: 1em ;
+        margin: 0;
     }
 
     .cardDescription{
-        font-size: 10px;
+        font-size: 0.6em;
+        line-height: 1.7em;
+        margin: 0;
+    }
+}
+
+@media screen and (max-width: 480px){
+    .containerUsaha{
+        width: 85%;
+    }
+
+    .titleUnitUsaha{
+        font-size: 1.6em;
+    }
+
+    .cardUsaha{
+        width: 19.5em;
+    }
+    
+    .cardDescription{
+        font-size: 0.65em;
     }
 }
