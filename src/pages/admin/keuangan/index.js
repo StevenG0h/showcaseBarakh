@@ -10,8 +10,7 @@ import RHFTextField from "../../../components/form/RHFTextField";
 import RHFAutocomplete from "../../../components/form/RHFAutocomplete";
 import CustomTableHead from "../../../components/table/CustomTableHead";
 import { getAllUnitUsaha, getAllUnitUsahaProduct } from "../../../helper/dataOptions";
-import PenjualanTableRow from "../../../sections/penjualan/PenjualanTableRow";
-import DetailPenjualanTableRow from "../../../sections/penjualan/DetailPenjualanTableRow";
+import KeuanganTableRow from "../../../sections/keuangan/KeuanganTableRow";
 
 
 export async function getServerSideProps(){
@@ -163,9 +162,7 @@ export default function keuangan({produk, options}){
         {value: 'No',align: 'left'},
         {value: 'Nama Client',align: 'left'},
         {value: 'Alamat',align: 'left'},
-        {value: 'Status',align: 'left'},
-        {value: 'Total', align:'left'},
-        {value: 'Action',align: 'left'}
+        {value: 'Total',align: 'left'}
     ]
     
     let num = 0;
@@ -233,48 +230,6 @@ export default function keuangan({produk, options}){
                         </form>
                     </DialogContent>
                 </Dialog>
-                <Dialog open={transaction.length === 0 ? false : true} onClose={()=>{handleCloseTransactionDetails()}} fullWidth maxWidth={'md'}>
-                    <DialogTitle>
-                        Detail transaksi
-                    </DialogTitle>
-                    <DialogContent>
-                        <TableContainer>
-                            <TableHead>
-                                <Button onClick={()=>handleAddSalesTransactionForm(transaction)}>
-                                    Tambah Penjualan
-                                </Button>
-                                <TableRow>
-                                    <TableCell>
-                                        No
-                                    </TableCell>
-                                    <TableCell>
-                                        Nama Produk
-                                    </TableCell>
-                                    <TableCell>
-                                        Harga Produk
-                                    </TableCell>
-                                    <TableCell>
-                                        Jumlah Beli
-                                    </TableCell>
-                                    <TableCell>
-                                        Total
-                                    </TableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                {
-                                    transaction?.sales?.map((data)=>{
-                                            return (
-                                                <>
-                                                    <DetailPenjualanTableRow onDelete={()=>{handleDeleteDetailRow(data)}} onEdit={()=>{handleOpenEditForm(data)}} num={++detailNum} row={data} />
-                                                </>
-                                            )
-                                    })
-                                }
-                            </TableBody>
-                        </TableContainer>
-                    </DialogContent>
-                </Dialog>
                 <Dialog open={AddForm} onClose={()=>{handleCloseAddForm()}} fullWidth maxWidth={'xs'}>
                     <DialogTitle>
                         Edit transaksi
@@ -303,12 +258,12 @@ export default function keuangan({produk, options}){
                                     products?.map((map)=>{
                                         if(map.sales.length != 0){
                                             return ( <>
-                                                <PenjualanTableRow 
+                                                <KeuanganTableRow 
                                                 key={detailNum} 
                                                 onDetail={()=>{handleTransactionDetails(map)}}
                                                 onEdit={() => handleOpenEditForm(map)} 
                                                 num={++detailNum} row={map}>
-                                                </PenjualanTableRow>
+                                                </KeuanganTableRow>
                                             </>
                                             )
                                         }

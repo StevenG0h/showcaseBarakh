@@ -7,13 +7,13 @@ export default function UsahaTableRow({row, num, onShowImage, onDelete, onEdit})
     return (
         <>
         
-            <TableRow>
+            <TableRow sx={{width:'100%'}}>
                 <TableCell width={'25px'}>
                     {num}
                 </TableCell>
-                <TableCell>
+                {/* <TableCell>
                     {created_at}
-                </TableCell>
+                </TableCell> */}
                 <TableCell>
                     {usahaName}
                 </TableCell>

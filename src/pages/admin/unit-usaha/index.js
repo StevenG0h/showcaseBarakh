@@ -6,6 +6,7 @@ import axios from "../../../utils/axios";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import RHFTextField from "../../../components/form/RHFTextField";
+import RHFDnd from "../../../components/form/RHFDnd";
 import * as yup from "yup";
 import {yupResolver} from "@hookform/resolvers/yup";
 import { useRouter } from "next/router";
@@ -139,7 +140,7 @@ export default function admin({data}){
 
     let TABLEHEAD = [
         {value: 'No',align: 'left'},
-        {value: 'Dibuat pada',align: 'left'},
+        // {value: 'Dibuat pada',align: 'left'},
         {value: 'Nama unit usaha',align: 'left'},
         {value: 'Deskripsi',align: 'left'},
         {value: 'Jumlah Produk',align: 'left'},
@@ -169,23 +170,9 @@ export default function admin({data}){
                                 <RHFTextField hiddenLabel={true} label={'Nomor WhatsApp admin'} name={"usahaPicNumber"} control={control}></RHFTextField>
                             </FormControl>
                             <FormControl sx={{width:'100%', marginY:'0.5em'}}>
-                            <Controller
-                                control={control}
-                                name={'usahaImage'}
-                                rules={{required:'Foto unit usaha tidak boleh kosong'}}
-                                render={({field:{value, onChange, ...field},fieldState:{error}})=>{
-                                    return (
-                                        <>
-                                        <Input type="file" onChange={(event)=>{
-                                        onChange(event.target.files[0])
-                                    }} value={value?.filename} name={'usahaImage'} {...field}></Input>
-                                        <Typography>{error?.message}</Typography>
-                                        </>
-                                    )
-                                }}
-                                >
-                                
-                                </Controller>
+                                <RHFDnd control={control} name={'usahaImage'}>
+                                    
+                                </RHFDnd>
                             </FormControl>
                             <Button variant="contained" color="success" sx={{width:'100%'}} type="submit">{editMode ? 'Simpan Perubahan' : 'Tambah Unit Usaha'}</Button>
                         </form>
@@ -210,7 +197,7 @@ export default function admin({data}){
                     <TableContainer>
                         <Table>
                             <CustomTableHead tableHead={TABLEHEAD}></CustomTableHead>
-                            <TableBody>
+                            <TableBody sx={{width:'100%'}}>
                                 {
                                     unitUsaha === [] || unitUsaha==='' || unitUsaha === undefined ? 'data kosong' :
                                     unitUsaha?.map((map)=>{

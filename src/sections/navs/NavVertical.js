@@ -11,10 +11,15 @@ import Exit from "@mui/icons-material/ExitToApp";
 import Image from "next/image";
 import logo from "../../../public/assets/image/logo.png"
 import { useState } from "react";
+import { useRouter } from "next/router";
 
 
 export default function NavVertical({data}){
+    let router = useRouter();
     let [openList,setOpenList] = useState(false);
+    let handleChangePage = (url)=>{
+        router.push('http://localhost:3000'+url)
+    }
     return (
         <>
             <Drawer PaperProps={{sx:{backgroundColor:"#091B1C",color:"white",width:"250px",position:"sticky", height:'100vh'}}} open={true} variant="persistent">
@@ -23,7 +28,7 @@ export default function NavVertical({data}){
                     <List sx={{display:'flex',justifyContent:'center',marginBottom:'1em', marginTop:'1em'}}>
                         <Image width={200} src={logo}></Image>
                     </List>
-                    <ListItemButton sx={{paddingRight:"5em",paddingLeft:'0'}}>
+                    <ListItemButton onClick={()=>{handleChangePage('/admin')}} sx={{paddingRight:"5em",paddingLeft:'0'}}>
                         <ListItemIcon>
                             <Dashboard sx={{m:'auto',color:'white'}}></Dashboard>
                         </ListItemIcon>
@@ -31,7 +36,7 @@ export default function NavVertical({data}){
                             Dashboard
                         </ListItemText>
                     </ListItemButton>
-                    <ListItemButton sx={{paddingRight:"5em",paddingLeft:'0'}}>
+                    <ListItemButton onClick={()=>{handleChangePage('/admin/stok')}} sx={{paddingRight:"5em",paddingLeft:'0'}}>
                         <ListItemIcon>
                             <Inventory sx={{m:'auto',color:'white'}}></Inventory>
                         </ListItemIcon>
@@ -39,7 +44,7 @@ export default function NavVertical({data}){
                             Stock
                         </ListItemText>
                     </ListItemButton>
-                    <ListItemButton sx={{paddingRight:"5em",paddingLeft:'0'}}>
+                    <ListItemButton onClick={()=>{handleChangePage('/admin/penjualan')}} sx={{paddingRight:"5em",paddingLeft:'0'}}>
                         <ListItemIcon>
                             <ShoppingCart sx={{m:'auto',color:'white'}}></ShoppingCart>
                         </ListItemIcon>
@@ -47,7 +52,7 @@ export default function NavVertical({data}){
                             Penjualan
                         </ListItemText>
                     </ListItemButton>
-                    <ListItemButton sx={{paddingRight:"5em",paddingLeft:'0'}}>
+                    <ListItemButton onClick={()=>{handleChangePage('/admin/keuangan')}} sx={{paddingRight:"5em",paddingLeft:'0'}}>
                         <ListItemIcon>
                             <Wallet sx={{m:'auto',color:'white'}}></Wallet>
                         </ListItemIcon>
@@ -55,7 +60,7 @@ export default function NavVertical({data}){
                             Keuangan
                         </ListItemText>
                     </ListItemButton>
-                    <ListItemButton sx={{paddingRight:"5em",paddingLeft:'0'}}>
+                    <ListItemButton onClick={()=>{handleChangePage('/admin/unit-usaha')}} sx={{paddingRight:"5em",paddingLeft:'0'}}>
                         <ListItemIcon>
                             <Work sx={{m:'auto',color:'white'}}></Work>
                         </ListItemIcon>
@@ -63,7 +68,7 @@ export default function NavVertical({data}){
                             Unit Usaha
                         </ListItemText>
                     </ListItemButton>
-                    <ListItemButton sx={{paddingRight:"5em",paddingLeft:'0'}}>
+                    <ListItemButton onClick={()=>{handleChangePage('/admin/user')}} sx={{paddingRight:"5em",paddingLeft:'0'}}>
                         <ListItemIcon>
                             <People sx={{m:'auto',color:'white'}}></People>
                         </ListItemIcon>

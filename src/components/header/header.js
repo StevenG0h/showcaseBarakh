@@ -67,7 +67,7 @@ const router = useRouter();
                     <button href="" className={style.iconL} onClick={() => setSearchActive(true)}><FontAwesomeIcon className={style.iconJ} icon={faSearch} /></button>
                     <Link href="/cart" ><FontAwesomeIcon className={style.iconJ} icon={faCartShopping} /></Link>
                 </div>
-                <Search Visible={searchActive} closeClick={() => setSearchActive(false)} />
+                {/* <Search Visible={searchActive} closeClick={() => setSearchActive(false)} /> */}
                 {/* <div className={style.searchBox}>
                     <input className={style.input} placeholder="Cari barang"></input>                   
                 </div>  */}

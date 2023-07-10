@@ -3,7 +3,7 @@ import Image from 'next/image';
 import Masjid from '../../../public/assets/images/MasjidAlBarakh.png';
 import Link from 'next/link';
 
-const ProductCategory = () => {
+const ProductCategory = ({unitUsaha}) => {
     return (
         <div className={style.container}>
         <div className={style.containerCategory}>
@@ -12,48 +12,19 @@ const ProductCategory = () => {
                 <p className={style.descriptionTitle}>Pesantren tersebut memiliki beberapa badan usaha, dari bidang FnB sampai ke bidang fashion and craft</p>
             </div>
             <div className={style.containerKatalog}>
+                {
+                    unitUsaha.map((data)=>{
+                        return (
                 <Link href="/detailKategori" className={style.link}>
                     <div className={style.katalogWrapper}>
-                        <Image className={style.imageKatalog} src={Masjid} alt='Gambar' />
-                        <p className={style.titleKatalog}>Pendidikan</p>
-                        <p className={style.descriptionKatalog}>Unit usaha yang bergerak dalam bidang pendidikan seperti MA MI MTS, WISATA EDUKASI, Bumi Perkemahan dan pondok pesantren</p>
+                        <img className={style.imageKatalog} src={process.env.NEXT_PUBLIC_BACKEND_URL+"/storage/unitUsaha/"+data.usahaImage} alt='Gambar' />
+                        <p className={style.titleKatalog}>{data.usahaName}</p>
+                        <p className={style.descriptionKatalog}>{data.usahaDesc}</p>
                     </div>
                 </Link>
-                <Link href="/detailKategori" className={style.link}>
-                    <div className={style.katalogWrapper}>
-                        <Image className={style.imageKatalog} src={Masjid} alt='Gambar' />
-                        <p className={style.titleKatalog}>Pendidikan</p>
-                        <p className={style.descriptionKatalog}>Unit usaha yang bergerak dalam bidang pendidikan seperti MA MI MTS, WISATA EDUKASI, Bumi Perkemahan dan pondok pesantren</p>
-                    </div>
-                </Link>
-                <Link href="/detailKategori" className={style.link}>
-                    <div className={style.katalogWrapper}>
-                        <Image className={style.imageKatalog} src={Masjid} alt='Gambar' />
-                        <p className={style.titleKatalog}>Pendidikan</p>
-                        <p className={style.descriptionKatalog}>Unit usaha yang bergerak dalam bidang pendidikan seperti MA MI MTS, WISATA EDUKASI, Bumi Perkemahan dan pondok pesantren</p>
-                    </div>
-                </Link>
-                <Link href="/detailKategori" className={style.link}>
-                    <div className={style.katalogWrapper}>
-                        <Image className={style.imageKatalog} src={Masjid} alt='Gambar' />
-                        <p className={style.titleKatalog}>Pendidikan</p>
-                        <p className={style.descriptionKatalog}>Unit usaha yang bergerak dalam bidang pendidikan seperti MA MI MTS, WISATA EDUKASI, Bumi Perkemahan dan pondok pesantren</p>
-                    </div>
-                </Link>
-                <Link href="/detailKategori" className={style.link}>
-                    <div className={style.katalogWrapper}>
-                        <Image className={style.imageKatalog} src={Masjid} alt='Gambar' />
-                        <p className={style.titleKatalog}>Pendidikan</p>
-                        <p className={style.descriptionKatalog}>Unit usaha yang bergerak dalam bidang pendidikan seperti MA MI MTS, WISATA EDUKASI, Bumi Perkemahan dan pondok pesantren</p>
-                    </div>
-                </Link>
-                <Link href="/detailKategori" className={style.link}>
-                    <div className={style.katalogWrapper}>
-                        <Image className={style.imageKatalog} src={Masjid} alt='Gambar' />
-                        <p className={style.titleKatalog}>Pendidikan</p>
-                        <p className={style.descriptionKatalog}>Unit usaha yang bergerak dalam bidang pendidikan seperti MA MI MTS, WISATA EDUKASI, Bumi Perkemahan dan pondok pesantren</p>
-                    </div>
-                </Link>
+                        )
+                    })
+                }
             </div>
         </div>
         </div>

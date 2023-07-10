@@ -14,11 +14,11 @@ import PenjualanTableRow from "../../../sections/penjualan/PenjualanTableRow";
 import DetailPenjualanTableRow from "../../../sections/penjualan/DetailPenjualanTableRow";
 
 export async function getServerSideProps(){
-    let produk = await axios.get('http://127.0.0.1:8000/api/transaksi');
+    let produk = await axios.get('http://127.0.0.1:8000/api/transaksi/penjualan');
     let unitusaha = await getAllUnitUsaha();
     return {
         props:{
-            produk: produk.data.data,
+            produk: produk.data,
             options:{
                 unitUsaha: unitusaha
             }
@@ -86,6 +86,9 @@ export default function product({produk, options}){
             let createSalesTransaction = await axios.post('/api/penjualan',data);
         }catch(e){
             console.log(e)
+        }finally{
+            handleCloseAddSalesTransactionForm()
+            router.reload()
         }
 
       }
@@ -136,7 +139,7 @@ export default function product({produk, options}){
         }catch(e){
             
         }finally{
-            router.replace(router.asPath);
+            router.reload();
         }
 
     }
@@ -184,14 +187,15 @@ export default function product({produk, options}){
                         })
                     }
                 </Select> */}
-                <Dialog onClose={handleCloseAddSalesTransactionForm} open={addDetailTransactionForm.length === 0 ? false : true}>
+                <Dialog maxWidth={'xs'} fullWidth onClose={handleCloseAddSalesTransactionForm} open={addDetailTransactionForm.length === 0 ? false : true}>
                     <DialogTitle>
                         Tambah Transaksi
                     </DialogTitle>
                     <DialogContent>
                         <form onSubmit={handleSalesTransactionSubmit(onSalesTransactionSubmit)}>
-                            <FormControl>
+                            <FormControl sx={{width:'100%', marginY:'0.5em'}}>
                                 <RHFAutocomplete
+                                    label={'Unit usaha'}
                                     name={'usaha_id'}
                                     options={options.unitUsaha}
                                     control= {salesTransactionControl}
@@ -201,7 +205,10 @@ export default function product({produk, options}){
                                         handleProductOption(data)
                                     }}
                                 />
+                            </FormControl>
+                            <FormControl sx={{width:'100%', marginY:'0.5em'}}>
                                 <RHFAutocomplete
+                                    label={'Produk'}
                                     name={'product_id'}
                                     options={productOption}
                                     control= {salesTransactionControl}
@@ -215,6 +222,7 @@ export default function product({produk, options}){
                                         })
                                     }}
                                 />
+                            </FormControl>
                                 {/* <Select defaultValue={1}>
                                     {
                                     options?.unitUsaha.map(({id, label})=>{
@@ -224,8 +232,9 @@ export default function product({produk, options}){
                                         })
                                     }
                                 </Select> */}
-                                <RHFTextField control={salesTransactionControl} name={'productCount'}></RHFTextField>
-                                <Button type="submit">Tambah Transaksi</Button>
+                            <FormControl sx={{width:'100%', marginY:'0.5em'}}>
+                                <RHFTextField label={'Jumlah Beli'} control={salesTransactionControl} name={'productCount'}></RHFTextField>
+                                <Button sx={{witdh:'100%', marginTop:'1em'}} type="submit" variant="contained" color="success">Tambah Transaksi</Button>
                             </FormControl>
                         </form>
                     </DialogContent>
@@ -235,40 +244,45 @@ export default function product({produk, options}){
                         Detail transaksi
                     </DialogTitle>
                     <DialogContent>
-                        <TableContainer>
-                            <TableHead>
-                                <Button onClick={()=>handleAddSalesTransactionForm(transaction)}>
-                                    Tambah Penjualan
-                                </Button>
-                                <TableRow>
-                                    <TableCell>
-                                        No
-                                    </TableCell>
-                                    <TableCell>
-                                        Nama Produk
-                                    </TableCell>
-                                    <TableCell>
-                                        Harga Produk
-                                    </TableCell>
-                                    <TableCell>
-                                        Jumlah Beli
-                                    </TableCell>
-                                    <TableCell>
-                                        Total
-                                    </TableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                {
-                                    transaction?.sales?.map((data)=>{
-                                            return (
-                                                <>
-                                                    <DetailPenjualanTableRow onDelete={()=>{handleDeleteDetailRow(data)}} onEdit={()=>{handleOpenEditForm(data)}} num={++detailNum} row={data} />
-                                                </>
-                                            )
-                                    })
-                                }
-                            </TableBody>
+                        <Button onClick={()=>handleAddSalesTransactionForm(transaction)} variant="contained" color="success">
+                            Tambah Penjualan
+                        </Button>
+                        <TableContainer sx={{width:'100%'}}>
+                            <Table>
+                                <TableHead sx={{width:'100%'}}>
+                                    <TableRow>
+                                        <TableCell>
+                                            No
+                                        </TableCell>
+                                        <TableCell>
+                                            Nama Produk
+                                        </TableCell>
+                                        <TableCell>
+                                            Harga Produk
+                                        </TableCell>
+                                        <TableCell>
+                                            Jumlah Beli
+                                        </TableCell>
+                                        <TableCell>
+                                            Total
+                                        </TableCell>
+                                        <TableCell>
+                                            Action
+                                        </TableCell>
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    {
+                                        transaction?.sales?.map((data)=>{
+                                                return (
+                                                    <>
+                                                        <DetailPenjualanTableRow onDelete={()=>{handleDeleteDetailRow(data)}} onEdit={()=>{handleOpenEditForm(data)}} num={++detailNum} row={data} />
+                                                    </>
+                                                )
+                                        })
+                                    }
+                                </TableBody>
+                            </Table>
                         </TableContainer>
                     </DialogContent>
                 </Dialog>

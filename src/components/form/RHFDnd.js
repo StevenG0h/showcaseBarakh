@@ -1,5 +1,5 @@
 import  Delete  from "@mui/icons-material/Delete";
-import { Box, IconButton, Typography } from "@mui/material";
+import { Box, Button, IconButton, Typography } from "@mui/material";
 import React, { useState } from "react";
 import { FileUploader } from "react-drag-drop-files";
 import { Controller } from "react-hook-form";
@@ -30,19 +30,16 @@ function RHFDnd({name,control, files='', onDelete, required = false}) {
                     setRequired(false)
                 }
                 } types={fileTypes} {...field}>
-                <Box sx={{width:'100%',border:'0.1em solid black', minHeight:'5em'}}>
+                <Box sx={{width:'100%',border:'0.1em solid #cccccc', overflow:'hidden', borderRadius:'0.3em'}}>
                     {
-                        file == '' ? <Typography sx={{margin:'auto'}}>Upload</Typography> : <img style={{width:'100%',objectFit:'cover',aspectRatio:'1/1'}} src={file}></img>
+                        file == '' ? <Typography sx={{margin:'auto', textAlign:'center', paddingY:'5em'}}>Upload</Typography> : <img style={{width:'100%',objectFit:'cover',aspectRatio:'1/1'}} src={file}></img>
                     }
                     <Typography>{error?.message}</Typography>
                 </Box>
                 </FileUploader>
-                <IconButton onClick={()=>{
-                    onDelete();
-                    setFile('');
-                }}>
-                    <Delete></Delete>
-                </IconButton>
+                <Button startIcon={<Delete></Delete>} onClick={()=>{onDelete()}} color="error" sx={{marginBottom:'1em', marginTop:'0.5em'}} variant="contained">
+                    Delete
+                </Button>
             </Box>
         )
     }

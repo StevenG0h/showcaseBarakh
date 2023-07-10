@@ -7,6 +7,7 @@ import style from '../styles/Home.module.css'
 import SliderImages from "../components/sliderImage/slider";
 import ProductCategory from "../components/KategorProduct/kategori";
 import Testimoni from "../components/Testimoni/testimonislider"
+import axios from '../utils/axios'
 
 
 const poppins = Poppins({
@@ -17,7 +18,19 @@ const poppins = Poppins({
 
 const inter = Inter({ subsets: ['latin'] })
 
-export default function Home() {
+export async function getServerSideProps(){
+  let unitUsaha = await axios.get('/api/unit-usaha');
+  return {
+    props:{
+      data:{
+        unitUsaha: unitUsaha.data.data
+      }
+    }
+  }
+}
+
+export default function Home({data}) {
+  let unitUsaha = data.unitUsaha.data;
   return (
     <main className={poppins.className}>
       <Header/>
@@ -33,7 +46,7 @@ export default function Home() {
           </div>
         </div>
       </div>
-      <ProductCategory />
+      <ProductCategory unitUsaha={unitUsaha} />
       <Testimoni />
       <Footer />
     </main>

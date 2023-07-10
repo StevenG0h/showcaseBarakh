@@ -49,7 +49,7 @@ export default function product({produk, options}){
     
       const onSubmit = async (data) => {
         if(editMode == true){
-            const createproduk = await axios.post('/api/produk/'+data.id,data,{
+            const createproduk = await axios.post('/api/produk/edit/'+data.id,data,{
                 headers:{
                     'Content-Type': 'multipart/form-data'
                 }
@@ -57,7 +57,7 @@ export default function product({produk, options}){
             
         }
         handleCloseAddForm();
-        router.replace(router.asPath);
+        router.reload();
       }
       
       //states

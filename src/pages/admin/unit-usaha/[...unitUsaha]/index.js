@@ -185,7 +185,7 @@ export default function product({unitUsaha}){
     return (
         <>
             <AdminLayout>
-                <Dialog open={AddForm} onClose={handleCloseAddForm} fullWidth maxWidth='xs'>
+                <Dialog open={AddForm} sx={{overflow:'hidden'}} onClose={handleCloseAddForm} fullWidth maxWidth='xs'>
                     <DialogContent>
                         <Typography variant="h5" sx={{marginBottom:'1em'}} fontWeight={600}>Tambah Produk</Typography>
                         <form onSubmit={handleSubmit(onSubmit)}>
@@ -201,20 +201,20 @@ export default function product({unitUsaha}){
                             <FormControl sx={{width:'100%', marginY:'0.5em'}}>
                                 <RHFTextField type="number" hiddenLabel={true} label={'Harga'} name={"productPrice"} control={control}></RHFTextField>
                             </FormControl>
-                            <FormControl sx={{width:'100%', marginY:'0.5em',display:'flex', flexDirection:'row', flexWrap:'wrap'}}>
-                                <Box sx={{width:'50%'}}>
+                            <FormControl sx={{marginY:'0.5em',display:'flex', flexDirection:'row', flexWrap:'wrap', width:'99%',overflow:'hidden'}}>
+                                <Box sx={{width:'99%'}}>
                                     <RHFDnd name="productImages[0]" onDelete={()=>{handleDeletePreview(imageData[0]?.id)}} files={imageData[0] == undefined || imageData[0] == null ? '' : process.env.NEXT_PUBLIC_BACKEND_URL+'/storage/product/'+imageData[0]?.path} control={control}></RHFDnd>
                                 </Box>
-                                <Box sx={{width:'50%'}}>
+                                <Box sx={{width:'49%'}}>
                                     <RHFDnd name="productImages[1]" onDelete={()=>{handleDeletePreview(imageData[1]?.id)}} files={imageData[1] == undefined || imageData[1] == null ? '' : process.env.NEXT_PUBLIC_BACKEND_URL+'/storage/product/'+imageData[1]?.path} control={control}></RHFDnd>
                                 </Box>
-                                <Box sx={{width:'50%'}}>
+                                <Box sx={{width:'49%'}}>
                                     <RHFDnd name="productImages[2]" onDelete={()=>{handleDeletePreview(imageData[2]?.id)}} files={imageData[2] == undefined || imageData[2] == null ? '' : process.env.NEXT_PUBLIC_BACKEND_URL+'/storage/product/'+imageData[2]?.path} control={control}></RHFDnd>
                                 </Box>
-                                <Box sx={{width:'50%'}}>
+                                <Box sx={{width:'49%'}}>
                                     <RHFDnd name="productImages[3]" onDelete={()=>{handleDeletePreview(imageData[3]?.id)}} files={imageData[3] == undefined || imageData[3] == null ? '' : process.env.NEXT_PUBLIC_BACKEND_URL+'/storage/product/'+imageData[3]?.path} control={control}></RHFDnd>
                                 </Box>
-                                <Box sx={{width:'50%'}}>
+                                <Box sx={{width:'49%'}}>
                                     <RHFDnd name="productImages[4]" onDelete={()=>{handleDeletePreview(imageData[4]?.id)}} files={imageData[4] == undefined || imageData[4] == null ? '' : process.env.NEXT_PUBLIC_BACKEND_URL+'/storage/product/'+imageData[4]?.path} control={control}></RHFDnd>
                                 </Box>
                             </FormControl>
