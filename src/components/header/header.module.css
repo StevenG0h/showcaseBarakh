@@ -7,7 +7,7 @@
     padding: 20px 70px;
     gap: 10px;
     background-color: #081B1C;
-    box-shadow: 0 0 0.5em 0.5em #cccccc;
+    box-shadow: 0 0 0.5em 0.5em rgba(0,0,0,0.2);
     /* gap: 10px; */
     position: sticky;
     top: 0rem;
