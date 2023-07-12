@@ -238,8 +238,8 @@
     text-align: center;
 }
 .dropdownContent .dropdownItem:hover {
-    background-color: #D9D9D9;
-    color: #ffffff;
+    background:#94B60F;
+    color:#f1f1f1;
 }
 .dropdown:hover .dropdownContent{
     display:block;

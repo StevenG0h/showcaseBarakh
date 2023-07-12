@@ -32,21 +32,28 @@ export async function getServerSideProps({req,res}){
     if(cookie != undefined){
         cookie = JSON.parse(cookie)
     }
+    let count = 0;
+    cookie.map((data)=>{
+        count += data.item * Number(data.productData.productPrice)
+    })
+    console.log(count)
     return {
         props:{
             cookie: cookie === undefined ? [] : cookie,
             option: {
                 provinsi: provinsi
-            }
+            },totalPayment: count
         }
     }
 }
 
-const Cart = ({cookie, option}) => {
+const Cart = ({cookie, option,totalPayment}) => {
 
     let [cartList, setCart] = useState(cookie);
-    console.log(cartList);
-    let [total, setTotal] = useState(0);
+    
+    let [total, setTotal] = useState(totalPayment);
+    
+    let [checked, setChecked] = useState([]);
     let [deleteCart, setDelete] = useState([]);
     let [checkoutDialog, setCheckoutDialog] = useState(false);
     let [location, setLocation] = useState({
@@ -80,6 +87,7 @@ const Cart = ({cookie, option}) => {
             return cart
         })
         setCart(newCartList);
+        countTotal()
     }
 
     const schema = yup.object().shape({
@@ -170,6 +178,52 @@ const Cart = ({cookie, option}) => {
         setValue('clientKelurahan',id)
     }
 
+    const handleCartChecked = (id)=>{
+        let addChecked = checked
+        addChecked.push(id);
+        setChecked(addChecked);
+    }
+
+    const handleCartUnchecked = (id)=>{
+        let addChecked = checked.filter((checkedId)=>{
+            return checkedId != id
+        })
+        setChecked(addChecked);
+    }
+    
+    const handleDeleteCart = ()=>{
+        let cookie = getCookie('barakh-cart-cookie')
+        cookie = JSON.parse(cookie)
+        let newCookie = cookie.filter((cart)=>{
+            let isInCart = false;
+            checked.map((id)=>{
+                console.log(cart.productId)
+                if(id == cart.productId){
+                    isInCart = true
+                }
+            })
+            console.log(isInCart)
+            return isInCart !== true
+        })
+        setCookie('barakh-cart-cookie',newCookie);
+        setCart(newCookie);
+        countTotal(newCookie)
+    }
+
+    const countTotal = (cart)=>{
+        let count = 0;
+        if(cart == undefined){
+            cartList.map((data)=>{
+                count += data.item * Number(data.productData.productPrice)
+            })
+        }else{
+            cart.map((data)=>{
+                count += data.item * Number(data.productData.productPrice)
+            })
+        }
+        setTotal(count)
+    }
+
     return (
         <main className={poppins.className}>
             <Header />
@@ -181,22 +235,28 @@ const Cart = ({cookie, option}) => {
                             <input className={style.input} type="checkbox" />
                             <p className={style.textPilih}>Pilih Semua</p>
                         </div>
-                        <button className={style.buttonHapus}>Hapus</button>
+                        <button onClick={()=>{handleDeleteCart()}} className={style.buttonHapus}>Hapus</button>
                     </div>
                     <hr className={style.garis} />
                     <div className={style.mainCart}>
-                        <div className={style.fieldList}>
+                        <div  className={style.fieldList}>
                             {
                                 cartList.map(({item, productData})=>{
                                     return (
                                         <div key={productData.id} onChange={(e)=>handleChangeItem(e.target.value)} className={style.fieldListProduct}>
-                                            <input className={style.inputt} type="checkbox" value={productData.id} />
+                                            <input onChange={(e)=>{
+                                                if(e.target.checked === true){
+                                                    handleCartChecked(e.target.value)
+                                                }else{
+                                                    handleCartUnchecked(e.target.value)
+                                                }
+                                            }} className={style.inputt} type="checkbox" value={productData.id} />
                                             <div className={style.list}>
                                                 <div className={style.image}>
                                                     <img style={{aspectRatio:'3/2', objectFit:'cover',margin:'auto'}} src={process.env.NEXT_PUBLIC_BACKEND_URL+"/storage/product/"+productData.product_images[0].path} alt="Gambar" className={style.imageCart} />
                                                 </div>
                                                 <div className={style.detailProductCart}>
-                                                    <Link href="/detailProduct" className={style.link}>
+                                                    <Link href={"/detail-produk/"+productData.id} className={style.link}>
                                                         <p className={style.titleProduct}>{productData.productName}</p>
                                                     </Link>
                                                     <div className={style.remaining}>
@@ -244,7 +304,7 @@ const Cart = ({cookie, option}) => {
                 </div>
             </div>
             <Footer />
-            <NoticeModal handleNext={()=>handleNextDialog()} isVisible={showNotice} CloseClick={() => setShowNotice(false)}/>
+            <NoticeModal total={total} handleNext={()=>handleNextDialog()} isVisible={showNotice} CloseClick={() => setShowNotice(false)}/>
             <Dialog open={checkoutDialog} maxWidth={'xs'} onClose={()=>{handleCloseCheckoutDialog()}} fullWidth>
                 <DialogTitle>
                     Form data diri

@@ -95,6 +95,8 @@
 /* SLIDER IMAGE */
 .slider_image  .slick-slide{
     position: relative;
+    border-radius: 0.5em;
+    overflow: hidden;
     margin: 0 0px;
     padding: 0;
 }

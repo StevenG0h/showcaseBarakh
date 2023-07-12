@@ -41,7 +41,7 @@ const UnitUsaha = ({data})=> {
                                         <div className={style.cardUsaha}>
                                             <img src={process.env.NEXT_PUBLIC_BACKEND_URL+"/storage/unitUsaha/"+data.usahaImage} alt="Gambar" className={style.image}/>
                                             <p className={style.titleCard}>{data.usahaName}</p>
-                                            <p className={style.cardDescription}>data.usahaDesc</p>
+                                            <p className={style.cardDescription}>{data.usahaDesc}</p>
                                         </div>
                                     </Link>
                                 )

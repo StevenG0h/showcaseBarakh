@@ -46,7 +46,7 @@ export default function admin({data}){
           })
     })
 
-    const { control, handleSubmit, setValue, reset, register , formState:{errors}} = useForm({
+    const { control, handleSubmit, setValue,getValues, reset, register , formState:{errors}} = useForm({
         defaultValues: {
           usahaName: "",
           usahaDesc: "",
@@ -118,6 +118,7 @@ export default function admin({data}){
         setValue('usahaName',data.usahaName);
         setValue('usahaDesc',data.usahaDesc);
         setValue('usahaPicNumber',data.usahaPicNumber)
+        setValue('usahaImage',data.usahaImage)
         setUsahaId(data.id);
         setAddForm(true)
     }
@@ -170,7 +171,7 @@ export default function admin({data}){
                                 <RHFTextField hiddenLabel={true} label={'Nomor WhatsApp admin'} name={"usahaPicNumber"} control={control}></RHFTextField>
                             </FormControl>
                             <FormControl sx={{width:'100%', marginY:'0.5em'}}>
-                                <RHFDnd control={control} name={'usahaImage'}>
+                                <RHFDnd control={control} name={'usahaImage'} files={process.env.NEXT_PUBLIC_BACKEND_URL+'/storage/unitUsaha/'+getValues('usahaImage')}>
                                     
                                 </RHFDnd>
                             </FormControl>

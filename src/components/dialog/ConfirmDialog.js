@@ -1,19 +1,21 @@
-import { Button, Dialog, DialogContent, DialogTitle, Typography } from "@mui/material";
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography } from "@mui/material";
 
-export function ConfirmDialog({open, msg, onCancel, onConfirm}){
+export function ConfirmDialog({open, msg, onCancel, onConfirm, title="Konfirmasi Aksi"}){
     return (
         <>
-            <Dialog open={open} onClose={()=>{onCancel()}}>
+            <Dialog maxWidth={'xs'} open={open} onClose={()=>{onCancel()}}>
                 <DialogTitle>
-                    Konfirmasi Aksi
+                    {title}
                 </DialogTitle>
                 <DialogContent>
                     <Typography>
                         {msg}
                     </Typography>
-                    <Button onClick={()=>{onCancel()}}>Tutup</Button>
-                    <Button onClick={()=>{onConfirm()}}>Ya</Button>
                 </DialogContent>
+                <DialogActions>
+                    <Button sx={{color:'grey'}} onClick={()=>{onCancel()}}>Tutup</Button>
+                    <Button variant="contained" color="success" onClick={()=>{onConfirm()}}>Ya</Button>
+                </DialogActions>
             </Dialog>
         </>
     )

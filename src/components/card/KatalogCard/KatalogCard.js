@@ -9,6 +9,9 @@ import style from "./slider.module.css"
 import { Button } from "@mui/material";
 import { useRouter } from "next/router";
 import { getCookie, setCookie } from "cookies-next";
+import { useState } from "react";
+import { ConfirmDialog } from "../../dialog/ConfirmDialog";
+
 
 export default function KatalogCard({style, row}){
     const router = useRouter();
@@ -54,8 +57,19 @@ export default function KatalogCard({style, row}){
         }
     }
 
+    let [newTransactionStatus, setNewTransactionStatus] = useState(false);
+    let handleChangeStatus = (data)=>{
+        addItem(data)
+        setNewTransactionStatus(true)
+    }
+    let handleCloseDialog = ()=>{
+        setNewTransactionStatus(false)
+    }
+    let msg = 'Produk yang anda pilih sudah masuk ke keranjang, ingin ke halaman checkout?'
+
     return(
         <div className={style.card}>
+            <ConfirmDialog onConfirm={()=>{router.replace('/cart')}} onCancel={()=>{handleCloseDialog()}} msg={msg} open={newTransactionStatus}></ConfirmDialog>
         <div className={style.imageCarousel}>
             <Slider {...settings}>
                 {
@@ -74,7 +88,7 @@ export default function KatalogCard({style, row}){
             }</p>
             <div className={style.directButton}>
                 <button onClick={()=>{productDetail(id)}} className={style.detil}>Selengkapnya</button>
-                <button onClick={()=>{addItem(row)}} className={style.cart}><FontAwesomeIcon icon={faCartShopping} /></button>
+                <button onClick={()=>handleChangeStatus(row)} className={style.cart}><FontAwesomeIcon icon={faCartShopping} /></button>
             </div>
         </div>
     </div>

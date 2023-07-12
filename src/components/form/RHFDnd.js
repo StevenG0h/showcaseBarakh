@@ -37,7 +37,10 @@ function RHFDnd({name,control, files='', onDelete, required = false}) {
                     <Typography>{error?.message}</Typography>
                 </Box>
                 </FileUploader>
-                <Button startIcon={<Delete></Delete>} onClick={()=>{onDelete()}} color="error" sx={{marginBottom:'1em', marginTop:'0.5em'}} variant="contained">
+                <Button startIcon={<Delete></Delete>} onClick={()=>{
+                    setFile('')
+                    onDelete()
+                    }} color="error" sx={{marginBottom:'1em', marginTop:'0.5em'}} variant="contained">
                     Delete
                 </Button>
             </Box>

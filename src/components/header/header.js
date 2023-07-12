@@ -1,4 +1,3 @@
-"use client"
 import React, { useState } from "react";
 import style from './header.module.css';
 import Image from 'next/image';
@@ -58,7 +57,6 @@ const Header = () => {
                     </ul>
                 </div>
                 <div className={style.srccart}>
-                    <button href="" className={style.iconL} onClick={() => setSearchActive(true)}><FontAwesomeIcon className={style.iconJ} icon={faSearch}/></button>
                     <Link href="/cart" ><FontAwesomeIcon className={style.iconJ} icon={faCartShopping}/></Link>
                 </div> 
                 {/* <div className={style.searchBox}>
