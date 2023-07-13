@@ -5,7 +5,7 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick"
 import Image from "next/image";
-import style from "./slider.module.css"
+import style from "./katalog.module.css"
 import { Button } from "@mui/material";
 import { useRouter } from "next/router";
 import { getCookie, setCookie } from "cookies-next";
@@ -13,7 +13,7 @@ import { useState } from "react";
 import { ConfirmDialog } from "../../dialog/ConfirmDialog";
 
 
-export default function KatalogCard({style, row}){
+export default function KatalogCard({row}){
     const router = useRouter();
     let {id, product_images, productName, productDesc, productPrice, unit_usaha} = row;
     const settings = {

@@ -13,12 +13,13 @@ import { Poppins } from 'next/font/google'
 import { getCookie, setCookie } from "cookies-next";
 import axios from "../../utils/axios";
 import {formatCurrency} from "../../helper/currency";
-import { Button, Dialog, DialogContent, DialogTitle, FormControl, IconButton, StepIcon, Typography } from "@mui/material";
+import { Box, Button, Container, Dialog, DialogContent, DialogTitle, FormControl, Grid, IconButton, StepIcon, Typography } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMinus, faPlus, faShoppingCart } from "@fortawesome/free-solid-svg-icons";
 import RHFTextField from '../../components/form/RHFTextField';
 import RHFAutocomplete from '../../components/form/RHFAutocomplete';
 import {getAllKecamatanById, getAllKelurahanById, getAllKotaById, getAllProvinsi} from '../../helper/dataOptions';
+import KatalogCard from "../../components/card/KatalogCard/KatalogCard";
 
 const poppins = Poppins({
     weight: '500',
@@ -28,29 +29,31 @@ const poppins = Poppins({
 
 export async function getServerSideProps({req,res}){
     let cookie = getCookie('barakh-cart-cookie',{req,res})
+    let product = await axios.get('/api/produk');
     let provinsi = await getAllProvinsi();
+    let count = 0;
     if(cookie != undefined){
         cookie = JSON.parse(cookie)
+        cookie.map((data)=>{
+            count += data.item * Number(data.productData.productPrice)
+        })
     }
-    let count = 0;
-    cookie.map((data)=>{
-        count += data.item * Number(data.productData.productPrice)
-    })
     console.log(count)
     return {
         props:{
             cookie: cookie === undefined ? [] : cookie,
             option: {
                 provinsi: provinsi
-            },totalPayment: count
+            },totalPayment: count,
+            product: product.data.data
         }
     }
 }
 
-const Cart = ({cookie, option,totalPayment}) => {
-
+const Cart = ({cookie, option,totalPayment, product}) => {
+    console.log(product)
     let [cartList, setCart] = useState(cookie);
-    
+    let [showCheckout, setShowCheckout] = useState(cookie.length !=0)
     let [total, setTotal] = useState(totalPayment);
     
     let [checked, setChecked] = useState([]);
@@ -227,6 +230,9 @@ const Cart = ({cookie, option,totalPayment}) => {
     return (
         <main className={poppins.className}>
             <Header />
+            {
+                showCheckout === true ?
+                (
             <div className={style.container}>
                 <div className={style.containerCart}>
                     <p className={style.title}>Keranjang</p>
@@ -303,6 +309,26 @@ const Cart = ({cookie, option,totalPayment}) => {
                     </div>
                 </div>
             </div>
+                    ) :
+                    <Container>
+                        <Box sx={{}}>
+                            <img style={{width:'25%',margin:'auto'}} src={'http://localhost:3000/assets/image/Business, Startup, workflow, error _ exhaustion, exhausted, work, laptop, computer, support 1.png'}></img>
+                        </Box>
+                    </Container>
+                }
+                <Container>
+                    <Grid container xs={'12'} columns={12} sx={{width:'100%'}}>
+                        {
+                            product.map((data)=>{
+                                return (
+                                    <Grid item xs={3} sx={{padding:'0.4em'}}>
+                                        <KatalogCard row={data} style={style}></KatalogCard>
+                                    </Grid>
+                                )
+                            })
+                        }
+                    </Grid>
+                </Container>
             <Footer />
             <NoticeModal total={total} handleNext={()=>handleNextDialog()} isVisible={showNotice} CloseClick={() => setShowNotice(false)}/>
             <Dialog open={checkoutDialog} maxWidth={'xs'} onClose={()=>{handleCloseCheckoutDialog()}} fullWidth>

@@ -261,3 +261,65 @@
 .buttonBuy:hover{
     background-color: #D5F06B;
 }
+
+.container {
+    display: flex;
+    justify-content: center;
+    width:100% ;
+    height: auto;
+}
+
+.containerBase{
+    display: flex;
+    justify-content: center;
+    width: 75%;
+    flex-direction: column;
+    margin: 3.2em 0;
+}
+
+.banner{
+    background: url(../../../public/assets/images/Banner2.png);
+    background-size: 100% ;
+    background-repeat: no-repeat;
+    width: 100%;
+    height: 30em;
+    border-radius: 30px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    
+}
+
+.span{
+    color:#94B60F ;
+}
+
+.containerKatalog{
+    display: flex;
+    margin: 2em 0;
+}
+
+.ul{
+    display: flex;
+    padding: 0px;
+    gap: 30px;
+}
+
+.ul .li{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.a{
+    text-decoration: none;
+    color: #fff;
+    font-weight: 700;
+    font-size: 23px;
+    letter-spacing: 0.08em;
+}
+
+.a:hover{
+    color: #94B60F;
+}
+
