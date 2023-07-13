@@ -3,8 +3,14 @@
     display: flex;
     justify-content: center;
     height: auto;
-    margin-bottom: 6em;
-}
+    padding-bottom: 6em;
+    background-image: url('../../../public/assets/images/PropertiDark.png'),
+    url('../../../public/assets/images/PropertiDark.png'),
+    url('../../../public/assets/images/PropertiDark.png');
+    background-size: 55%, 55%, 50%;
+    background-repeat: no-repeat;
+    background-position: left -20em top, right -22em bottom -24em, top -29em right -16em;
+}   
 
 .containerUsaha{
     display: grid;
@@ -47,6 +53,7 @@
     padding: 1.3em 1.2em;
     flex-direction: column;
     gap: 3px;
+    height: 30em;
 }
 
 .image{

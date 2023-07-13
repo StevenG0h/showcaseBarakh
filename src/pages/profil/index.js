@@ -7,7 +7,7 @@ import profileImg from '../../../public/assets/images/Profile.png';
 import { Poppins } from 'next/font/google';
 import ImageVisiMisi from "../../../public/assets/images/Imagevisimisi.png";
 import Link from "next/link";
-
+import WhatsApp from "../../components/Whatsapp/WhatsApp"
 const poppins = Poppins({
     weight: '500',
     subsets: ['latin'],
@@ -111,6 +111,7 @@ const Profile = () => {
                 </div>
             </div>
             <Footer />
+            <WhatsApp />
         </main>
     )
 }

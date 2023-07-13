@@ -6,6 +6,10 @@
     padding:  2em 3em;
     background: #081B1C;
     box-shadow: 0px -18px 25px 0px rgba(0, 0, 0, 0.25);
+    background-image: url('../../../public/assets/images/PropertiDark.png');
+    background-size: 60%; 
+    background-repeat: no-repeat;
+    background-position: left -35em  ;
 } 
 
 .columnContainer{

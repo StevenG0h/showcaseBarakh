@@ -6,6 +6,7 @@ import PesantrenViMi from "../../../public/assets/images/PesantrenViMi.jpg";
 import Image from "next/image";
 // import { Typography } from "@mui/material";
 import { Poppins } from 'next/font/google';
+import WhatsApp from "../../components/Whatsapp/WhatsApp"
 
 const poppins = Poppins({
     weight: '500',
@@ -51,6 +52,7 @@ const Pesantren = () => {
                 </div>
             </div>
             <Footer />
+            <WhatsApp />
         </main>
     )
 }

@@ -42,8 +42,8 @@ const router = useRouter();
                                 onClick={() => handleLinkClick('/')} href="../">Beranda</Link>
                         </li>
                         <li>
-                            <Link className={`${style.navitem} ${router.pathname === '/profil/yayasan' ? style.active : ''}`}
-                                onClick={() => handleLinkClick('/profil/yayasan')} href="/profil/yayasan">Profil</Link>
+                            <Link className={`${style.navitem} ${router.pathname === '/galeri' ? style.active : ''}`}
+                                onClick={() => handleLinkClick('/galeri')} href="/galeri">Profil</Link>
                         </li>
                         <li>
                             <Link className={`${style.navitem} ${router.pathname === '/usaha' ? style.active : ''}`}
@@ -53,18 +53,18 @@ const router = useRouter();
                             <Link className={`${style.navitem} ${router.pathname === '/katalog' ? style.active : ''}`}
                                 onClick={() => handleLinkClick('/katalog')} href="/katalog">Katalog Produk</Link>
                         </li>
-                        <li>
+                        {/* <li>
                             <Link className={`${style.navitem} ${router.pathname === '/galeri' ? style.active : ''}`}
                                 onClick={() => handleLinkClick('/galeri')} href="/galeri">Galeri</Link>
-                        </li>
-                        <li>
+                        </li> */}
+                        <li>   
                             <Link className={`${style.navitem} ${router.pathname === '/bantuan' ? style.active : ''}`}
                                 onClick={() => handleLinkClick('/bantuan')} href="/bantuan">Bantuan</Link>
                         </li>
                     </ul>
                 </div>
                 <div className={style.srccart}>
-                    <button href="" className={style.iconL} onClick={() => setSearchActive(true)}><FontAwesomeIcon className={style.iconJ} icon={faSearch} /></button>
+                    {/* <button href="" className={style.iconL} onClick={() => setSearchActive(true)}><FontAwesomeIcon className={style.iconJ} icon={faSearch} /></button> */}
                     <Link href="/cart" ><FontAwesomeIcon className={style.iconJ} icon={faCartShopping} /></Link>
                 </div>
                 {/* <Search Visible={searchActive} closeClick={() => setSearchActive(false)} /> */}

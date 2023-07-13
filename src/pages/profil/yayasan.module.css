@@ -3,6 +3,13 @@
     justify-content: center;
     width: 100%;
     background-color: #fff;
+    background-image: url('../../../public/assets/images/PropertiLight.png'),
+    url('../../../public/assets/images/PropertiLight.png'),
+    url('../../../public/assets/images/PropertiLight.png'),
+    url('../../../public/assets/images/PropertiLight.png');
+    background-size: 40%, 50%, 55%, 50%; 
+    background-repeat: no-repeat, no-repeat, no-repeat, no-repeat;
+    background-position:top -25em left -6em, right -23em top 0em, left -20em top 32em, right -25em bottom -10em;
 }
 
 .containerYayasan{
@@ -82,7 +89,7 @@
 .wrapProfile{
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start;
     padding: 0 2em;
     width: auto;
     height: auto;

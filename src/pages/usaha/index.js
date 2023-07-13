@@ -6,6 +6,7 @@ import imageJeruk from "../../../public/assets/images/UsahaPertanian.png";
 import Link from "next/link";
 import { Poppins } from 'next/font/google'
 import axios from "../../utils/axios";
+import WhatsApp from "../../components/Whatsapp/WhatsApp"
 
 const poppins = Poppins({
     weight: '500',
@@ -41,7 +42,7 @@ const UnitUsaha = ({data})=> {
                                         <div className={style.cardUsaha}>
                                             <img src={process.env.NEXT_PUBLIC_BACKEND_URL+"/storage/unitUsaha/"+data.usahaImage} alt="Gambar" className={style.image}/>
                                             <p className={style.titleCard}>{data.usahaName}</p>
-                                            <p className={style.cardDescription}>data.usahaDesc</p>
+                                            <p className={style.cardDescription}>{data.usahaDesc}</p>
                                         </div>
                                     </Link>
                                 )
@@ -52,6 +53,7 @@ const UnitUsaha = ({data})=> {
                 </div>
             </div>
         <Footer/>
+        <WhatsApp />
         </main>
     )
 }

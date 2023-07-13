@@ -13,12 +13,14 @@ import { Poppins } from 'next/font/google'
 import { getCookie, setCookie } from "cookies-next";
 import axios from "../../utils/axios";
 import {formatCurrency} from "../../helper/currency";
-import { Button, Dialog, DialogContent, DialogTitle, FormControl, IconButton, StepIcon, Typography } from "@mui/material";
+import { Button, Dialog, DialogContent, DialogTitle, FormControl, IconButton, StepIcon, Typography , Checkbox} from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMinus, faPlus, faShoppingCart } from "@fortawesome/free-solid-svg-icons";
 import RHFTextField from '../../components/form/RHFTextField';
 import RHFAutocomplete from '../../components/form/RHFAutocomplete';
 import {getAllKecamatanById, getAllKelurahanById, getAllKotaById, getAllProvinsi} from '../../helper/dataOptions';
+// import {Checkbox} from "@mui/material";
+// import WhatsApp from "../../components/Whatsapp/WhatsApp"
 
 const poppins = Poppins({
     weight: '500',
@@ -170,6 +172,8 @@ const Cart = ({cookie, option}) => {
         setValue('clientKelurahan',id)
     }
 
+    const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
+
     return (
         <main className={poppins.className}>
             <Header />
@@ -178,7 +182,8 @@ const Cart = ({cookie, option}) => {
                     <p className={style.title}>Keranjang</p>
                     <div className={style.topCart}>
                         <div className={style.pilih}>
-                            <input className={style.input} type="checkbox" />
+                            <Checkbox {...label} defaultChecked color="success" className={style.input} />
+                            {/* <input className={style.input} type="checkbox" /> */}
                             <p className={style.textPilih}>Pilih Semua</p>
                         </div>
                         <button className={style.buttonHapus}>Hapus</button>
@@ -190,7 +195,8 @@ const Cart = ({cookie, option}) => {
                                 cartList.map(({item, productData})=>{
                                     return (
                                         <div key={productData.id} onChange={(e)=>handleChangeItem(e.target.value)} className={style.fieldListProduct}>
-                                            <input className={style.inputt} type="checkbox" value={productData.id} />
+                                            {/* <input className={style.inputt} type="checkbox" value={productData.id} /> */}
+                                            <Checkbox {...label} defaultChecked color="success" value={productData.id} className={style.inputt} />
                                             <div className={style.list}>
                                                 <div className={style.image}>
                                                     <img style={{aspectRatio:'3/2', objectFit:'cover',margin:'auto'}} src={process.env.NEXT_PUBLIC_BACKEND_URL+"/storage/product/"+productData.product_images[0].path} alt="Gambar" className={style.imageCart} />
@@ -213,7 +219,6 @@ const Cart = ({cookie, option}) => {
                                                             <Typography>
                                                                 {item}
                                                             </Typography>
-                                                            
                                                             <IconButton sx={{border:'0.1em solid grey',aspectRatio:'1/1',width:'2em',fontSize:'1em'}} onClick={()=>handleChangeItem(productData.id,1)}>
                                                                 <FontAwesomeIcon icon={faPlus}>
 
