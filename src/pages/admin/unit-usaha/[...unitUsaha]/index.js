@@ -53,6 +53,7 @@ export default function product({unitUsaha}){
 
     const { control, handleSubmit, setValue, reset, register , formState:{errors}} = useForm({
         defaultValues: {
+          productId: ''  ,
           productName: "",
           productDesc: "",
           productStock:0,
@@ -99,13 +100,14 @@ export default function product({unitUsaha}){
             if(data.usahaImage == ''){
                 delete data.usahaImage;
             }
-            const createUnitUsaha = await axios.post('/api/produk/'+unitUsaha.id,data,{
+            const createUnitUsaha = await axios.post('/api/produk/edit/'+data.productId,data,{
                 headers:{
                     'Content-Type': 'multipart/form-data'
                 }
             });
             
         }
+        router.reload();
       }
       
       //states
@@ -129,6 +131,7 @@ export default function product({unitUsaha}){
     let handleCloseAddForm = ()=>{
         setEditMode(false);
         setAddForm(false);
+        setValue('productId','');
         setValue('productName','');
         setValue('productDesc','');
         setValue('productImages','');
@@ -148,6 +151,7 @@ export default function product({unitUsaha}){
     
     let handleOpenEditForm = (data)=>{
         setEditMode(true);
+        setValue('productId',data.id);
         setValue('productName',data.productName);
         setValue('productDesc',data.productDesc);
         setValue('productStock',data.productStock);

@@ -171,6 +171,7 @@ export default function keuangan({produk, options}){
     return (
         <>
             <AdminLayout>
+            <Typography variant="h3" fontWeight={400}>Keuangan</Typography>
                 {/* <Typography variant="h3" fontWeight={400}>{title}</Typography>
                 <Select defaultValue={'*'}
                 onChange={(e)=>handleChangeFilter(e.target.value)}

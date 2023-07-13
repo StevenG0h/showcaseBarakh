@@ -1,9 +1,11 @@
 import Delete from "@mui/icons-material/Delete";
 import Edit from "@mui/icons-material/Edit";
 import {Button, IconButton, TableCell, TableRow} from "@mui/material"
+import { useRouter } from "next/router";
 
 export default function UsahaTableRow({row, num, onShowImage, onDelete, onEdit}){
     let {usahaName, usahaImage, usahaDesc, products, created_at} = row;
+    const router = useRouter()
     return (
         <>
         
@@ -15,7 +17,9 @@ export default function UsahaTableRow({row, num, onShowImage, onDelete, onEdit})
                     {created_at}
                 </TableCell> */}
                 <TableCell>
+                    <Button onClick={()=>{router.replace(router.asPath+'/'+row.id)}} sx={{textAlign:'left'}} color="success">
                     {usahaName}
+                    </Button>
                 </TableCell>
                 <TableCell>
                     {usahaDesc}
@@ -24,7 +28,7 @@ export default function UsahaTableRow({row, num, onShowImage, onDelete, onEdit})
                     {products.length}
                 </TableCell>
                 <TableCell>
-                    <Button onClick={onShowImage}>
+                    <Button sx={{textAlign:'left'}} color="success" onClick={onShowImage}>
                         {usahaImage}
                     </Button>
                 </TableCell>

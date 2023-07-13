@@ -18,15 +18,12 @@ export default function ProductTableRow({row, num, onShowImage, onDelete, onEdit
                 <TableCell>
                     {productPrice}
                 </TableCell>
-                <TableCell align="center" width={'150px'} sx={{display:'flex'}}>
+                <TableCell align="center" >
                     <IconButton onClick={onEdit} sx={{marginX:'0.5em'}} variant="contained" color="warning" >
                         <Edit></Edit>
                     </IconButton>
                     <IconButton onClick={onDelete} sx={{marginX:'0.5em'}} variant="contained" color="error" >
                         <Delete></Delete>
-                    </IconButton>
-                    <IconButton >
-                        <Details></Details>
                     </IconButton>
                 </TableCell>
             </TableRow>

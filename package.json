@@ -20,12 +20,16 @@
     "cookie": "^0.5.0",
     "cookies-next": "^2.1.2",
     "install": "^0.13.0",
+    "jquery": "^3.7.0",
     "next": "13.4.7",
     "npm": "^9.7.2",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "react-helmet": "^6.1.0",
+    "react-pageflip": "^2.0.3",
     "react-slick": "^0.29.0",
-    "slick-carousel": "^1.8.1"
+    "slick-carousel": "^1.8.1",
+    "turn.js": "1.0.5"
   },
   "devDependencies": {
     "@hookform/resolvers": "^3.1.1",

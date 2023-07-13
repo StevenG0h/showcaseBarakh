@@ -174,6 +174,7 @@ export default function product({produk, options}){
     return (
         <>
             <AdminLayout>
+            <Typography variant="h3" fontWeight={400}>Penjualan</Typography>
                 {/* <Typography variant="h3" fontWeight={400}>{title}</Typography>
                 <Select defaultValue={'*'}
                 onChange={(e)=>handleChangeFilter(e.target.value)}
@@ -301,6 +302,7 @@ export default function product({produk, options}){
                     </DialogContent>
                 </Dialog>
                 <Card sx={{marginY:'1em'}}>
+                
                     <TableContainer>
                         <Table>
                             <CustomTableHead tableHead={TABLEHEAD}></CustomTableHead>

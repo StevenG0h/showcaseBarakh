@@ -109,7 +109,7 @@
 
 .slider_image  .slick-slide{
     position: relative;
-    margin: 0 ;
+    margin: 0 0px;
     padding: 0;
 }
 

@@ -81,8 +81,8 @@
 }
 
 .rowProfile{
-    display: flex;
-    flex-direction: row;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
     gap: 1em;
 }
 
@@ -122,4 +122,10 @@
     margin: 0;
     text-align: center;
 
+}
+
+.yayasanImage{
+    width: 100%;
+    object-fit: cover;
+    overflow: hidden;
 }

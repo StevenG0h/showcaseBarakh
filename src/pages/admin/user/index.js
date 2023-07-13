@@ -20,7 +20,7 @@ export async function getServerSideProps(){
 }
 
 export default function product({user}){
-    let title = 'Stock';
+    let title = 'User';
     let [products, setProducts] = useState(user);
     let [formTitle, setFormTitle] = useState('');
     //Next router
