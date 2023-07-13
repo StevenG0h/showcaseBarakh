@@ -9,6 +9,7 @@ import Image from "next/image";
 import { Poppins } from 'next/font/google'
 import axios from "../../utils/axios";
 import { Grid } from "@mui/material";
+import WhatsApp from "../../components/Whatsapp/WhatsApp"
 
 const poppins = Poppins({
     weight: '500',
@@ -36,10 +37,11 @@ const Katalog = ({products}) => {
                     </div>
                     <div className={style.containerKatalog}>
                         <ul className={style.ul}>
-                            <li className={style.li}><a className={style.a} href="">Terbaru</a></li>
-                            <li className={style.li}><a className={style.a} href="">Populer</a></li>
-                            <li className={style.li}><a className={style.a} href="">Kerajinan</a></li>
-                            <li className={style.li}><a className={style.a} href="">Nuture</a></li>
+                            <li className={style.li}><a className={style.a} href="">Semuanya</a></li>
+                            <li className={style.li}><a className={style.a} href="">Galeri Oleh-Oleh</a></li>
+                            <li className={style.li}><a className={style.a} href="">Rumah Jahit</a></li>
+                            <li className={style.li}><a className={style.a} href="">Pertanian</a></li>
+                            <li className={style.li}><a className={style.a} href="">Perternakan</a></li>
                         </ul>
                     </div>
                     <Grid container gap={'1em'}>
@@ -56,6 +58,7 @@ const Katalog = ({products}) => {
                 </div>
             </div>
         <Footer/>
+        <WhatsApp/>
         </main>
     )
 }

@@ -32,15 +32,8 @@ const Header = () => {
                             <Link className={style.navitem} href="../">Beranda</Link>
                         </li>
                         <li>
-                            <div className={style.dropdown}>
-                                <Link className={style.navitem} href="">Profil</Link>
-                                <div className={style.dropdownContent}>
-                                    <Link className={style.dropdownItem} href="/profil">Unit Usaha</Link>
-                                    <Link className={style.dropdownItem} href="/">Yayasan</Link>
-                                    <Link className={style.dropdownItem} href="/">Pesantren</Link>
-                                    <Link className={style.dropdownItem} href="/">Galeri</Link>
-                                </div>
-                            </div>
+                            <Link className={`${style.navitem} ${router.pathname === '/profil/yayasan' ? style.active : ''}`}
+                                onClick={() => handleLinkClick('/profil/yayasan')} href="/profil/yayasan">Profil</Link>
                         </li>
                         <li>
                             <Link className={style.navitem} href="/usaha">Unit Usaha</Link>
@@ -49,16 +42,20 @@ const Header = () => {
                             <Link className={style.navitem} href="/katalog">Katalog Produk</Link>
                         </li>
                         <li>
-                            <Link className={style.navitem} href="/galeri">Galeri</Link>
+                            <Link className={`${style.navitem} ${router.pathname === '/galeri' ? style.active : ''}`}
+                                onClick={() => handleLinkClick('/galeri')} href="/galeri">Galeri</Link>
                         </li>
                         <li>
-                            <Link className={style.navitem} href="/bantuan">Bantuan</Link>
+                            <Link className={`${style.navitem} ${router.pathname === '/bantuan' ? style.active : ''}`}
+                                onClick={() => handleLinkClick('/bantuan')} href="/bantuan">Bantuan</Link>
                         </li>
                     </ul>
                 </div>
                 <div className={style.srccart}>
-                    <Link href="/cart" ><FontAwesomeIcon className={style.iconJ} icon={faCartShopping}/></Link>
-                </div> 
+                    <button href="" className={style.iconL} onClick={() => setSearchActive(true)}><FontAwesomeIcon className={style.iconJ} icon={faSearch} /></button>
+                    <Link href="/cart" ><FontAwesomeIcon className={style.iconJ} icon={faCartShopping} /></Link>
+                </div>
+                {/* <Search Visible={searchActive} closeClick={() => setSearchActive(false)} /> */}
                 {/* <div className={style.searchBox}>
                     <input className={style.input} placeholder="Cari barang"></input>                   
                 </div>  */}

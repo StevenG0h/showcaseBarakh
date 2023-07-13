@@ -3,6 +3,12 @@
     justify-content: center;
     width: 100%;
     background-color: #fff;
+    background-image: url('../../../public/assets/images/PropertiLight.png'),
+    url('../../../public/assets/images/PropertiLight.png'),
+    url('../../../public/assets/images/PropertiLight.png');
+    background-size: 40%, 50%, 60%;
+    background-repeat: no-repeat;
+    background-position: left -10em top -24em, top 0em right -26em, left -10em bottom -16em;
 }
 
 .containerBeranda{
@@ -18,10 +24,11 @@
     width: 100%;
     height: auto;
     border: 5px solid #94B60F;
-    gap: 2.3em;
+    background-color: #fff;
+    column-gap: 2.3em;
     padding: 2em 0em;
     margin: 4em 0 5em 0;
-    border-radius: 1em;
+    border-radius: 1em; 
 }
 
 .row1{
@@ -42,8 +49,7 @@
 
 .map{
     width: 30em;
-    height: 34em;
-    background-color: aquamarine;
+    height: 37.3em;
 }
 
 .titleContact{

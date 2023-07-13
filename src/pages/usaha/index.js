@@ -6,6 +6,7 @@ import imageJeruk from "../../../public/assets/images/UsahaPertanian.png";
 import Link from "next/link";
 import { Poppins } from 'next/font/google'
 import axios from "../../utils/axios";
+import WhatsApp from "../../components/Whatsapp/WhatsApp"
 
 const poppins = Poppins({
     weight: '500',
@@ -52,6 +53,7 @@ const UnitUsaha = ({data})=> {
                 </div>
             </div>
         <Footer/>
+        <WhatsApp />
         </main>
     )
 }

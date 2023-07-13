@@ -9,7 +9,7 @@ const ProductCategory = ({unitUsaha}) => {
         <div className={style.containerCategory}>
             <div className={style.textCategory}>
                 <p className={style.titleCategory}>Unit Usaha</p>
-                <p className={style.descriptionTitle}>Pesantren tersebut memiliki beberapa badan usaha, dari bidang FnB sampai ke bidang fashion and craft</p>
+                <p className={style.descriptionTitle}> Al - Mubarakh memiliki beberapa unit usaha unggulan dan menciptakan produk-produk ramah lingkungan</p>
             </div>
             <div className={style.containerKatalog}>
                 {
