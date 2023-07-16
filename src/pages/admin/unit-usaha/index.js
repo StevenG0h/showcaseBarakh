@@ -10,16 +10,57 @@ import RHFDnd from "../../../components/form/RHFDnd";
 import * as yup from "yup";
 import {yupResolver} from "@hookform/resolvers/yup";
 import { useRouter } from "next/router";
+import {getCookie} from 'cookies-next';
 
-export async function getServerSideProps(){
-
-    let UnitUsaha = await axios.get(process.env.NEXT_PUBLIC_BACKEND_URL+'/api/unit-usaha');
-    
-    return {
-        props: {
-            data: UnitUsaha?.data?.data
-        }
+export async function getServerSideProps({req,res}){
+    let token = getCookie('token',{req,res});
+    if(token == undefined){
+        return {
+            redirect: {
+              permanent: false,
+              destination: "/auth",
+            },
+            props:{},
+          };
     }
+    await axios.get('/user',{
+        headers:{
+            Authorization: 'Bearer '+token,
+        },
+        withCredentials:true
+    }).catch((e)=>{
+        return {
+            redirect: {
+              permanent: false,
+              destination: "/auth",
+            },
+            props:{},
+          };
+    })
+    try{
+        let UnitUsaha = await axios.get('/api/admin/unit-usaha',{
+            headers:{
+                Authorization: 'Bearer '+token,
+            },
+            withCredentials:true
+        });
+        console.log(UnitUsaha.data.data);
+        return {
+            props: {
+                data: UnitUsaha?.data?.data
+            }
+        }
+    }catch(e){
+        console.log(e)
+        return {
+            redirect: {
+              permanent: false,
+              destination: "/auth",
+            },
+            props:{},
+          };
+    }
+    
 }
 
 export default function admin({data}){
@@ -57,23 +98,44 @@ export default function admin({data}){
       })
     
       const onSubmit = async (data) => {
+        let token = getCookie('token');
         if(!editMode){
-            const createUnitUsaha = await axios.post('/api/unit-usaha/',data,{
-                headers:{
-                    'Content-Type': 'multipart/form-data'
-                }
-            });
+            await axios.get('/sanctum/csrf-cookie',{
+                headers: { Authorization: `Bearer `+token},
+                withCredentials: true
+            }).then(async (r)=>{
+                await axios.post('/api/admin/unit-usaha/',data,{
+                    headers: { Authorization: `Bearer `+token,'Content-Type': 'multipart/form-data'},
+                    withCredentials: true
+                }).then((r)=>{
+                    console.log(r.data)
+                }).catch((e)=>{
+                    console.log(e);
+                })
+            }).catch((e)=>{
+                console.log(e)
+            })
         }else{
             if(data.usahaImage == ''){
                 delete data.usahaImage;
             }
             console.log(data);
-            const createUnitUsaha = await axios.post('/api/unit-usaha/'+usahaId,data,{
-                headers:{
-                    'Content-Type': 'multipart/form-data'
-                }
-            });
-            
+
+            await axios.get('/sanctum/csrf-cookie',{
+                headers: { Authorization: `Bearer `+token},
+                withCredentials: true
+            }).then(async (r)=>{
+                await axios.post('/api/admin/unit-usaha/'+usahaId,data,{
+                    headers: { Authorization: `Bearer `+token,'Content-Type': 'multipart/form-data'},
+                    withCredentials: true
+                }).then((r)=>{
+                    console.log(r.data)
+                }).catch((e)=>{
+                    console.log(e);
+                })
+            }).catch((e)=>{
+                console.log(e)
+            })
         }
         router.reload()
         handleCloseAddForm()
@@ -87,9 +149,24 @@ export default function admin({data}){
     
     //handler
     async function handleDelete(id){
-        const csrf = await axios.get('/sanctum/csrf-cookie')
-        const deleteUnitUsaha = await axios.delete('/api/unit-usaha/'+id);
-        router.reload()
+        let token = getCookie('token');
+        console.log(token)
+        await axios.get('/sanctum/csrf-cookie',{
+            headers: { Authorization: `Bearer `+token},
+            withCredentials: true
+        }).then(async (r)=>{
+            await axios.delete('/api/admin/unit-usaha/'+id,{
+                headers: { Authorization: `Bearer `+token},
+                withCredentials: true
+            }).then((r)=>{
+                console.log(r.data)
+            }).catch((e)=>{
+                console.log(e);
+            })
+        }).catch((e)=>{
+            console.log(e)
+        })
+        // router.reload()
     }
 
     //state handler
@@ -162,13 +239,13 @@ export default function admin({data}){
                         <Typography variant="h5" sx={{marginBottom:'1em'}} fontWeight={600}>Tambah Unit Usaha</Typography>
                         <form onSubmit={handleSubmit(onSubmit)}>
                             <FormControl sx={{width:'100%', marginY:'0.5em'}}>
-                                <RHFTextField hiddenLabel={true} label={'Nama Unit Usaha'} name={"usahaName"} control={control}></RHFTextField>
+                                <RHFTextField hiddenLabel={false} label={'Nama Unit Usaha'} name={"usahaName"} control={control}></RHFTextField>
                             </FormControl>
                             <FormControl sx={{width:'100%', marginY:'0.5em'}}>
-                                <RHFTextField hiddenLabel={true} label={'Deskripsi Unit Usaha'} name={"usahaDesc"} control={control}></RHFTextField>
+                                <RHFTextField hiddenLabel={false} label={'Deskripsi Unit Usaha'} name={"usahaDesc"} control={control}></RHFTextField>
                             </FormControl>
                             <FormControl sx={{width:'100%', marginY:'0.5em'}}>
-                                <RHFTextField hiddenLabel={true} label={'Nomor WhatsApp admin'} name={"usahaPicNumber"} control={control}></RHFTextField>
+                                <RHFTextField hiddenLabel={false} label={'Nomor WhatsApp admin'} name={"usahaPicNumber"} control={control}></RHFTextField>
                             </FormControl>
                             <FormControl sx={{width:'100%', marginY:'0.5em'}}>
                                 <RHFDnd control={control} name={'usahaImage'} files={process.env.NEXT_PUBLIC_BACKEND_URL+'/storage/unitUsaha/'+getValues('usahaImage')}>

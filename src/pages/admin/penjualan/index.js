@@ -12,21 +12,64 @@ import CustomTableHead from "../../../components/table/CustomTableHead";
 import { getAllUnitUsaha, getAllUnitUsahaProduct } from "../../../helper/dataOptions";
 import PenjualanTableRow from "../../../sections/penjualan/PenjualanTableRow";
 import DetailPenjualanTableRow from "../../../sections/penjualan/DetailPenjualanTableRow";
+import {getCookie} from 'cookies-next';
 
-export async function getServerSideProps(){
-    let produk = await axios.get('http://127.0.0.1:8000/api/transaksi/penjualan');
-    let unitusaha = await getAllUnitUsaha();
-    return {
-        props:{
-            produk: produk.data,
-            options:{
-                unitUsaha: unitusaha
+export async function getServerSideProps({req,res}){
+    let token = getCookie('token',{req,res});
+    if(token == undefined){
+        return {
+            redirect: {
+              permanent: false,
+              destination: "/auth",
+            },
+            props:{},
+          };
+    }
+    await axios.get('/user',{
+        headers:{
+            Authorization: 'Bearer '+token,
+        },
+        withCredentials:true
+    }).catch((e)=>{
+        return {
+            redirect: {
+              permanent: false,
+              destination: "/auth",
+            },
+            props:{},
+          };
+    })
+   
+    try{
+        let produk = await axios.get('/api/admin/penjualan',{
+            headers:{
+                Authorization: 'Bearer '+token,
+            },
+            withCredentials:true
+        });
+        let unitusaha = await getAllUnitUsaha();
+        return {
+            props:{
+                produk: produk.data,
+                options:{
+                    unitUsaha: unitusaha
+                }
             }
         }
+    }catch(e){
+        console.log(e)
+        return {
+            redirect: {
+              permanent: false,
+              destination: "/auth",
+            },
+            props:{},
+          };
     }
 }
 
 export default function product({produk, options}){
+    let token = getCookie('token');
     let title = 'Stock';
     let [products, setProducts] = useState(produk.data);
     let [transaction, setTransaction] = useState([]);
@@ -69,12 +112,23 @@ export default function product({produk, options}){
       })
     
       const onSubmit = async (data) => {
-        if(editMode == true){
-            const createproduk = await axios.put('/api/penjualan/'+data.id,data);
-            
+        let token = getCookie('token');
+        try{
+            await axios.get('/sanctum/csrf-cookie',{
+                withCredentials:true
+            }).then(async(r)=>{
+                const createproduk = await axios.put('/api/admin/penjualan/'+data.id,data,
+                {
+                    headers:{Authorization:"Bearer "+token},
+                    withCredentials:true
+                });
+            })
+        }catch(e){
+            console.log(e)
+        }finally{
+            handleCloseAddForm()
+            router.reload()
         }
-        handleCloseAddForm();
-        router.replace(router.asPath);
       }
 
       const onSalesTransactionSubmit = async (data) => {
@@ -83,7 +137,15 @@ export default function product({produk, options}){
         data.kelurahan_id = addDetailTransactionForm.sales[0].kelurahan_id
         data.transactionAmount = Number(data.productPrice) * data.productCount;
         try{
-            let createSalesTransaction = await axios.post('/api/penjualan',data);
+            await axios.get('/sanctum/csrf-cookie',{
+                withCredentials:true
+            }).then(async(r)=>{
+                let createSalesTransaction = await axios.post('/api/admin/penjualan',data,
+                {
+                    headers:{Authorization:"Bearer "+token},
+                    withCredentials:true
+                });
+            })
         }catch(e){
             console.log(e)
         }finally{
@@ -100,10 +162,10 @@ export default function product({produk, options}){
     //state handler
     let handleChangeFilter = async (data)=>{
         if(data != '*'){
-            let unitUsaha = await axios.get('/api/produk/withFilter/'+data);
+            let unitUsaha = await axios.get('/api/admin/produk/withFilter/'+data);
             setProducts(unitUsaha?.data)
         }else{
-            let unitUsaha = await axios.get('/api/produk/');
+            let unitUsaha = await axios.get('/api/admin/produk/');
             setProducts(unitUsaha?.data?.data)
         }
     }
@@ -135,7 +197,7 @@ export default function product({produk, options}){
 
     let handleDeleteDetailRow =async (data)=>{
         try{
-            const deleteTransaction =await  axios.delete(process.env.NEXT_PUBLIC_BACKEND_URL+'/api/penjualan/'+data.id);
+            const deleteTransaction =await  axios.delete(process.env.NEXT_PUBLIC_BACKEND_URL+'/api/admin/penjualan/'+data.id);
         }catch(e){
             
         }finally{

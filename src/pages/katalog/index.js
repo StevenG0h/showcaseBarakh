@@ -8,8 +8,9 @@ import Keripik from "../../../public/assets/images/Keripik.png";
 import Image from "next/image";
 import { Poppins } from 'next/font/google'
 import axios from "../../utils/axios";
-import { Grid } from "@mui/material";
+import { Box, Grid, Typography } from "@mui/material";
 import WhatsApp from "../../components/Whatsapp/WhatsApp"
+import {useState} from "react";
 
 const poppins = Poppins({
     weight: '500',
@@ -20,14 +21,31 @@ const poppins = Poppins({
 export async function getServerSideProps({context}){
     let produk = await axios.get('/api/produk');
     console.log(produk.data);
+    let unitUsaha = await axios.get('/api/unit-usaha')
     return {
         props:{
-            products:produk.data.data
+            products:produk.data.data,
+            unitUsaha: unitUsaha.data.data.data
         }
     }
 }
 
-const Katalog = ({products}) => {
+const Katalog = ({products, unitUsaha}) => {
+    let [product, setProducts] = useState(products);
+    let [filter, setFilter] = useState('all');
+
+    let handleFilter = async (data)=>{
+        if(data != 'all'){
+            let unitUsaha = await axios.get('/api/produk/withFilter/'+data);
+            console.log(unitUsaha);
+            setProducts(unitUsaha?.data)
+        }else{
+            let unitUsaha = await axios.get('/api/produk/');
+            setProducts(unitUsaha?.data?.data)
+        }
+        setFilter(data);
+    }
+
     return (
         <main className={poppins.className}>
         <Header/>
@@ -37,22 +55,31 @@ const Katalog = ({products}) => {
                     </div>
                     <div className={style.containerKatalog}>
                         <ul className={style.ul}>
-                            <li className={style.li}><a className={style.a} href="">Semuanya</a></li>
-                            <li className={style.li}><a className={style.a} href="">Galeri Oleh-Oleh</a></li>
-                            <li className={style.li}><a className={style.a} href="">Rumah Jahit</a></li>
-                            <li className={style.li}><a className={style.a} href="">Pertanian</a></li>
-                            <li className={style.li}><a className={style.a} href="">Perternakan</a></li>
+                            <li  className={style.li}><button type="button" onClick={()=>handleFilter('all')} style={{cursor: 'pointer',color: filter === 'all' ? '#94B60F' : '#ffffff',backgroundColor:'transparent',boxShadow:'none',border:'none'}} className={style.a} href="">Semua</button></li>
+                            {
+                                unitUsaha.map((map)=>{
+                                    return (
+                                        <li className={style.li}><button type="button" onClick={()=>handleFilter(map.id)} style={{cursor: 'pointer',color: filter === map.id ? '#94B60F' : '#ffffff',backgroundColor:'transparent',boxShadow:'none',border:'none'}} className={style.a} href="">{map.usahaName}</button></li>
+                                    )
+                                })
+                            }
                         </ul>
                     </div>
                     <Grid container gap={'1em'}>
                         {
-                            products.map((product)=>{
+                            product.length != 0 ? product.map((product)=>{
                                 return (
                                     <Grid item xs={3} key={product.id}>
                                         <KatalogCard style={style} row={product}></KatalogCard>
                                     </Grid>
                                 )
-                            })
+                            }) :
+                            <Box sx={{display:'flex', flexDirection:'column', width:'100%'}}>
+                            <img style={{width:'45%',margin:'auto',marginTop:'-8em'}} src={'http://localhost:3000/assets/image/Business, Startup, workflow, error _ exhaustion, exhausted, work, laptop, computer, support 1.png'}></img>
+                            <Typography sx={{color:'white'}} variant="h6" textAlign={'center'}>
+                                Produk kosong
+                            </Typography>
+                            </Box>
                         }
                     </Grid>
                 </div>
