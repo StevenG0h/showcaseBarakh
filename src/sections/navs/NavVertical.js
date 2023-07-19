@@ -99,7 +99,7 @@ export default function NavVertical({data}){
                             <People sx={{m:'auto',color:'white'}}></People>
                         </ListItemIcon>
                         <ListItemText>
-                            User
+                            Pegawai
                         </ListItemText>
                     </ListItemButton>
                     <ListItemButton onClick={()=>{setOpenList(!openList)}} sx={{paddingRight:"5em",paddingLeft:'0'}}>
@@ -107,7 +107,7 @@ export default function NavVertical({data}){
                             <Folder sx={{m:'auto',color:'white'}}></Folder>
                         </ListItemIcon>
                         <ListItemText>
-                            Content
+                            Konten
                         </ListItemText>
                     </ListItemButton>
                     <Collapse in={openList} timeout="auto" unmountOnExit>
@@ -126,6 +126,14 @@ export default function NavVertical({data}){
                                 </ListItemIcon>
                                 <ListItemText>
                                     Galeri
+                                </ListItemText>
+                            </ListItemButton>
+                            <ListItemButton onClick={()=>{router.push('/admin/konten/testimoni')}} sx={{paddingRight:"5em",paddingLeft:'1.5em'}}>
+                                <ListItemIcon>
+                                    <Circle sx={{m:'auto',color:'white',fontSize:'0.4em'}}></Circle>
+                                </ListItemIcon>
+                                <ListItemText>
+                                    Testimoni
                                 </ListItemText>
                             </ListItemButton>
                         </List>

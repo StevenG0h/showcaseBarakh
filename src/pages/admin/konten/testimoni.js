@@ -13,7 +13,7 @@ import  Star  from "@mui/icons-material/Star";
 import RHFDnd from "../../../components/form/RHFDnd";
 import { getAllUnitUsaha } from "../../../helper/dataOptions";
 import {getCookie} from 'cookies-next';
-import GaleriTableRow from "../../../sections/galeri/GaleriTableRow";
+import TestimoniTableRow from "../../../sections/testimoni/TestimoniTableRow";
 
 export async function getServerSideProps({req,res}){
     let token = getCookie('token',{req,res});
@@ -41,16 +41,16 @@ export async function getServerSideProps({req,res}){
           };
     })
     try{
-        let galeri = await axios.get('/api/admin/galeri',{
+        let testimoni = await axios.get('/api/admin/testimoni',{
             headers:{
                 Authorization: 'Bearer '+token,
             },
             withCredentials:true
         });
-        console.log(galeri);
+        console.log(testimoni);
         return {
             props:{
-                data: galeri.data.data
+                data: testimoni.data.data
             }
         }
     }catch(e){
@@ -65,9 +65,9 @@ export async function getServerSideProps({req,res}){
     }
 }
 
-export default function galeri({data}){
+export default function testimoni({data}){
     const token = getCookie('token');
-    let [galeris, setgaleriUsahas] = useState(data?.data);
+    let [testimonis, settestimoniUsahas] = useState(data?.data);
     let [links, setUnitUsahaLink] = useState(data?.links);
     let [imageData, setImage] = useState([]);
     let [deletedImage, setDeletedImage] = useState([]);
@@ -77,16 +77,15 @@ export default function galeri({data}){
 
     //React hook form and YUP validator
     const schema = yup.object().shape({
-        galeriTitle: yup.string().required('Judul tidak boleh kosong'),
-        galeriDate: yup.string().required('Tanggal tidak boleh kosong'),
+        testimonyDesc: yup.string().required('Testimoni tidak boleh kosong'),
+        clientName: yup.string().required('Nama pelanggan tidak boleh kosong'),
     })
 
     const { control, handleSubmit, getValues, setValue, reset, register , formState:{errors}} = useForm({
         defaultValues: {
             id: ''  ,
-          galeriDate:'',
-          galeriTitle: "",
-          path: ""
+            testimonyDesc:'',
+            clientName: ""
         },
         resolver: yupResolver(schema)
       })
@@ -99,11 +98,12 @@ export default function galeri({data}){
                 headers: { Authorization: `Bearer `+token},
                 withCredentials: true
             }).then(async (r)=>{
-                await axios.post('/api/admin/galeri/',data,{
+                await axios.post('/api/admin/testimoni/',data,{
                     headers: { Authorization: `Bearer `+token, "Content-Type":'multipart/form-data'},
                     withCredentials: true,
                 }).then((r)=>{
                     console.log(r.data)
+                    router.reload();
                 }).catch((e)=>{
                     console.log(e);
                 })
@@ -115,11 +115,12 @@ export default function galeri({data}){
                 headers: { Authorization: `Bearer `+token},
                 withCredentials: true
             }).then(async (r)=>{
-                await await axios.post('/api/admin/galeri/edit/'+data.id,data,{
-                    headers: { Authorization: `Bearer `+token, "Content-Type":'multipart/form-data'},
+                await await axios.put('/api/admin/testimoni/'+data.id,data,{
+                    headers: { Authorization: `Bearer `+token},
                     withCredentials: true,
                 }).then((r)=>{
                     console.log(r.data)
+                    router.reload();
                 }).catch((e)=>{
                     console.log(e);
                 })
@@ -128,7 +129,6 @@ export default function galeri({data}){
             })
             
         }
-        router.reload();
       }
       
       //states
@@ -142,7 +142,7 @@ export default function galeri({data}){
         const csrf = await axios.get('/sanctum/csrf-cookie',{
             withCredentials:true
         }).then(async (r)=>{
-            const deleteUnitUsaha = await axios.delete('/api/admin/galeri/'+id,{
+            const deleteUnitUsaha = await axios.delete('/api/admin/testimoni/'+id,{
                 headers:{
                     Authorization: `Bearer `+token
                 }
@@ -161,23 +161,20 @@ export default function galeri({data}){
         setEditMode(false);
         setAddForm(false);
         setValue('id','');
-        setValue('galeriTitle','');
-        setValue('galeriDate','');
+        setValue('testimonyDesc','');
         setImage('path');
     }
     
     let handleOpenEditForm = (data)=>{
         setEditMode(true);
         setValue('id',data.id);
-        setValue('galeriTitle',data?.galeriTitle);
-        setValue('galeriDate',data?.galeriDate);
-        setValue('galeriDate',data?.galeriDate);
-        setValue('path',data?.path);
+        setValue('testimonyDesc',data?.testimonyDesc);
+        setValue('clientName',data?.clientName);
         setAddForm(true)
     }
    
     let handleShowImage = (data)=>{
-        setShowImage(process.env.NEXT_PUBLIC_BACKEND_URL+'/storage/galeri/'+data)
+        setShowImage(process.env.NEXT_PUBLIC_BACKEND_URL+'/storage/testimoni/'+data)
     }
     
     let handleCloseShowImage = (data)=>{
@@ -202,9 +199,10 @@ export default function galeri({data}){
 
     let TABLEHEAD = [
         {value: 'No',align: 'left'},
-        {value: 'Judul',align: 'left'},
-        {value: 'Kegiatan pada',align: 'left'},
-        {value: 'Gambar',align: 'left'},
+        {value: 'Nama Pelanggan',align: 'left'},
+        {value: 'Testimoni',align: 'left'},
+        {value: 'Dibuat pada',align: 'left'},
+        {value: 'Diedit pada',align: 'left'},
         {value: 'Action',align: 'center'}
     ]
     
@@ -221,24 +219,19 @@ export default function galeri({data}){
                         <Typography variant="h5" sx={{marginBottom:'1em'}} fontWeight={600}>Tambah Profil</Typography>
                         <form onSubmit={handleSubmit(onSubmit)}>
                             <FormControl sx={{width:'100%', marginY:'0.5em'}}>
-                                <RHFTextField hiddenLabel={false} label={'Judul'} name={"galeriTitle"} control={control}></RHFTextField>
+                                <RHFTextField  hiddenLabel={false} label={'Nama Pelanggan'} name={"clientName"} control={control}></RHFTextField>
                             </FormControl>
                             <FormControl sx={{width:'100%', marginY:'0.5em'}}>
-                                <RHFTextField type="date" hiddenLabel={false} label={'Tanggal'} name={"galeriDate"} control={control}></RHFTextField>
-                            </FormControl>
-                            <FormControl sx={{marginY:'0.5em',display:'flex', flexDirection:'row', flexWrap:'wrap', width:'99%',overflow:'hidden'}}>
-                                <Box sx={{width:'100%'}}>
-                                    <RHFDnd name="path" files={process.env.NEXT_PUBLIC_BACKEND_URL+'/storage/galeri/'+getValues('path')} control={control}></RHFDnd>
-                                </Box>
+                                <RHFTextField hiddenLabel={false} label={'Testimoni'} name={"testimonyDesc"} control={control}></RHFTextField>
                             </FormControl>
                             <Button variant="contained" color="success" sx={{width:'100%'}} type="submit">{editMode ? 'Simpan Perubahan' : 'Tambah Unit Usaha'}</Button>
                         </form>
                     </DialogContent>
                 </Dialog>
-                <Typography variant="h3" fontWeight={400}>Galeri</Typography>
+                <Typography variant="h3" fontWeight={400}>Testimoni</Typography>
                 <Box sx={{display:'flex',flexDirection:'row',alignItems:'center'}}>
                     <Button onClick={handleOpenAddForm} color="success" variant="contained" startIcon="">
-                        Tambah Profil
+                        Tambah Testimoni
                     </Button>
                 </Box>
                 <Card sx={{marginY:'1em'}}>
@@ -247,21 +240,21 @@ export default function galeri({data}){
                             <CustomTableHead tableHead={TABLEHEAD}></CustomTableHead>
                             <TableBody>
                                 {
-                                    galeris.length==0 ? (
+                                    testimonis.length==0 ? (
                                         <TableRow>
                                             <TableCell>Data kosong</TableCell>
                                         </TableRow>
                                     ) :
-                                    galeris.map((map)=>{
+                                    testimonis.map((map)=>{
                                         return ( <>
-                                            <GaleriTableRow 
+                                            <TestimoniTableRow 
                                             key={map.id} 
                                             onDelete={() => handleDelete(map.id)} 
                                             onEdit={() => handleOpenEditForm(map)} 
                                             onShowImage={()=> handleShowImage(map.path)}
                                             num={++num} row={map}>
 
-                                            </GaleriTableRow>
+                                            </TestimoniTableRow>
                                         </>
                                         )
                                     })
