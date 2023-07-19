@@ -2,6 +2,7 @@ import Delete from "@mui/icons-material/Delete";
 import Edit from "@mui/icons-material/Edit";
 import Details from "@mui/icons-material/Details";
 import {Button, IconButton, TableCell, TableRow} from "@mui/material"
+import {formatCurrency} from "../../helper/currency"
 
 export default function StockTableRow({row, num, onShowImage, onDelete, onEdit}){
     let {productName, productPrice, productStock, created_at} = row;
@@ -16,7 +17,7 @@ export default function StockTableRow({row, num, onShowImage, onDelete, onEdit})
                     {productName}
                 </TableCell>
                 <TableCell>
-                    {productPrice}
+                    {'Rp'+formatCurrency(productPrice)}
                 </TableCell>
                 <TableCell>
                     {productStock}

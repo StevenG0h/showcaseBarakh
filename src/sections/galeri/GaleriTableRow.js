@@ -2,11 +2,10 @@ import Delete from "@mui/icons-material/Delete";
 import Edit from "@mui/icons-material/Edit";
 import Details from "@mui/icons-material/Details";
 import {Button, IconButton, TableCell, TableRow} from "@mui/material"
+import { formatDate } from "../../helper/data";
 
-export default function UserTableRow({row, num, onShowImage, onDelete, onEdit}){
-    let {email, admins} = row;
-    console.log(row);
-    let {adminName, adminNum, adminLevel} =  admins
+export default function GaleriTableRow({row, num, onShowImage, onDelete, onEdit}){
+    let {galeriTitle, galeriDate, path, created_at, updated_at} = row;
     return (
         <>
         
@@ -15,28 +14,23 @@ export default function UserTableRow({row, num, onShowImage, onDelete, onEdit}){
                     {num}
                 </TableCell>
                 <TableCell>
-                    {adminName}
+                    {galeriTitle}
                 </TableCell>
                 <TableCell>
-                    {email}
+                    {galeriDate}
                 </TableCell>
                 <TableCell>
-                    {adminNum}
+                    <Button sx={{textAlign:'left'}} color="success" onClick={onShowImage}>
+                        {path}
+                    </Button>
                 </TableCell>
-                <TableCell>
-                    {adminLevel == 1 ?'admin':'pegawai'}
-                </TableCell>
-                <TableCell align="center">
+                <TableCell align="center" >
                     <IconButton onClick={onEdit} sx={{marginX:'0.5em'}} variant="contained" color="warning" >
                         <Edit></Edit>
                     </IconButton>
-                    {
-                        adminLevel == 1 ? '' : (
-                            <IconButton onClick={onDelete} sx={{marginX:'0.5em'}} variant="contained" color="error" >
-                                <Delete></Delete>
-                            </IconButton>
-                        )
-                    }
+                    <IconButton onClick={onDelete} sx={{marginX:'0.5em'}} variant="contained" color="error" >
+                        <Delete></Delete>
+                    </IconButton>
                 </TableCell>
             </TableRow>
         </>

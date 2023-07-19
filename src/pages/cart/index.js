@@ -13,7 +13,7 @@ import { Poppins } from 'next/font/google'
 import { getCookie, setCookie } from "cookies-next";
 import axios from "../../utils/axios";
 import {formatCurrency} from "../../helper/currency";
-import { Box, Button, Container, Dialog, DialogContent, DialogTitle, FormControl, Grid, IconButton, StepIcon, Typography } from "@mui/material";
+import { Box, Button, Checkbox, Container, Dialog, DialogContent, DialogTitle, FormControl, Grid, IconButton, StepIcon, Typography } from "@mui/material";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMinus, faPlus, faShoppingCart } from "@fortawesome/free-solid-svg-icons";
@@ -21,6 +21,7 @@ import RHFTextField from '../../components/form/RHFTextField';
 import RHFAutocomplete from '../../components/form/RHFAutocomplete';
 import {getAllKecamatanById, getAllKelurahanById, getAllKotaById, getAllProvinsi} from '../../helper/dataOptions';
 import KatalogCard from "../../components/card/KatalogCard/KatalogCard";
+import { Router, useRouter } from "next/router";
 // import {Checkbox} from "@mui/material";
 // import WhatsApp from "../../components/Whatsapp/WhatsApp"
 
@@ -41,7 +42,6 @@ export async function getServerSideProps({req,res}){
             count += data.item * Number(data.productData.productPrice)
         })
     }
-    console.log(count)
     return {
         props:{
             cookie: cookie === undefined ? [] : cookie,
@@ -54,11 +54,10 @@ export async function getServerSideProps({req,res}){
 }
 
 const Cart = ({cookie, option,totalPayment, product}) => {
-    console.log(product)
     let [cartList, setCart] = useState(cookie);
     let [showCheckout, setShowCheckout] = useState(cookie.length !=0)
     let [total, setTotal] = useState(totalPayment);
-    
+    const router = useRouter()
     let [checked, setChecked] = useState([]);
     let [deleteCart, setDelete] = useState([]);
     let [checkoutDialog, setCheckoutDialog] = useState(false);
@@ -184,19 +183,67 @@ const Cart = ({cookie, option,totalPayment, product}) => {
         setValue('clientKelurahan',id)
     }
 
+    const handleCartChecked = (id)=>{
+        let addChecked = checked
+        addChecked.push(id);
+        setChecked(addChecked);
+    }
+
+    const handleCartUnchecked = (id)=>{
+        let addChecked = checked.filter((checkedId)=>{
+            return checkedId != id
+        })
+        setChecked(addChecked);
+    }
+
+    const handleDeleteCart = ()=>{
+        let cookie = getCookie('barakh-cart-cookie')
+        cookie = JSON.parse(cookie)
+        let newCookie = cookie.filter((cart)=>{
+            let isInCart = false;
+            checked.map((id)=>{
+                (cart.productId)
+                if(id == cart.productId){
+                    isInCart = true
+                }
+            })
+            console.log(isInCart)
+            return isInCart !== true
+        })
+        setCookie('barakh-cart-cookie',newCookie);
+        setCart(newCookie);
+        countTotal(newCookie)
+        if(newCookie.length === 0){
+            setShowCheckout(false)
+        }
+    }
+
+    const countTotal = (cart)=>{
+        let count = 0;
+        if(cart == undefined){
+            cartList.map((data)=>{
+                count += data.item * Number(data.productData.productPrice)
+            })
+        }else{
+            cart.map((data)=>{
+                count += data.item * Number(data.productData.productPrice)
+            })
+        }
+        setTotal(count)
+    }
+
     return (
-        <main className={poppins.className}>
+        <main className={poppins.className} style={{backgroundColor:'#fff'}}>
             <Header />
             {
                 showCheckout === true ?
                 (
-            <div className={style.container}>
-                <div className={style.containerCart}>
+            <div className={style.container} >
+                <div className={style.containerCart} >
                     <p className={style.title}>Keranjang</p>
                     <div className={style.topCart}>
                         <div className={style.pilih}>
-                            <Checkbox {...label} defaultChecked color="success" className={style.input} />
-                            {/* <input className={style.input} type="checkbox" /> */}
+                            <input className={style.input} type="checkbox" />
                             <p className={style.textPilih}>Pilih Semua</p>
                         </div>
                         <button onClick={()=>{handleDeleteCart()}} className={style.buttonHapus}>Hapus</button>
@@ -208,7 +255,13 @@ const Cart = ({cookie, option,totalPayment, product}) => {
                                 cartList.map(({item, productData})=>{
                                     return (
                                         <div key={productData.id} onChange={(e)=>handleChangeItem(e.target.value)} className={style.fieldListProduct}>
-                                            <input className={style.inputt} type="checkbox" value={productData.id} />
+                                            <input onChange={(e)=>{
+                                                if(e.target.checked === true){
+                                                    handleCartChecked(e.target.value)
+                                                }else{
+                                                    handleCartUnchecked(e.target.value)
+                                                }
+                                            }} className={style.inputt} type="checkbox" value={productData.id} />
                                             <div className={style.list}>
                                                 <div className={style.image}>
                                                     <img style={{aspectRatio:'3/2', objectFit:'cover',margin:'auto'}} src={process.env.NEXT_PUBLIC_BACKEND_URL+"/storage/product/"+productData.product_images[0].path} alt="Gambar" className={style.imageCart} />
@@ -262,12 +315,23 @@ const Cart = ({cookie, option,totalPayment, product}) => {
             </div>
                     ) :
                     <Container>
-                        <Box sx={{}}>
-                            <img style={{width:'25%',margin:'auto'}} src={'http://localhost:3000/assets/image/Business, Startup, workflow, error _ exhaustion, exhausted, work, laptop, computer, support 1.png'}></img>
+                        <Box sx={{display:'flex', flexDirection:'column'}}>
+                            <img style={{width:'45%',margin:'auto',marginTop:'-8em'}} src={'http://localhost:3000/assets/image/Business, Startup, workflow, error _ exhaustion, exhausted, work, laptop, computer, support 1.png'}></img>
+                            <Typography textAlign={'center'}>
+                                Yuk isi dengan produk produk unggulan!
+                            </Typography>
+                            <Box sx={{display:'flex', justifyContent:'center',margin:'1em'}}> 
+                                <Button  variant={'contained'} color={'success'} onClick={()=>router.push('/katalog')}>
+                                    Mulai Belanja
+                                </Button>
+                            </Box>
                         </Box>
                     </Container>
                 }
-                <Container>
+                <Container sx={{marginBottom:'4em'}}>
+                    <Typography variant="h5">
+                        Produk Rekomendasi
+                    </Typography>
                     <Grid container xs={'12'} columns={12} sx={{width:'100%'}}>
                         {
                             product.map((data)=>{

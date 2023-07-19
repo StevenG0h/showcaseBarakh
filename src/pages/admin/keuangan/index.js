@@ -11,18 +11,59 @@ import RHFAutocomplete from "../../../components/form/RHFAutocomplete";
 import CustomTableHead from "../../../components/table/CustomTableHead";
 import { getAllUnitUsaha, getAllUnitUsahaProduct } from "../../../helper/dataOptions";
 import KeuanganTableRow from "../../../sections/keuangan/KeuanganTableRow";
+import SpendingTableRow from "../../../sections/keuangan/SpendingTableRow";
+import {getCookie} from 'cookies-next';
 
-
-export async function getServerSideProps(){
-    let produk = await axios.get('http://127.0.0.1:8000/api/transaksi');
-    let unitusaha = await getAllUnitUsaha();
-    return {
-        props:{
-            produk: produk.data.data,
-            options:{
-                unitUsaha: unitusaha
+export async function getServerSideProps({req,res}){
+    let token = getCookie('token',{req,res});
+    if(token == undefined){
+        return {
+            redirect: {
+              permanent: false,
+              destination: "/auth",
+            },
+            props:{},
+          };
+    }
+    await axios.get('/user',{
+        headers:{
+            Authorization: 'Bearer '+token,
+        },
+        withCredentials:true
+    }).catch((e)=>{
+        return {
+            redirect: {
+              permanent: false,
+              destination: "/auth",
+            },
+            props:{},
+          };
+    })
+    try{
+        let produk = await axios.get('/api/admin/transaksi',{
+            headers:{
+                Authorization: 'Bearer '+token,
+            },
+            withCredentials:true
+        });
+        let unitUsaha = await getAllUnitUsaha();
+        return {
+            props:{
+                produk: produk.data.data,
+                options:{
+                    unitUsaha: unitUsaha
+                }
             }
         }
+    }catch(e){
+        console.log(e)
+        return {
+            redirect: {
+              permanent: false,
+              destination: "/auth",
+            },
+            props:{},
+          };
     }
 }
 
@@ -37,87 +78,59 @@ export default function keuangan({produk, options}){
     let [addDetailTransactionForm, setAddDetailTransactionForm] = useState('');
     let [productOption, setProductOptions] = useState([]);
     //Next router
-
-    //React hook form and YUP validator
-    const schema = yup.object().shape({
-        id: yup.string().required('Something wrong'),
-        productCount: yup.number().required('Harga tidak boleh kosong').min(1),
-
-    })
-
-    const { control, handleSubmit, setValue, reset, register , formState:{errors}} = useForm({
-        defaultValues: {
-          id:'',
-          productCount:0,
-        },
-        resolver: yupResolver(schema)
-      })
     
-      const schemaAddSalesTransaction = yup.object().shape({
-        productCount: yup.number().required('Harga tidak boleh kosong').min(1),
-        usaha_id: yup.string().required('test'),
-        product_id: yup.string().required('test'),
+      const schemaAddSpendingTransaction = yup.object().shape({
+        unit_usaha_id: yup.string().required('Unit usaha tidak boleh kosong'),
+        SpendingName: yup.string().required('Nama pengeluaran tidak boleh kosong'),
+        SpendingDescription: yup.string().required('Deskripsi pengeluaran tidak boleh kosong'),
+        SpendingValue: yup.string().required('Jumlah pengeluaran tidak boleh kosong'),
     })
 
-    const { control: salesTransactionControl, handleSubmit: handleSalesTransactionSubmit, setValue: setSalesTransactionValue ,formState:{errors: salesTransactionError}} = useForm({
+    const { control, handleSubmit, setValue ,formState:{errors}} = useForm({
         defaultValues: {
-          transaction_id:'',
-          productCount:0,
-          productPrice:0,
-          usaha_id:'',
-          product_id:''
+          transactionType:'PENGELUARAN',
+          unit_usaha_id:'',
+          SpendingName:'',
+          SpendingDescription:'',
+          SpendingValue:0
         },
-        resolver: yupResolver(schemaAddSalesTransaction)
+        resolver: yupResolver(schemaAddSpendingTransaction)
       })
     
       const onSubmit = async (data) => {
-        if(editMode == true){
-            const createproduk = await axios.put('/api/penjualan/'+data.id,data);
-            
-        }
-        handleCloseAddForm();
-        router.replace(router.asPath);
-      }
-
-      const onSalesTransactionSubmit = async (data) => {
-        data.transactionAddress = addDetailTransactionForm.sales[0].transactionAddress
-        data.client_id = addDetailTransactionForm.sales[0].client_id
-        data.kelurahan_id = addDetailTransactionForm.sales[0].kelurahan_id
-        data.transactionAmount = Number(data.productPrice) * data.productCount;
-        try{
-            let createSalesTransaction = await axios.post('/api/penjualan',data);
-        }catch(e){
+        let token = getCookie('token');
+        await axios.get('/sanctum/csrf-cookie',{
+            headers: { Authorization: `Bearer `+token},
+            withCredentials: true
+        }).then(async (r)=>{
+            await axios.post('/api/admin/transaksi/',data,{
+                headers: { Authorization: `Bearer `+token},
+                withCredentials: true
+            }).then((r)=>{
+                console.log(r.data)
+            }).catch((e)=>{
+                console.log(e);
+            })
+        }).catch((e)=>{
             console.log(e)
-        }
-
+        })
+        handleCloseAddForm();
+        router.reload();
       }
       
       //states
     const [AddForm, setAddForm] = useState(false);
-    const [editMode, setEditMode] = useState(false);
 
     //state handler
-    let handleChangeFilter = async (data)=>{
-        if(data != '*'){
-            let unitUsaha = await axios.get('/api/produk/withFilter/'+data);
-            setProducts(unitUsaha?.data)
-        }else{
-            let unitUsaha = await axios.get('/api/produk/');
-            setProducts(unitUsaha?.data?.data)
-        }
-    }
-
     let handleCloseAddForm = ()=>{
-        setEditMode(false);
         setAddForm(false);
-        setValue('id','');
-        setValue('productCount',0);
+        setValue('unit_usaha_id','');
+        setValue('SpendingName','');
+        setValue('SpendingDescription','');
+        setValue('SpendingValue',0);
     }
     
-    let handleOpenEditForm = (data)=>{
-        setEditMode(true);
-        setValue('id',data.id);
-        setValue('productCount',data.productCount);
+    let openSpendingForm = (data)=>{
         setAddForm(true)
         handleCloseTransactionDetails()
     }
@@ -132,36 +145,10 @@ export default function keuangan({produk, options}){
         detailNum = 0;
     }
 
-    let handleDeleteDetailRow =async (data)=>{
-        try{
-            const deleteTransaction =await  axios.delete(process.env.NEXT_PUBLIC_BACKEND_URL+'/api/penjualan/'+data.id);
-        }catch(e){
-            
-        }finally{
-            router.replace(router.asPath);
-        }
-
-    }
-
-    let handleAddSalesTransactionForm = (data)=>{
-        setAddDetailTransactionForm(data)
-        setSalesTransactionValue('transaction_id',data.id)
-    }
-    
-    let handleCloseAddSalesTransactionForm = ()=>{
-        setAddDetailTransactionForm([])
-        setSalesTransactionValue('transaction_id','')
-    }
-
-    let handleProductOption = async (id)=>{
-        let products = await getAllUnitUsahaProduct(id)
-        setProductOptions(products);
-    }
-
     let TABLEHEAD = [
         {value: 'No',align: 'left'},
         {value: 'Nama Client',align: 'left'},
-        {value: 'Alamat',align: 'left'},
+        {value: 'Tipe Transaksi',align: 'left'},
         {value: 'Total',align: 'left'}
     ]
     
@@ -172,6 +159,9 @@ export default function keuangan({produk, options}){
         <>
             <AdminLayout>
             <Typography variant="h3" fontWeight={400}>Keuangan</Typography>
+            <Button color="success" variant="contained" onClick={()=>{openSpendingForm()}}>
+                Tambah Pengeluaran
+            </Button>
                 {/* <Typography variant="h3" fontWeight={400}>{title}</Typography>
                 <Select defaultValue={'*'}
                 onChange={(e)=>handleChangeFilter(e.target.value)}
@@ -185,37 +175,26 @@ export default function keuangan({produk, options}){
                         })
                     }
                 </Select> */}
-                <Dialog onClose={handleCloseAddSalesTransactionForm} open={addDetailTransactionForm.length === 0 ? false : true}>
+                <Dialog onClose={handleCloseAddForm} open={AddForm}>
                     <DialogTitle>
                         Tambah Transaksi
                     </DialogTitle>
                     <DialogContent>
-                        <form onSubmit={handleSalesTransactionSubmit(onSalesTransactionSubmit)}>
+                        <form onSubmit={handleSubmit(onSubmit)}>
                             <FormControl>
                                 <RHFAutocomplete
-                                    name={'usaha_id'}
+                                    name={'unit_usaha_id'}
                                     options={options.unitUsaha}
-                                    control= {salesTransactionControl}
+                                    control= {control}
                                     disable={false}
                                     handleChange={(data)=>{
-                                        setSalesTransactionValue('usaha_id', data)
-                                        handleProductOption(data)
+                                        setValue('unit_usaha_id', data)
+                                        return data
                                     }}
                                 />
-                                <RHFAutocomplete
-                                    name={'product_id'}
-                                    options={productOption}
-                                    control= {salesTransactionControl}
-                                    disable={productOption.length == 0}
-                                    handleChange={(data)=>{
-                                        setSalesTransactionValue('product_id',data);
-                                        productOption.map(({id,price})=>{
-                                            if(id === data){
-                                                setSalesTransactionValue('productPrice', price)
-                                            }
-                                        })
-                                    }}
-                                />
+                                <RHFTextField label={'Nama Pengeluaran'} control={control} name={'SpendingName'}></RHFTextField>
+                                <RHFTextField label={'Deskripsi Pengeluaran'} control={control} name={'SpendingDescription'}></RHFTextField>
+                                <RHFTextField label={'Jumlah Pengeluaran'} control={control} name={'SpendingValue'}></RHFTextField>
                                 {/* <Select defaultValue={1}>
                                     {
                                     options?.unitUsaha.map(({id, label})=>{
@@ -225,22 +204,7 @@ export default function keuangan({produk, options}){
                                         })
                                     }
                                 </Select> */}
-                                <RHFTextField control={salesTransactionControl} name={'productCount'}></RHFTextField>
-                                <Button type="submit">Tambah Transaksi</Button>
-                            </FormControl>
-                        </form>
-                    </DialogContent>
-                </Dialog>
-                <Dialog open={AddForm} onClose={()=>{handleCloseAddForm()}} fullWidth maxWidth={'xs'}>
-                    <DialogTitle>
-                        Edit transaksi
-                    </DialogTitle>
-                    <DialogContent>
-                        <form onSubmit={handleSubmit(onSubmit)}>
-                            <FormControl sx={{width:'100%'}}>
-                                <input type="hidden" name="id"></input>
-                                <RHFTextField control={control} label={'Jumlah Beli'} name={'productCount'} />
-                                <Button type={'submit'}>Simpan Perubahan</Button>
+                                <Button type="submit">Tambah Pengeluaran</Button>
                             </FormControl>
                         </form>
                     </DialogContent>
@@ -265,6 +229,16 @@ export default function keuangan({produk, options}){
                                                 onEdit={() => handleOpenEditForm(map)} 
                                                 num={++detailNum} row={map}>
                                                 </KeuanganTableRow>
+                                            </>
+                                            )
+                                        }else{
+                                            return ( <>
+                                                <SpendingTableRow 
+                                                key={detailNum} 
+                                                onDetail={()=>{handleTransactionDetails(map)}}
+                                                onEdit={() => handleOpenEditForm(map)} 
+                                                num={++detailNum} row={map}>
+                                                </SpendingTableRow>
                                             </>
                                             )
                                         }

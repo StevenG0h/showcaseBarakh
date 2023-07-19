@@ -12,14 +12,55 @@ import ProductTableRow from "../../../../sections/product/ProductTableRow";
 import  Delete  from "@mui/icons-material/Delete";
 import  Star  from "@mui/icons-material/Star";
 import RHFDnd from "../../../../components/form/RHFDnd";
+import {getCookie} from 'cookies-next';
+import { getAllUnitUsaha } from "../../../../helper/dataOptions";
 
-export async function getServerSideProps(context){
-    let UnitUsaha = await axios.get('http://127.0.0.1:8000/api/unit-usaha/'+context.query.unitUsaha);
-    console.log(UnitUsaha.data)
-    return {
-        props:{
-            unitUsaha: UnitUsaha.data
+export async function getServerSideProps({req,res,query}){
+    let token = getCookie('token',{req,res});
+    if(token == undefined){
+        return {
+            redirect: {
+              permanent: false,
+              destination: "/auth",
+            },
+            props:{},
+          };
+    }
+    await axios.get('/user',{
+        headers:{
+            Authorization: 'Bearer '+token,
+        },
+        withCredentials:true
+    }).catch((e)=>{
+        return {
+            redirect: {
+              permanent: false,
+              destination: "/auth",
+            },
+            props:{},
+          };
+    })
+    try{
+        let produk = await axios.get('/api/admin/unit-usaha/'+query.unitUsaha,{
+            headers:{
+                Authorization: 'Bearer '+token,
+            },
+            withCredentials:true
+        });
+        return {
+            props:{
+                unitUsaha: produk.data,
+            }
         }
+    }catch(e){
+        console.log(e)
+        return {
+            redirect: {
+              permanent: false,
+              destination: "/auth",
+            },
+            props:{},
+          };
     }
 }
 
@@ -81,6 +122,7 @@ export default function product({unitUsaha}){
       })
     
       const onSubmit = async (data) => {
+        let token = getCookie('token');
         data.unit_usaha_id = unitUsaha.id;
         data.deletedImage = deletedImage;
         console.log(data);
@@ -91,21 +133,44 @@ export default function product({unitUsaha}){
                     return image;
                 }
             })
-            const createUnitUsaha = await axios.post('/api/produk/',data,{
-                headers:{
+            await axios.get('/sanctum/csrf-cookie',{
+                headers: { Authorization: `Bearer `+token},
+                withCredentials: true
+            }).then(async (r)=>{
+                await axios.post('/api/admin/produk/',data,{
+                    headers: { Authorization: `Bearer `+token,
                     'Content-Type': 'multipart/form-data'
-                }
-            });
+                    },
+                    withCredentials: true
+                }).then((r)=>{
+                    console.log(r.data)
+                }).catch((e)=>{
+                    console.log(e);
+                })
+            }).catch((e)=>{
+                console.log(e)
+            })
         }else{
             if(data.usahaImage == ''){
                 delete data.usahaImage;
             }
-            const createUnitUsaha = await axios.post('/api/produk/edit/'+data.productId,data,{
-                headers:{
+            await axios.get('/sanctum/csrf-cookie',{
+                headers: { Authorization: `Bearer `+token},
+                withCredentials: true
+            }).then(async (r)=>{
+                await axios.post('/api/admin/produk/edit/'+data.productId,data,{
+                    headers: { Authorization: `Bearer `+token,
                     'Content-Type': 'multipart/form-data'
-                }
-            });
-            
+                    },
+                    withCredentials: true
+                }).then((r)=>{
+                    console.log(r.data)
+                }).catch((e)=>{
+                    console.log(e);
+                })
+            }).catch((e)=>{
+                console.log(e)
+            })
         }
         router.reload();
       }
@@ -118,8 +183,15 @@ export default function product({unitUsaha}){
     
     //handler
     async function handleDelete(id){
-        const csrf = await axios.get('/sanctum/csrf-cookie')
-        const deleteUnitUsaha = await axios.delete('/api/produk/'+id);
+        let token = getCookie('token')
+        const csrf = await axios.get('/sanctum/csrf-cookie').then(async(r)=>{
+            const deleteUnitUsaha = await axios.delete('/api/admin/produk/'+id,
+            {headers:{
+                Authorization: 'Bearer '+token
+            },withCredentials:true});
+        }).catch((e)=>{
+            console.log(e);
+        })
         router.reload()
     }
 
@@ -194,16 +266,16 @@ export default function product({unitUsaha}){
                         <Typography variant="h5" sx={{marginBottom:'1em'}} fontWeight={600}>Tambah Produk</Typography>
                         <form onSubmit={handleSubmit(onSubmit)}>
                             <FormControl sx={{width:'100%', marginY:'0.5em'}}>
-                                <RHFTextField hiddenLabel={true} label={'Nama produk'} name={"productName"} control={control}></RHFTextField>
+                                <RHFTextField hiddenLabel={false} label={'Nama produk'} name={"productName"} control={control}></RHFTextField>
                             </FormControl>
                             <FormControl sx={{width:'100%', marginY:'0.5em'}}>
-                                <RHFTextField hiddenLabel={true} label={'Deskripsi produk'} name={"productDesc"} control={control}></RHFTextField>
+                                <RHFTextField hiddenLabel={false} label={'Deskripsi produk'} name={"productDesc"} control={control}></RHFTextField>
                             </FormControl>
                             <FormControl sx={{width:'100%', marginY:'0.5em'}}>
-                                <RHFTextField type="number" hiddenLabel={true} label={'Stok'} name={"productStock"} control={control}></RHFTextField>
+                                <RHFTextField type="number" hiddenLabel={false} label={'Stok'} name={"productStock"} control={control}></RHFTextField>
                             </FormControl>
                             <FormControl sx={{width:'100%', marginY:'0.5em'}}>
-                                <RHFTextField type="number" hiddenLabel={true} label={'Harga'} name={"productPrice"} control={control}></RHFTextField>
+                                <RHFTextField type="number" hiddenLabel={false} label={'Harga'} name={"productPrice"} control={control}></RHFTextField>
                             </FormControl>
                             <FormControl sx={{marginY:'0.5em',display:'flex', flexDirection:'row', flexWrap:'wrap', width:'99%',overflow:'hidden'}}>
                                 <Box sx={{width:'99%'}}>

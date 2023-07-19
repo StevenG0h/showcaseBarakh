@@ -61,9 +61,8 @@
     color: #333333;
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
-    height: 24em;
+    height: 100%;
 }
 
 .katalogWrapper:hover{
