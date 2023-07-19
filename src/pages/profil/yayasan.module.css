@@ -1,0 +1,131 @@
+.container {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    background-color: #fff;
+    background-image: url('../../../public/assets/images/PropertiLight.png'),
+    url('../../../public/assets/images/PropertiLight.png'),
+    url('../../../public/assets/images/PropertiLight.png'),
+    url('../../../public/assets/images/PropertiLight.png');
+    background-size: 40%, 50%, 55%, 50%; 
+    background-repeat: no-repeat, no-repeat, no-repeat, no-repeat;
+    background-position:top -25em left -6em, right -23em top 0em, left -20em top 32em, right -25em bottom -10em;
+}
+
+.containerYayasan{
+    display: flex;
+    width: 75%;
+    flex-direction: column;
+    justify-content: center;
+    row-gap: 3em;
+    margin: 3em 0 6em 0;
+}
+
+.colTentangYayasan{
+    display: flex;
+    flex-direction: column;
+    row-gap: 1em;
+}
+
+.title{
+    font-size:2.2em;
+    font-weight: 700;
+    text-decoration: underline;
+    text-underline-offset: 0.6em;
+    text-decoration-color: #94B60F;
+    margin: 0;
+}
+
+.colDescription{
+    display: flex;
+    flex-direction: column;
+    /* row-gap: 0.5em; */
+}
+
+.description{
+    text-indent: 1.5em;
+    font-size: 1.1em;
+    line-height: 1.7em;
+}
+
+.colVisiMisi{
+    display: flex;
+    flex-direction: column;
+}
+
+.colDetailVisiMisi{
+    display: flex;
+    flex-direction: column;
+    row-gap: 1em;
+}
+
+.descriptionVisi{
+    font-size: 1.1em;
+}
+
+.ol{
+    padding-inline-start: 1.3em;
+}
+
+.li{
+    font-size: 1.1em;
+}   
+
+.colTeamYayasan{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    row-gap: 3.5em;
+    width: 100% ;
+}
+
+.rowProfile{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 1em;
+}
+
+.wrapProfile{
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    padding: 0 2em;
+    width: auto;
+    height: auto;
+    row-gap: 1em;
+}
+
+.Image{
+    width: auto;
+}
+
+.ImageTeamProfile{
+    width: auto;   
+}
+
+.identitas{
+    display: flex;
+    flex-direction: column;
+    row-gap: 0.5em;
+}
+
+.name{
+    font-size: 1.5em;
+    font-weight: 700;
+    margin: 0;
+    text-align: center;
+}
+
+.as{
+    font-size: 1em;
+    margin: 0;
+    text-align: center;
+
+}
+
+.yayasanImage{
+    width: 100%;
+    object-fit: cover;
+    overflow: hidden;
+}

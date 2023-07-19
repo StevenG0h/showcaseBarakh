@@ -1,50 +1,26 @@
+
 .imageProduct{
-    width: 98%;
-    height: auto;
+    width: 100%;
+    /* width: 100%; */
+    height: 100%;
 }
 
-.slick-slide {
-    position: relative;
-    margin: 0 0px;
-    padding: 0;
+.wrap{
+    display: inline-block;
+    /* margin: 0 4em; */
 }
 
-/* the parent */
-.slick-list {
-    margin: 0 -20px; 
+@media screen and (max-width: 935px){
+    .imageProduct{
+        width: 100%;
+        height: auto;
+    }
 }
 
 
-.slick-dots{
-    position: absolute;
-    right: 0;
-    top: 65%;
-    margin: 0px 3px;
-    padding: 11% 1% 11% 1.5%;
-    height: 90%;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-}
-
-.slick-dots > li{
-    margin: 0 0.4rem;
-}
-
-.slick-dots li > button{
-    display: block;
-    width: 0.6rem;
-    height: 0.6rem;
-    padding: 0;   
-    border: none;
-    border-radius: 100%;
-    background-color: rgb(255, 255, 255);
-    text-indent: -9999px;
-}
-
-.slick-dots > li.slick-active button{
-    background-color: #081B1C;
-    /* width: 1.3rem;
-    border-radius: 10px; */
-    transition: 0.4s;
+@media screen and (max-width: 480px){
+    .imageProduct{
+        width: 100%;
+        height: auto;
+    }
 }

@@ -12,21 +12,64 @@ import CustomTableHead from "../../../components/table/CustomTableHead";
 import { getAllUnitUsaha, getAllUnitUsahaProduct } from "../../../helper/dataOptions";
 import PenjualanTableRow from "../../../sections/penjualan/PenjualanTableRow";
 import DetailPenjualanTableRow from "../../../sections/penjualan/DetailPenjualanTableRow";
+import {getCookie} from 'cookies-next';
 
-export async function getServerSideProps(){
-    let produk = await axios.get('http://127.0.0.1:8000/api/transaksi');
-    let unitusaha = await getAllUnitUsaha();
-    return {
-        props:{
-            produk: produk.data.data,
-            options:{
-                unitUsaha: unitusaha
+export async function getServerSideProps({req,res}){
+    let token = getCookie('token',{req,res});
+    if(token == undefined){
+        return {
+            redirect: {
+              permanent: false,
+              destination: "/auth",
+            },
+            props:{},
+          };
+    }
+    await axios.get('/user',{
+        headers:{
+            Authorization: 'Bearer '+token,
+        },
+        withCredentials:true
+    }).catch((e)=>{
+        return {
+            redirect: {
+              permanent: false,
+              destination: "/auth",
+            },
+            props:{},
+          };
+    })
+   
+    try{
+        let produk = await axios.get('/api/admin/penjualan',{
+            headers:{
+                Authorization: 'Bearer '+token,
+            },
+            withCredentials:true
+        });
+        let unitusaha = await getAllUnitUsaha();
+        return {
+            props:{
+                produk: produk.data,
+                options:{
+                    unitUsaha: unitusaha
+                }
             }
         }
+    }catch(e){
+        console.log(e)
+        return {
+            redirect: {
+              permanent: false,
+              destination: "/auth",
+            },
+            props:{},
+          };
     }
 }
 
 export default function product({produk, options}){
+    let token = getCookie('token');
     let title = 'Stock';
     let [products, setProducts] = useState(produk.data);
     let [transaction, setTransaction] = useState([]);
@@ -69,12 +112,23 @@ export default function product({produk, options}){
       })
     
       const onSubmit = async (data) => {
-        if(editMode == true){
-            const createproduk = await axios.put('/api/penjualan/'+data.id,data);
-            
+        let token = getCookie('token');
+        try{
+            await axios.get('/sanctum/csrf-cookie',{
+                withCredentials:true
+            }).then(async(r)=>{
+                const createproduk = await axios.put('/api/admin/penjualan/'+data.id,data,
+                {
+                    headers:{Authorization:"Bearer "+token},
+                    withCredentials:true
+                });
+            })
+        }catch(e){
+            console.log(e)
+        }finally{
+            handleCloseAddForm()
+            router.reload()
         }
-        handleCloseAddForm();
-        router.replace(router.asPath);
       }
 
       const onSalesTransactionSubmit = async (data) => {
@@ -83,9 +137,20 @@ export default function product({produk, options}){
         data.kelurahan_id = addDetailTransactionForm.sales[0].kelurahan_id
         data.transactionAmount = Number(data.productPrice) * data.productCount;
         try{
-            let createSalesTransaction = await axios.post('/api/penjualan',data);
+            await axios.get('/sanctum/csrf-cookie',{
+                withCredentials:true
+            }).then(async(r)=>{
+                let createSalesTransaction = await axios.post('/api/admin/penjualan',data,
+                {
+                    headers:{Authorization:"Bearer "+token},
+                    withCredentials:true
+                });
+            })
         }catch(e){
             console.log(e)
+        }finally{
+            handleCloseAddSalesTransactionForm()
+            router.reload()
         }
 
       }
@@ -97,10 +162,10 @@ export default function product({produk, options}){
     //state handler
     let handleChangeFilter = async (data)=>{
         if(data != '*'){
-            let unitUsaha = await axios.get('/api/produk/withFilter/'+data);
+            let unitUsaha = await axios.get('/api/admin/produk/withFilter/'+data);
             setProducts(unitUsaha?.data)
         }else{
-            let unitUsaha = await axios.get('/api/produk/');
+            let unitUsaha = await axios.get('/api/admin/produk/');
             setProducts(unitUsaha?.data?.data)
         }
     }
@@ -132,11 +197,11 @@ export default function product({produk, options}){
 
     let handleDeleteDetailRow =async (data)=>{
         try{
-            const deleteTransaction =await  axios.delete(process.env.NEXT_PUBLIC_BACKEND_URL+'/api/penjualan/'+data.id);
+            const deleteTransaction =await  axios.delete(process.env.NEXT_PUBLIC_BACKEND_URL+'/api/admin/penjualan/'+data.id);
         }catch(e){
             
         }finally{
-            router.replace(router.asPath);
+            router.reload();
         }
 
     }
@@ -171,6 +236,7 @@ export default function product({produk, options}){
     return (
         <>
             <AdminLayout>
+            <Typography variant="h3" fontWeight={400}>Penjualan</Typography>
                 {/* <Typography variant="h3" fontWeight={400}>{title}</Typography>
                 <Select defaultValue={'*'}
                 onChange={(e)=>handleChangeFilter(e.target.value)}
@@ -184,14 +250,15 @@ export default function product({produk, options}){
                         })
                     }
                 </Select> */}
-                <Dialog onClose={handleCloseAddSalesTransactionForm} open={addDetailTransactionForm.length === 0 ? false : true}>
+                <Dialog maxWidth={'xs'} fullWidth onClose={handleCloseAddSalesTransactionForm} open={addDetailTransactionForm.length === 0 ? false : true}>
                     <DialogTitle>
                         Tambah Transaksi
                     </DialogTitle>
                     <DialogContent>
                         <form onSubmit={handleSalesTransactionSubmit(onSalesTransactionSubmit)}>
-                            <FormControl>
+                            <FormControl sx={{width:'100%', marginY:'0.5em'}}>
                                 <RHFAutocomplete
+                                    label={'Unit usaha'}
                                     name={'usaha_id'}
                                     options={options.unitUsaha}
                                     control= {salesTransactionControl}
@@ -201,7 +268,10 @@ export default function product({produk, options}){
                                         handleProductOption(data)
                                     }}
                                 />
+                            </FormControl>
+                            <FormControl sx={{width:'100%', marginY:'0.5em'}}>
                                 <RHFAutocomplete
+                                    label={'Produk'}
                                     name={'product_id'}
                                     options={productOption}
                                     control= {salesTransactionControl}
@@ -215,6 +285,7 @@ export default function product({produk, options}){
                                         })
                                     }}
                                 />
+                            </FormControl>
                                 {/* <Select defaultValue={1}>
                                     {
                                     options?.unitUsaha.map(({id, label})=>{
@@ -224,8 +295,9 @@ export default function product({produk, options}){
                                         })
                                     }
                                 </Select> */}
-                                <RHFTextField control={salesTransactionControl} name={'productCount'}></RHFTextField>
-                                <Button type="submit">Tambah Transaksi</Button>
+                            <FormControl sx={{width:'100%', marginY:'0.5em'}}>
+                                <RHFTextField label={'Jumlah Beli'} control={salesTransactionControl} name={'productCount'}></RHFTextField>
+                                <Button sx={{witdh:'100%', marginTop:'1em'}} type="submit" variant="contained" color="success">Tambah Transaksi</Button>
                             </FormControl>
                         </form>
                     </DialogContent>
@@ -235,40 +307,45 @@ export default function product({produk, options}){
                         Detail transaksi
                     </DialogTitle>
                     <DialogContent>
-                        <TableContainer>
-                            <TableHead>
-                                <Button onClick={()=>handleAddSalesTransactionForm(transaction)}>
-                                    Tambah Penjualan
-                                </Button>
-                                <TableRow>
-                                    <TableCell>
-                                        No
-                                    </TableCell>
-                                    <TableCell>
-                                        Nama Produk
-                                    </TableCell>
-                                    <TableCell>
-                                        Harga Produk
-                                    </TableCell>
-                                    <TableCell>
-                                        Jumlah Beli
-                                    </TableCell>
-                                    <TableCell>
-                                        Total
-                                    </TableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                {
-                                    transaction?.sales?.map((data)=>{
-                                            return (
-                                                <>
-                                                    <DetailPenjualanTableRow onDelete={()=>{handleDeleteDetailRow(data)}} onEdit={()=>{handleOpenEditForm(data)}} num={++detailNum} row={data} />
-                                                </>
-                                            )
-                                    })
-                                }
-                            </TableBody>
+                        <Button onClick={()=>handleAddSalesTransactionForm(transaction)} variant="contained" color="success">
+                            Tambah Penjualan
+                        </Button>
+                        <TableContainer sx={{width:'100%'}}>
+                            <Table>
+                                <TableHead sx={{width:'100%'}}>
+                                    <TableRow>
+                                        <TableCell>
+                                            No
+                                        </TableCell>
+                                        <TableCell>
+                                            Nama Produk
+                                        </TableCell>
+                                        <TableCell>
+                                            Harga Produk
+                                        </TableCell>
+                                        <TableCell>
+                                            Jumlah Beli
+                                        </TableCell>
+                                        <TableCell>
+                                            Total
+                                        </TableCell>
+                                        <TableCell>
+                                            Action
+                                        </TableCell>
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    {
+                                        transaction?.sales?.map((data)=>{
+                                                return (
+                                                    <>
+                                                        <DetailPenjualanTableRow onDelete={()=>{handleDeleteDetailRow(data)}} onEdit={()=>{handleOpenEditForm(data)}} num={++detailNum} row={data} />
+                                                    </>
+                                                )
+                                        })
+                                    }
+                                </TableBody>
+                            </Table>
                         </TableContainer>
                     </DialogContent>
                 </Dialog>
@@ -287,6 +364,7 @@ export default function product({produk, options}){
                     </DialogContent>
                 </Dialog>
                 <Card sx={{marginY:'1em'}}>
+                
                     <TableContainer>
                         <Table>
                             <CustomTableHead tableHead={TABLEHEAD}></CustomTableHead>

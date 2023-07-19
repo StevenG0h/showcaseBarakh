@@ -1,0 +1,15 @@
+.container {
+    position: fixed; 
+    /* z-index: 888; */
+    z-index: 100;
+    bottom: 40px;
+    right: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.WhatsApp{
+    width: 3em;
+    height: 3em;
+}

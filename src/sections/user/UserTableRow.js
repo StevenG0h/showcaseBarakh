@@ -24,12 +24,19 @@ export default function UserTableRow({row, num, onShowImage, onDelete, onEdit}){
                     {adminNum}
                 </TableCell>
                 <TableCell>
-                    {adminLevel}
+                    {adminLevel == 1 ?'admin':'pegawai'}
                 </TableCell>
-                <TableCell align="left" width={'150px'} sx={{display:'flex'}}>
+                <TableCell align="center">
                     <IconButton onClick={onEdit} sx={{marginX:'0.5em'}} variant="contained" color="warning" >
                         <Edit></Edit>
                     </IconButton>
+                    {
+                        adminLevel == 1 ? '' : (
+                            <IconButton onClick={onDelete} sx={{marginX:'0.5em'}} variant="contained" color="error" >
+                                <Delete></Delete>
+                            </IconButton>
+                        )
+                    }
                 </TableCell>
             </TableRow>
         </>

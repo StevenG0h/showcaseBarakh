@@ -1,9 +1,14 @@
 .container{
-    font-size: 16px;
     display: flex;
     justify-content: center;
     width: 100%;
-    margin: 50px 0px;
+    padding: 2.5em 0px;
+    background-color: #fff;
+    background-image: url('../../../public/assets/images/PropertiLight.png'),
+    url('../../../public/assets/images/PropertiLight.png');
+    background-size: 40%, 40%;
+    background-repeat: no-repeat;
+    background-position: left -10em top 4em, top -17em right -20em;
 }
 
 .containerCart{
@@ -26,6 +31,7 @@
 .pilih{
     display: flex;
     gap: 1.6em;
+    align-items: center;
 }
 
 .input{
@@ -34,21 +40,21 @@
 
 .textPilih{
     font-size: 1em;
-    color: #fff;
+    color: #94B60F;
     margin: 0px;
 }
 
 .buttonHapus{
     font-size: 1em;
     font-weight: 400;
-    background-color: #081B1C;
+    background-color: #ffffff;
     border: none;
     color: #94B60F;
     cursor: pointer;
 }
 
 .garis{
-    border-bottom: 1.16628px solid #FFFFFF;
+    border-bottom: 0.17em solid #94B60F;
 }
 
 .mainCart{
@@ -216,6 +222,7 @@
     padding: 20px;
     gap: 3.4em;
     width: 38%;
+    box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.25);
 }
 
 .descRingkasan {
@@ -261,3 +268,65 @@
 .buttonBuy:hover{
     background-color: #D5F06B;
 }
+
+.container {
+    display: flex;
+    justify-content: center;
+    width:100% ;
+    height: auto;
+}
+
+.containerBase{
+    display: flex;
+    justify-content: center;
+    width: 75%;
+    flex-direction: column;
+    margin: 3.2em 0;
+}
+
+.banner{
+    background: url(../../../public/assets/images/Banner2.png);
+    background-size: 100% ;
+    background-repeat: no-repeat;
+    width: 100%;
+    height: 30em;
+    border-radius: 30px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    
+}
+
+.span{
+    color:#94B60F ;
+}
+
+.containerKatalog{
+    display: flex;
+    margin: 2em 0;
+}
+
+.ul{
+    display: flex;
+    padding: 0px;
+    gap: 30px;
+}
+
+.ul .li{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.a{
+    text-decoration: none;
+    color: #fff;
+    font-weight: 700;
+    font-size: 23px;
+    letter-spacing: 0.08em;
+}
+
+.a:hover{
+    color: #94B60F;
+}
+

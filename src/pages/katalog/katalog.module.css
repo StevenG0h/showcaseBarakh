@@ -3,6 +3,11 @@
     justify-content: center;
     width:100% ;
     height: auto;
+    background-image: url('../../../public/assets/images/PropertiDark.png'),
+    url('../../../public/assets/images/PropertiDark.png');
+    background-size: 55%, 50%;
+    background-repeat: no-repeat;
+    background-position: left -20em top, top -29em right -16em;
 }
 
 .containerBase{
@@ -33,12 +38,14 @@
 .containerKatalog{
     display: flex;
     margin: 2em 0;
+    border-bottom: 0.2em solid #94B60F;
+    padding: 0 1em;
 }
 
 .ul{
     display: flex;
     padding: 0px;
-    gap: 30px;
+    gap: 2.5em;
 }
 
 .ul .li{
@@ -51,8 +58,8 @@
     text-decoration: none;
     color: #fff;
     font-weight: 700;
-    font-size: 23px;
-    letter-spacing: 0.08em;
+    font-size: 1em;
+    letter-spacing: 0.1em;
 }
 
 .a:hover{
@@ -66,13 +73,13 @@
     border-radius: 28px;
     display: flex;
     flex-direction: column; 
-    /* justify-content: space-between; */
+
 }
 .imageCarousel{
     height: auto;
 }
 
- .image{
+.image{
     object-fit: cover;
     background-color: aqua;
     width: 100%;

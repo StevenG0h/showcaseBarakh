@@ -1,4 +1,3 @@
-"use client";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -11,7 +10,7 @@ const theme = {
 
 export default function Testimoni() {
     const settings = {
-        dots: true,
+        dots: false,
         infinite: true,
         speed: 500,
         slidesToShow: 3,
@@ -23,8 +22,12 @@ export default function Testimoni() {
         responsive: [
             {
                 breakpoint: 768,
-                settings: { slidesToShow: 2, slidesToScroll: 1, infinite: false }
+                settings: { slidesToShow: 2, slidesToScroll: 1, infinite: true }
             },
+            {
+                breakpoint: 480,
+                settings: { slidesToShow: 1, slidesToScroll: 1, infinite: true }
+            }
         ]
     };
     return (

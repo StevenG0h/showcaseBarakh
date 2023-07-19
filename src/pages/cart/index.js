@@ -13,12 +13,17 @@ import { Poppins } from 'next/font/google'
 import { getCookie, setCookie } from "cookies-next";
 import axios from "../../utils/axios";
 import {formatCurrency} from "../../helper/currency";
-import { Button, Dialog, DialogContent, DialogTitle, FormControl, IconButton, StepIcon, Typography } from "@mui/material";
+import { Box, Button, Checkbox, Container, Dialog, DialogContent, DialogTitle, FormControl, Grid, IconButton, StepIcon, Typography } from "@mui/material";
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMinus, faPlus, faShoppingCart } from "@fortawesome/free-solid-svg-icons";
 import RHFTextField from '../../components/form/RHFTextField';
 import RHFAutocomplete from '../../components/form/RHFAutocomplete';
 import {getAllKecamatanById, getAllKelurahanById, getAllKotaById, getAllProvinsi} from '../../helper/dataOptions';
+import KatalogCard from "../../components/card/KatalogCard/KatalogCard";
+import { Router, useRouter } from "next/router";
+// import {Checkbox} from "@mui/material";
+// import WhatsApp from "../../components/Whatsapp/WhatsApp"
 
 const poppins = Poppins({
     weight: '500',
@@ -28,25 +33,32 @@ const poppins = Poppins({
 
 export async function getServerSideProps({req,res}){
     let cookie = getCookie('barakh-cart-cookie',{req,res})
+    let product = await axios.get('/api/produk');
     let provinsi = await getAllProvinsi();
+    let count = 0;
     if(cookie != undefined){
         cookie = JSON.parse(cookie)
+        cookie.map((data)=>{
+            count += data.item * Number(data.productData.productPrice)
+        })
     }
     return {
         props:{
             cookie: cookie === undefined ? [] : cookie,
             option: {
                 provinsi: provinsi
-            }
+            },totalPayment: count,
+            product: product.data.data
         }
     }
 }
 
-const Cart = ({cookie, option}) => {
-
+const Cart = ({cookie, option,totalPayment, product}) => {
     let [cartList, setCart] = useState(cookie);
-    console.log(cartList);
-    let [total, setTotal] = useState(0);
+    let [showCheckout, setShowCheckout] = useState(cookie.length !=0)
+    let [total, setTotal] = useState(totalPayment);
+    const router = useRouter()
+    let [checked, setChecked] = useState([]);
     let [deleteCart, setDelete] = useState([]);
     let [checkoutDialog, setCheckoutDialog] = useState(false);
     let [location, setLocation] = useState({
@@ -80,6 +92,7 @@ const Cart = ({cookie, option}) => {
             return cart
         })
         setCart(newCartList);
+        countTotal()
     }
 
     const schema = yup.object().shape({
@@ -170,33 +183,91 @@ const Cart = ({cookie, option}) => {
         setValue('clientKelurahan',id)
     }
 
+    const handleCartChecked = (id)=>{
+        let addChecked = checked
+        addChecked.push(id);
+        setChecked(addChecked);
+    }
+
+    const handleCartUnchecked = (id)=>{
+        let addChecked = checked.filter((checkedId)=>{
+            return checkedId != id
+        })
+        setChecked(addChecked);
+    }
+
+    const handleDeleteCart = ()=>{
+        let cookie = getCookie('barakh-cart-cookie')
+        cookie = JSON.parse(cookie)
+        let newCookie = cookie.filter((cart)=>{
+            let isInCart = false;
+            checked.map((id)=>{
+                (cart.productId)
+                if(id == cart.productId){
+                    isInCart = true
+                }
+            })
+            console.log(isInCart)
+            return isInCart !== true
+        })
+        setCookie('barakh-cart-cookie',newCookie);
+        setCart(newCookie);
+        countTotal(newCookie)
+        if(newCookie.length === 0){
+            setShowCheckout(false)
+        }
+    }
+
+    const countTotal = (cart)=>{
+        let count = 0;
+        if(cart == undefined){
+            cartList.map((data)=>{
+                count += data.item * Number(data.productData.productPrice)
+            })
+        }else{
+            cart.map((data)=>{
+                count += data.item * Number(data.productData.productPrice)
+            })
+        }
+        setTotal(count)
+    }
+
     return (
-        <main className={poppins.className}>
+        <main className={poppins.className} style={{backgroundColor:'#fff'}}>
             <Header />
-            <div className={style.container}>
-                <div className={style.containerCart}>
+            {
+                showCheckout === true ?
+                (
+            <div className={style.container} >
+                <div className={style.containerCart} >
                     <p className={style.title}>Keranjang</p>
                     <div className={style.topCart}>
                         <div className={style.pilih}>
                             <input className={style.input} type="checkbox" />
                             <p className={style.textPilih}>Pilih Semua</p>
                         </div>
-                        <button className={style.buttonHapus}>Hapus</button>
+                        <button onClick={()=>{handleDeleteCart()}} className={style.buttonHapus}>Hapus</button>
                     </div>
                     <hr className={style.garis} />
                     <div className={style.mainCart}>
-                        <div className={style.fieldList}>
+                        <div  className={style.fieldList}>
                             {
                                 cartList.map(({item, productData})=>{
                                     return (
                                         <div key={productData.id} onChange={(e)=>handleChangeItem(e.target.value)} className={style.fieldListProduct}>
-                                            <input className={style.inputt} type="checkbox" value={productData.id} />
+                                            <input onChange={(e)=>{
+                                                if(e.target.checked === true){
+                                                    handleCartChecked(e.target.value)
+                                                }else{
+                                                    handleCartUnchecked(e.target.value)
+                                                }
+                                            }} className={style.inputt} type="checkbox" value={productData.id} />
                                             <div className={style.list}>
                                                 <div className={style.image}>
                                                     <img style={{aspectRatio:'3/2', objectFit:'cover',margin:'auto'}} src={process.env.NEXT_PUBLIC_BACKEND_URL+"/storage/product/"+productData.product_images[0].path} alt="Gambar" className={style.imageCart} />
                                                 </div>
                                                 <div className={style.detailProductCart}>
-                                                    <Link href="/detailProduct" className={style.link}>
+                                                    <Link href={"/detail-produk/"+productData.id} className={style.link}>
                                                         <p className={style.titleProduct}>{productData.productName}</p>
                                                     </Link>
                                                     <div className={style.remaining}>
@@ -213,7 +284,6 @@ const Cart = ({cookie, option}) => {
                                                             <Typography>
                                                                 {item}
                                                             </Typography>
-                                                            
                                                             <IconButton sx={{border:'0.1em solid grey',aspectRatio:'1/1',width:'2em',fontSize:'1em'}} onClick={()=>handleChangeItem(productData.id,1)}>
                                                                 <FontAwesomeIcon icon={faPlus}>
 
@@ -243,8 +313,39 @@ const Cart = ({cookie, option}) => {
                     </div>
                 </div>
             </div>
+                    ) :
+                    <Container>
+                        <Box sx={{display:'flex', flexDirection:'column'}}>
+                            <img style={{width:'45%',margin:'auto',marginTop:'-8em'}} src={'http://localhost:3000/assets/image/Business, Startup, workflow, error _ exhaustion, exhausted, work, laptop, computer, support 1.png'}></img>
+                            <Typography textAlign={'center'}>
+                                Yuk isi dengan produk produk unggulan!
+                            </Typography>
+                            <Box sx={{display:'flex', justifyContent:'center',margin:'1em'}}> 
+                                <Button  variant={'contained'} color={'success'} onClick={()=>router.push('/katalog')}>
+                                    Mulai Belanja
+                                </Button>
+                            </Box>
+                        </Box>
+                    </Container>
+                }
+                <Container sx={{marginBottom:'4em'}}>
+                    <Typography variant="h5">
+                        Produk Rekomendasi
+                    </Typography>
+                    <Grid container xs={'12'} columns={12} sx={{width:'100%'}}>
+                        {
+                            product.map((data)=>{
+                                return (
+                                    <Grid item xs={3} sx={{padding:'0.4em'}}>
+                                        <KatalogCard row={data} style={style}></KatalogCard>
+                                    </Grid>
+                                )
+                            })
+                        }
+                    </Grid>
+                </Container>
             <Footer />
-            <NoticeModal handleNext={()=>handleNextDialog()} isVisible={showNotice} CloseClick={() => setShowNotice(false)}/>
+            <NoticeModal total={total} handleNext={()=>handleNextDialog()} isVisible={showNotice} CloseClick={() => setShowNotice(false)}/>
             <Dialog open={checkoutDialog} maxWidth={'xs'} onClose={()=>{handleCloseCheckoutDialog()}} fullWidth>
                 <DialogTitle>
                     Form data diri

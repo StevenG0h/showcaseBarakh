@@ -21,7 +21,7 @@
     flex-direction: column ;
     align-items: center;
     gap: 10px;
-    width: 346px;
+    width: 40em;
     height: 177px;
 }
 
@@ -35,7 +35,7 @@
 
 .descriptionTitle{
     color:#303030 ;
-    font-size: 16px;
+    font-size: 1.1em;
     font-weight: 400;
     text-align: center;
     margin: 0;
@@ -43,10 +43,10 @@
 
 .containerKatalog{
     width: 100%;
-    margin: 80px 0px;
-    display: flex;
+    margin: 2em 0px 7em 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
     flex-wrap: wrap;
-    /* justify-content: space-between; */
     gap: 40px;
 }
 
@@ -55,16 +55,14 @@
 }
 
 .katalogWrapper{
-    width: 346px;
-    height: 348px;
     background: #FFFFFF;
     box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.1);
     border-radius: 40px;
     color: #333333;
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
+    height: 100%;
 }
 
 .katalogWrapper:hover{
@@ -76,8 +74,9 @@
     border-top-left-radius: 40px;
     border-top-right-radius: 40px;
     margin-bottom: 15px;
-    width: 346px;
-    height: 348px;
+    width:100%;
+    object-fit: cover;
+    aspect-ratio: 4/3;
 }
 
 .titleKatalog{
@@ -90,49 +89,72 @@
     font-size: 10px;
     margin: 0;
     text-align: center;
-    margin: 0px 35px 20px 35px;
-    line-height: 20px;
+    margin: 0px 2em 1.7em 2em;
+    line-height: 1.9em;
 }
 
-@media screen and (max-width: 935px){
+@media screen and (max-width: 768px){
+    .container{
+        padding: 0 0 1em 0;
+    }
+
     .containerCategory{
-        padding: 30px;
+        width: 90%;
+        padding: 0;
+    }
+
+    .titleCategory{
+        font-size: 1.5em;
+    }
+
+    .descriptionTitle{
+        font-size: 0.8em;
+    }
+
+    .containerKatalog{
+        gap: 2em;
+        margin: 0 0 1em 0;
+        display: grid;
+        grid-template-columns: 1fr 1fr !important;
+    }
+
+    .katalogWrapper{
+        width: 300px;
+        height: 348px;
+    }
+    .imageKatalog{
+        width: 100%;
     }
 }
 
 @media screen and (max-width: 480px) {
+    .container{
+        border-radius: 4em 4em 0  0;
+        padding: 0 0 2.3em 0;
+    }
+
     .containerCategory{
-        padding: 20px;
-        border-radius: 50px 50px 0px 0px;
-        /* width: 100%; */
+        padding: 0;
+        width: 85%;
     }
 
     .titleCategory{
-        font-size: 30px;
+        font-size: 1.4em;
     }
 
     .descriptionTitle{
-        font-size: 15px;
+        font-size: 0.8em;
+        padding: 0 2.4em;
     }
 
     .containerKatalog{
         width: 100%;
-        margin: 100px;
-        /* display: grid;
-        grid-template-columns: repeat(1, 1fr); */
-        /* rogap: 30px */
-        /* row-gap: 40px; */
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        align-items: center;
-        gap: 40px;
-        margin : 50px;
+        display: grid;
+        grid-template-columns: 1fr !important;
     }
     
     .katalogWrapper{
-        width: 316px;
-        height: 318px;
+        width: 100%;
     }
 
     .imageKatalog{
