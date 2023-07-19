@@ -83,7 +83,7 @@ export default function NavVertical({data}){
                             <Wallet sx={{m:'auto',color:'white'}}></Wallet>
                         </ListItemIcon>
                         <ListItemText>
-                            Keuangan
+                            Pencatatan
                         </ListItemText>
                     </ListItemButton>
                     <ListItemButton onClick={()=>{handleChangePage('/admin/unit-usaha')}} sx={{paddingRight:"5em",paddingLeft:'0'}}>
@@ -112,14 +112,22 @@ export default function NavVertical({data}){
                     </ListItemButton>
                     <Collapse in={openList} timeout="auto" unmountOnExit>
                         <List disablePadding component="div">
-                        <ListItemButton onClick={()=>{router.push('/admin/konten/profil')}} sx={{paddingRight:"5em",paddingLeft:'1.5em'}}>
-                        <ListItemIcon>
-                            <Circle sx={{m:'auto',color:'white',fontSize:'0.4em'}}></Circle>
-                        </ListItemIcon>
-                        <ListItemText>
-                            Profil Usaha
-                        </ListItemText>
-                    </ListItemButton>
+                            <ListItemButton onClick={()=>{router.push('/admin/konten/profil')}} sx={{paddingRight:"5em",paddingLeft:'1.5em'}}>
+                                <ListItemIcon>
+                                    <Circle sx={{m:'auto',color:'white',fontSize:'0.4em'}}></Circle>
+                                </ListItemIcon>
+                                <ListItemText>
+                                    Profil Usaha
+                                </ListItemText>
+                            </ListItemButton>
+                            <ListItemButton onClick={()=>{router.push('/admin/konten/galeri')}} sx={{paddingRight:"5em",paddingLeft:'1.5em'}}>
+                                <ListItemIcon>
+                                    <Circle sx={{m:'auto',color:'white',fontSize:'0.4em'}}></Circle>
+                                </ListItemIcon>
+                                <ListItemText>
+                                    Galeri
+                                </ListItemText>
+                            </ListItemButton>
                         </List>
                     </Collapse>
                 </List>
