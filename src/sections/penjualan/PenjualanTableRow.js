@@ -76,7 +76,7 @@ export default function PenjualanTableRow({row, num, onShowImage, onDelete, onEd
                 <TableCell>
                     {total}
                 </TableCell>
-                <TableCell align="left" width={'150px'} sx={{display:'flex'}}>
+                <TableCell align="center" >
                     <IconButton onClick={onDetail} sx={{marginX:'0.5em'}} variant="contained" color="warning" >
                         <Details></Details>
                     </IconButton>

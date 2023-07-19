@@ -2,7 +2,12 @@
     display: flex;
     justify-content: center;
     width: 100%;
-    margin: 40px 0px;
+    padding: 5em 0px;
+    background-image: url('../../public/assets/images/PropertiDark.png'),
+                    url('../../public/assets/images/PropertiDark.png');
+    background-size: 50%, 60% ; 
+    background-repeat: no-repeat, no-repeat;
+    background-position: top 1em right 77em, bottom 9em right -27em;
 }
 
 .hero{
@@ -17,7 +22,7 @@
     padding-top: 20px;
     display: flex;
     flex-direction: column;
-    gap: 0.5em;
+    gap: 0.8em;
 }
 
 .titleHero{
@@ -36,7 +41,7 @@
     line-height: 34px;
 
 }
-
+/* 
 .button{
     display: flex;
     justify-content: center;
@@ -50,11 +55,14 @@
     padding: 15px 30px;
     cursor: pointer;
     letter-spacing: 0.03rem;
+} */
+
+.button:hover{
+    background-color: #D5F06B;
 }
 
 .contentImage{
     width: 50%;
-
 }
 
 .imageProduct{
@@ -63,34 +71,41 @@
 }
 
 @media screen and (max-width: 768px){
+    .container{
+        padding:  0;
+    }
+    
     .hero {
-        margin: 0;
-        row-gap: 40px;
-        justify-content: space-between;
+        margin: 2.5em;
+        display: flex ;
+        row-gap: 2em;
+        justify-content: column;
+        flex-direction: column-reverse;
         padding: 0;
         width: 90%;
     }
 
     .content{
+        width: 100%;
         padding: 0;
-        padding-right: 1em;
+        row-gap: 0.6em;
     }
 
     .titleHero{
-        font-size: 1.5em;
+        font-size: 2.2em;
         line-height: 1.4em;
+        letter-spacing: 0.04em;
     }
 
-
     .description{         
-        font-size: 0.7em;
+        font-size: 1.2em;
         line-height: 2em;
         margin: 0.6em 0;
     }
 
     .contentImage
     {
-        width: 50%;
+        width: 100%;
     }
 
     .imageProduct{     
@@ -99,8 +114,8 @@
     }
 
     .button{
-        font-size: 0.6em;
-        padding: 1.4em 2em;
+        font-size: 0.8em;
+        padding: 1em 2em;
     }
 }
 
@@ -144,11 +159,6 @@
         margin: 0;
     }
 
-    .button{
-        font-size: 13px;
-        font-weight: 700;
-        padding: 14px 20px;
-    }
 
     .contentImage{
         width: 100%;
@@ -160,7 +170,9 @@
     }
 
     .button{
-        font-size: 0.8em;
+        font-size: 0.7em;
+        font-weight: 300;
+        padding: 1em 2em;
     }
 
 }

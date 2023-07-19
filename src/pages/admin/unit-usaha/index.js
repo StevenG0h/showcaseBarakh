@@ -6,19 +6,61 @@ import axios from "../../../utils/axios";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import RHFTextField from "../../../components/form/RHFTextField";
+import RHFDnd from "../../../components/form/RHFDnd";
 import * as yup from "yup";
 import {yupResolver} from "@hookform/resolvers/yup";
 import { useRouter } from "next/router";
+import {getCookie} from 'cookies-next';
 
-export async function getServerSideProps(){
-
-    let UnitUsaha = await axios.get(process.env.NEXT_PUBLIC_BACKEND_URL+'/api/unit-usaha');
-    
-    return {
-        props: {
-            data: UnitUsaha?.data?.data
-        }
+export async function getServerSideProps({req,res}){
+    let token = getCookie('token',{req,res});
+    if(token == undefined){
+        return {
+            redirect: {
+              permanent: false,
+              destination: "/auth",
+            },
+            props:{},
+          };
     }
+    await axios.get('/user',{
+        headers:{
+            Authorization: 'Bearer '+token,
+        },
+        withCredentials:true
+    }).catch((e)=>{
+        return {
+            redirect: {
+              permanent: false,
+              destination: "/auth",
+            },
+            props:{},
+          };
+    })
+    try{
+        let UnitUsaha = await axios.get('/api/admin/unit-usaha',{
+            headers:{
+                Authorization: 'Bearer '+token,
+            },
+            withCredentials:true
+        });
+        console.log(UnitUsaha.data.data);
+        return {
+            props: {
+                data: UnitUsaha?.data?.data
+            }
+        }
+    }catch(e){
+        console.log(e)
+        return {
+            redirect: {
+              permanent: false,
+              destination: "/auth",
+            },
+            props:{},
+          };
+    }
+    
 }
 
 export default function admin({data}){
@@ -45,7 +87,7 @@ export default function admin({data}){
           })
     })
 
-    const { control, handleSubmit, setValue, reset, register , formState:{errors}} = useForm({
+    const { control, handleSubmit, setValue,getValues, reset, register , formState:{errors}} = useForm({
         defaultValues: {
           usahaName: "",
           usahaDesc: "",
@@ -56,23 +98,44 @@ export default function admin({data}){
       })
     
       const onSubmit = async (data) => {
+        let token = getCookie('token');
         if(!editMode){
-            const createUnitUsaha = await axios.post('/api/unit-usaha/',data,{
-                headers:{
-                    'Content-Type': 'multipart/form-data'
-                }
-            });
+            await axios.get('/sanctum/csrf-cookie',{
+                headers: { Authorization: `Bearer `+token},
+                withCredentials: true
+            }).then(async (r)=>{
+                await axios.post('/api/admin/unit-usaha/',data,{
+                    headers: { Authorization: `Bearer `+token,'Content-Type': 'multipart/form-data'},
+                    withCredentials: true
+                }).then((r)=>{
+                    console.log(r.data)
+                }).catch((e)=>{
+                    console.log(e);
+                })
+            }).catch((e)=>{
+                console.log(e)
+            })
         }else{
             if(data.usahaImage == ''){
                 delete data.usahaImage;
             }
             console.log(data);
-            const createUnitUsaha = await axios.post('/api/unit-usaha/'+usahaId,data,{
-                headers:{
-                    'Content-Type': 'multipart/form-data'
-                }
-            });
-            
+
+            await axios.get('/sanctum/csrf-cookie',{
+                headers: { Authorization: `Bearer `+token},
+                withCredentials: true
+            }).then(async (r)=>{
+                await axios.post('/api/admin/unit-usaha/'+usahaId,data,{
+                    headers: { Authorization: `Bearer `+token,'Content-Type': 'multipart/form-data'},
+                    withCredentials: true
+                }).then((r)=>{
+                    console.log(r.data)
+                }).catch((e)=>{
+                    console.log(e);
+                })
+            }).catch((e)=>{
+                console.log(e)
+            })
         }
         router.reload()
         handleCloseAddForm()
@@ -86,9 +149,24 @@ export default function admin({data}){
     
     //handler
     async function handleDelete(id){
-        const csrf = await axios.get('/sanctum/csrf-cookie')
-        const deleteUnitUsaha = await axios.delete('/api/unit-usaha/'+id);
-        router.reload()
+        let token = getCookie('token');
+        console.log(token)
+        await axios.get('/sanctum/csrf-cookie',{
+            headers: { Authorization: `Bearer `+token},
+            withCredentials: true
+        }).then(async (r)=>{
+            await axios.delete('/api/admin/unit-usaha/'+id,{
+                headers: { Authorization: `Bearer `+token},
+                withCredentials: true
+            }).then((r)=>{
+                console.log(r.data)
+            }).catch((e)=>{
+                console.log(e);
+            })
+        }).catch((e)=>{
+            console.log(e)
+        })
+        // router.reload()
     }
 
     //state handler
@@ -117,6 +195,7 @@ export default function admin({data}){
         setValue('usahaName',data.usahaName);
         setValue('usahaDesc',data.usahaDesc);
         setValue('usahaPicNumber',data.usahaPicNumber)
+        setValue('usahaImage',data.usahaImage)
         setUsahaId(data.id);
         setAddForm(true)
     }
@@ -139,7 +218,7 @@ export default function admin({data}){
 
     let TABLEHEAD = [
         {value: 'No',align: 'left'},
-        {value: 'Dibuat pada',align: 'left'},
+        // {value: 'Dibuat pada',align: 'left'},
         {value: 'Nama unit usaha',align: 'left'},
         {value: 'Deskripsi',align: 'left'},
         {value: 'Jumlah Produk',align: 'left'},
@@ -160,32 +239,18 @@ export default function admin({data}){
                         <Typography variant="h5" sx={{marginBottom:'1em'}} fontWeight={600}>Tambah Unit Usaha</Typography>
                         <form onSubmit={handleSubmit(onSubmit)}>
                             <FormControl sx={{width:'100%', marginY:'0.5em'}}>
-                                <RHFTextField hiddenLabel={true} label={'Nama Unit Usaha'} name={"usahaName"} control={control}></RHFTextField>
+                                <RHFTextField hiddenLabel={false} label={'Nama Unit Usaha'} name={"usahaName"} control={control}></RHFTextField>
                             </FormControl>
                             <FormControl sx={{width:'100%', marginY:'0.5em'}}>
-                                <RHFTextField hiddenLabel={true} label={'Deskripsi Unit Usaha'} name={"usahaDesc"} control={control}></RHFTextField>
+                                <RHFTextField hiddenLabel={false} label={'Deskripsi Unit Usaha'} name={"usahaDesc"} control={control}></RHFTextField>
                             </FormControl>
                             <FormControl sx={{width:'100%', marginY:'0.5em'}}>
-                                <RHFTextField hiddenLabel={true} label={'Nomor WhatsApp admin'} name={"usahaPicNumber"} control={control}></RHFTextField>
+                                <RHFTextField hiddenLabel={false} label={'Nomor WhatsApp admin'} name={"usahaPicNumber"} control={control}></RHFTextField>
                             </FormControl>
                             <FormControl sx={{width:'100%', marginY:'0.5em'}}>
-                            <Controller
-                                control={control}
-                                name={'usahaImage'}
-                                rules={{required:'Foto unit usaha tidak boleh kosong'}}
-                                render={({field:{value, onChange, ...field},fieldState:{error}})=>{
-                                    return (
-                                        <>
-                                        <Input type="file" onChange={(event)=>{
-                                        onChange(event.target.files[0])
-                                    }} value={value?.filename} name={'usahaImage'} {...field}></Input>
-                                        <Typography>{error?.message}</Typography>
-                                        </>
-                                    )
-                                }}
-                                >
-                                
-                                </Controller>
+                                <RHFDnd control={control} name={'usahaImage'} files={process.env.NEXT_PUBLIC_BACKEND_URL+'/storage/unitUsaha/'+getValues('usahaImage')}>
+                                    
+                                </RHFDnd>
                             </FormControl>
                             <Button variant="contained" color="success" sx={{width:'100%'}} type="submit">{editMode ? 'Simpan Perubahan' : 'Tambah Unit Usaha'}</Button>
                         </form>
@@ -210,7 +275,7 @@ export default function admin({data}){
                     <TableContainer>
                         <Table>
                             <CustomTableHead tableHead={TABLEHEAD}></CustomTableHead>
-                            <TableBody>
+                            <TableBody sx={{width:'100%'}}>
                                 {
                                     unitUsaha === [] || unitUsaha==='' || unitUsaha === undefined ? 'data kosong' :
                                     unitUsaha?.map((map)=>{

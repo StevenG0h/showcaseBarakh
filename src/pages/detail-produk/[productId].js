@@ -56,7 +56,7 @@ const detailProduct = ({data}) => {
                     <div className={style.container}>
                         <div className={style.containerDetailProduct}>
                             <div className={style.fieldImage}>
-                                <Image src={imageDetail} alt="Gambar" className={style.imageDetail} />
+                                <img src={process.env.NEXT_PUBLIC_BACKEND_URL+"/storage/product/"+data.product_images[0].path} alt="Gambar" className={style.imageDetail} />
                             </div>
                             <div className={style.fieldDetailProduct}>
                                 <p className={style.titleProduct}>{data.productName}</p>

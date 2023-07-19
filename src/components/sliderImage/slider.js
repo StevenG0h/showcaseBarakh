@@ -16,7 +16,7 @@ const SliderImages = () => {
         speed: 500,
         slidesToShow: 1,
         slidesToScroll: 1,
-        autoplay: true,
+        autoplay: false,
         autoplaySpeed: 2000,
         pauseOnHover: true,
         verticalSwiping: false,
@@ -25,13 +25,13 @@ const SliderImages = () => {
     return (
         <div className="slider_image">
             <Slider {...settings}>
-                <div>
+                <div className={style.wrap}>
                 <Image className={style.imageProduct} src={ProductImage} alt="ProductImage"/>
                 </div>
-                <div> 
+                <div className={style.wrap}> 
                 <Image className={style.imageProduct} src={ProductImage} alt="ProductImage"/>
                 </div>
-                <div>
+                <div className={style.wrap}>
                 <Image className={style.imageProduct} src={ProductImage} alt="ProductImage"/>
                 </div>
             </Slider>

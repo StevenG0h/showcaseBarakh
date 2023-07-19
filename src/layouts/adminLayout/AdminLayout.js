@@ -12,7 +12,7 @@ export default function AdminLayout({children}){
       <>
         <Box sx={{display:'flex'}}>
           <NavVertical></NavVertical>
-          <Box sx={{width:'100%',minHeight:'100vh',backgroundColor:'#f5f5f5'}}>
+          <Box sx={{width:'100%',minHeight:'100vh', position:'sticky', top:'0rem',backgroundColor:'#f5f5f5'}}>
             <Container className={Font.PoppinsFont.className} sx={{marginLeft:0,backgroundColor:'#f5f5f5' ,paddingTop:'1em'}}>
               {children}
             </Container>

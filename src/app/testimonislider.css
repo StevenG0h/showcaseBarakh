@@ -2,13 +2,18 @@
     width: 100%;
     display: flex;
     justify-content: center;
-    margin-bottom: 9em;
+    margin-bottom: 5em;
+    background-image: url('../../public/assets/images/PropertiDark.png'),
+    url('../../public/assets/images/PropertiDark.png');
+    background-size: 50%, 70% ; 
+    background-repeat: no-repeat, no-repeat;
+    background-position: bottom 19em right 55em, bottom 4em right -27em;
 }
 .containerTest{
     display: flex;
     flex-direction: column;
     width: 75%;
-    margin: 40px 0;
+    margin: 2em 0;
     justify-content: center;
 }
 
@@ -17,8 +22,8 @@
     justify-content: center;
     color: #94B60F;
     letter-spacing: 0.08em;
-    font-size: 38px;
-    margin: 40px 0px;
+    font-size: 2.2em;
+    margin: 2em 0em 0.6em 0em;
 }
 
   /* the slides */
@@ -93,23 +98,46 @@
 }
 
 /* SLIDER IMAGE */
+
+/* .slider_image{
+    border-radius: 1em;
+} */
+.slider_image{
+    width: auto;
+    padding: 0;
+}
+
 .slider_image  .slick-slide{
     position: relative;
     margin: 0 0px;
     padding: 0;
 }
 
+.slider_image  .slick-slider{
+    /* margin: auto !important; */
+    border-radius: 0.8em ;
+}
+
 /* the parent */
 .slider_image  .slick-list {
-    /* display: inline; */
-    margin: 0 0px; 
+    overflow: hidden;
+    margin: 0;
+    padding: 0; 
+    border-radius: 0.5em;
+    width: 100%;
 }
+
+.slider_image .slick-track{
+    display: flex;
+    column-gap: 1em;
+}
+
 .slider_image  .slick-dots{
     position: absolute;
     right: 0;
-    top: 70%;
+    top: 80%;
     margin: 0px 3px;
-    padding: 11% 1% 11% 1.5%;
+    /* padding: 11% 1% 11% 1.5%; */
     height: 50%;
     display: flex;
     flex-direction: column;
@@ -138,6 +166,8 @@
     transition: 0.4s;
 }
 
+
+
 @media screen and (max-width: 768px){
     .container{
         margin-bottom: 6em;
@@ -145,6 +175,30 @@
     .containerTest{
         width: 90%;
     }
+
+    .containerTest .slick-slider{
+        position: relative;
+        display: flex;
+    }
+    
+    .containerTest .slick-track{
+        gap:1em;
+        display:flex
+        /* padding: 0 20px; */
+    }
+    
+    .containerTest  .slick-slide {
+        margin: 50px 0px;
+    }
+    
+    /* the parent */
+    .containerTest  .slick-list {
+        /* display: inline; */
+        top: 0;
+        left: 0;
+        margin: 0 0px; 
+    }
+    
 
     .titleTest{
         font-size: 1.7em;

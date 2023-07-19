@@ -8,6 +8,7 @@ import Sugeng from "../../../public/assets/images/SugengIrianto.png";
 import Julia from "../../../public/assets/images/JuliaSyafriana.png";
 import Fatimah from "../../../public/assets/images/Fatimah.png";
 import { Poppins } from 'next/font/google';
+import WhatsApp from "../../components/Whatsapp/WhatsApp"
 
 const poppins = Poppins({
     weight: '500',
@@ -89,6 +90,7 @@ const Yayasan = () => {
                 </div>
             </div>
             <Footer />
+            <WhatsApp />
         </main>
     )
 }

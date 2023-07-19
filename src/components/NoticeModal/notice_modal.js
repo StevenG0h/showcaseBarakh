@@ -1,6 +1,7 @@
+import { formatCurrency } from '../../helper/currency';
 import style from './notice.module.css'
 
-const Message = ({ isVisible, CloseClick, handleNext }) => {
+const Message = ({ isVisible, CloseClick, handleNext, total }) => {
     if (!isVisible) return null;
 
     const handleClose = (e) => {
@@ -17,7 +18,7 @@ const Message = ({ isVisible, CloseClick, handleNext }) => {
                 <div className={style.description}>Kami hanya menyediakan pembayaran VIA Aplikasi Whatsapp</div>
                 <div className={style.fieldTotal}>
                     <div className={style.textTotal}>Total Belanja Anda</div>
-                    <div className={style.Total}>Rp.180.000,00.</div>
+                    <div className={style.Total}>{formatCurrency(total)}</div>
                 </div>
                 <button onClick={()=>handleNext()} className={style.button}>Lanjutkan Pembayaran</button>
             </div>

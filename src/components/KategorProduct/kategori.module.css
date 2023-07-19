@@ -21,7 +21,7 @@
     flex-direction: column ;
     align-items: center;
     gap: 10px;
-    width: 346px;
+    width: 40em;
     height: 177px;
 }
 
@@ -44,7 +44,8 @@
 .containerKatalog{
     width: 100%;
     margin: 2em 0px 7em 0;
-    display: flex;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
     flex-wrap: wrap;
     gap: 40px;
 }
@@ -54,16 +55,14 @@
 }
 
 .katalogWrapper{
-    width: 346px;
-    height: 348px;
     background: #FFFFFF;
     box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.1);
     border-radius: 40px;
     color: #333333;
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
+    height: 100%;
 }
 
 .katalogWrapper:hover{
@@ -75,8 +74,9 @@
     border-top-left-radius: 40px;
     border-top-right-radius: 40px;
     margin-bottom: 15px;
-    width: 346px;
-    height: 348px;
+    width:100%;
+    object-fit: cover;
+    aspect-ratio: 4/3;
 }
 
 .titleKatalog{
@@ -114,6 +114,8 @@
     .containerKatalog{
         gap: 2em;
         margin: 0 0 1em 0;
+        display: grid;
+        grid-template-columns: 1fr 1fr !important;
     }
 
     .katalogWrapper{
@@ -147,16 +149,12 @@
 
     .containerKatalog{
         width: 100%;
-        margin: 0;
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 40px;
+        display: grid;
+        grid-template-columns: 1fr !important;
     }
     
     .katalogWrapper{
-        width: 316px;
-        height: 318px;
+        width: 100%;
     }
 
     .imageKatalog{

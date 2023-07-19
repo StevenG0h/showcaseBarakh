@@ -31,10 +31,13 @@
 }
 
 .imageProfile{
-    background-color: aqua;
+    background-color: grey;
     border-radius: 100%;
     width: 35px;
     height: 35px;
+    display: grid;
+    justify-content: center;
+    align-items: center;;
 }
 
 .name{

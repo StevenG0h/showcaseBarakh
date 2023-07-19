@@ -6,6 +6,7 @@ import Image from "next/image";
 import imageDetail from "../../../public/assets/images/imageDetail.png";
 import SliderDetail from "../../components/sliderDetailKategori/slider"
 import { Poppins } from 'next/font/google'
+import WhatsApp from "../../components/Whatsapp/WhatsApp"
 
 const poppins = Poppins({
     weight: '500',
@@ -26,6 +27,7 @@ const detailKategori = () => {
                 </div>    
             </div>
         <Footer/>
+        <WhatsApp/>
         </main>
     )
 }

@@ -7,6 +7,9 @@ import style from '../styles/Home.module.css'
 import SliderImages from "../components/sliderImage/slider";
 import ProductCategory from "../components/KategorProduct/kategori";
 import Testimoni from "../components/Testimoni/testimonislider"
+import axios from '../utils/axios'
+import { Button } from '@mui/material'
+import WhatsApp from '../components/Whatsapp/WhatsApp'
 
 
 const poppins = Poppins({
@@ -17,7 +20,19 @@ const poppins = Poppins({
 
 const inter = Inter({ subsets: ['latin'] })
 
-export default function Home() {
+export async function getServerSideProps(){
+  let unitUsaha = await axios.get('/api/unit-usaha');
+  return {
+    props:{
+      data:{
+        unitUsaha: unitUsaha.data.data
+      }
+    }
+  }
+}
+
+export default function Home({data}) {
+  let unitUsaha = data.unitUsaha.data;
   return (
     <main className={poppins.className}>
       <Header/>
@@ -25,17 +40,18 @@ export default function Home() {
         <div className={style.hero}>
           <div className={style.content}>
             <p className={style.titleHero}>Ciptakan Produk Lokal <br /><span style={{ color: '#94B60F' }}>Ramah Lingkungan</span></p>
-            <p className={style.description}>Ibnu Al-Mubarok menciptakan produk usaha yang bergerak dalam bidang kewirausahaan untuk menciptakan pondok pesantren yang mandiri (Single fighter) ....</p>
-            <button className={style.button} type="button" >Selengkapnya</button>
+            <p className={style.description}>Al-Mubarok merupakan unit usaha yang dimiliki oleh pesantren Ibnu Al-Mubarkh, yang berdiri sejak 2020. Awal mula terbentuknya Unit Usaha ini adalah...</p>
+            <Button sx={{width: '30%', padding: '0.8em', backgroundColor: '#94B60F', color: '#fff'}} className={style.button} >Selengkapnya</Button>
           </div>
           <div className={style.contentImage}>
             <SliderImages />
           </div>
         </div>
       </div>
-      <ProductCategory />
+      <ProductCategory unitUsaha={unitUsaha} />
       <Testimoni />
       <Footer />
+      <WhatsApp />
     </main>
   )
 }

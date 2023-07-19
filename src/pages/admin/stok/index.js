@@ -10,22 +10,64 @@ import RHFTextField from "../../../components/form/RHFTextField";
 import CustomTableHead from "../../../components/table/CustomTableHead";
 import { getAllUnitUsaha } from "../../../helper/dataOptions";
 import StockTableRow from "../../../sections/stock/StockTableRow";
+import {getCookie} from 'cookies-next';
 
-export async function getServerSideProps(){
-    let produk = await axios.get('http://127.0.0.1:8000/api/produk');
-    let unitUsaha = await getAllUnitUsaha();
-    return {
-        props:{
-            produk: produk.data,
-            options:{
-                unitUsaha
+export async function getServerSideProps({req,res}){
+    let token = getCookie('token',{req,res});
+    if(token == undefined){
+        return {
+            redirect: {
+              permanent: false,
+              destination: "/auth",
+            },
+            props:{},
+          };
+    }
+    await axios.get('/user',{
+        headers:{
+            Authorization: 'Bearer '+token,
+        },
+        withCredentials:true
+    }).catch((e)=>{
+        return {
+            redirect: {
+              permanent: false,
+              destination: "/auth",
+            },
+            props:{},
+          };
+    })
+    try{
+        let produk = await axios.get('/api/admin/produk',{
+            headers:{
+                Authorization: 'Bearer '+token,
+            },
+            withCredentials:true
+        });
+        let unitusaha = await getAllUnitUsaha();
+        return {
+            props:{
+                produk: produk.data,
+                options:{
+                    unitUsaha: unitusaha
+                }
             }
         }
+    }catch(e){
+        console.log(e)
+        // return {
+        //     redirect: {
+        //       permanent: false,
+        //       destination: "/auth",
+        //     },
+        //     props:{},
+        //   };
     }
 }
 
 export default function product({produk, options}){
     let title = 'Stock';
+    const token = getCookie('token');
     let [products, setProducts] = useState(produk.data);
     let [formTitle, setFormTitle] = useState('');
     //Next router
@@ -49,15 +91,25 @@ export default function product({produk, options}){
     
       const onSubmit = async (data) => {
         if(editMode == true){
-            const createproduk = await axios.post('/api/produk/'+data.id,data,{
-                headers:{
+            await axios.get('/sanctum/csrf-cookie', {
+                headers:{token: 'Bearer '+token},
+                withCredentials: true
+            }).then(async (r)=>{
+                await axios.post('/api/admin/produk/edit/'+data.id,data,{
+                    headers: { Authorization: `Bearer `+token,
                     'Content-Type': 'multipart/form-data'
-                }
-            });
+                    },
+                    withCredentials: true
+                }).then((r)=>{
+                    console.log(r.data)
+                }).catch((e)=>{
+                    console.log(e);
+                })
+            })
             
         }
         handleCloseAddForm();
-        router.replace(router.asPath);
+        router.reload();
       }
       
       //states
@@ -67,10 +119,20 @@ export default function product({produk, options}){
     //state handler
     let handleChangeFilter = async (data)=>{
         if(data != '*'){
-            let unitUsaha = await axios.get('/api/produk/withFilter/'+data);
+            let unitUsaha = await axios.get('/api/admin/produk/withFilter/'+data, {
+                headers:{
+                    Authorization: 'Bearer '+token
+                },
+                withCredentials:true
+            });
             setProducts(unitUsaha?.data)
         }else{
-            let unitUsaha = await axios.get('/api/produk/');
+            let unitUsaha = await axios.get('/api/admin/produk/'+data, {
+                headers:{
+                    Authorization: 'Bearer '+token
+                },
+                withCredentials:true
+            });
             setProducts(unitUsaha?.data?.data)
         }
     }
@@ -118,10 +180,10 @@ export default function product({produk, options}){
                                 Nama produk: {formTitle}
                             </Typography>
                             <FormControl sx={{width:'100%', marginY:'0.5em'}}>
-                                <RHFTextField type="number" hiddenLabel={true} label={'Stok'} name={"productStock"} control={control}></RHFTextField>
+                                <RHFTextField type="number" hiddenLabel={false} label={'Stok'} name={"productStock"} control={control}></RHFTextField>
                             </FormControl>
                             <FormControl sx={{width:'100%', marginY:'0.5em'}}>
-                                <RHFTextField type="number" hiddenLabel={true} label={'Harga'} name={"productPrice"} control={control}></RHFTextField>
+                                <RHFTextField type="number" hiddenLabel={false} label={'Harga'} name={"productPrice"} control={control}></RHFTextField>
                             </FormControl>
                             <Button variant="contained" color="success" sx={{width:'100%'}} type="submit">{editMode ? 'Simpan Perubahan' : 'Tambah Unit Usaha'}</Button>
                         </form>

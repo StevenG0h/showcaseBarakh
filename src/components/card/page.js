@@ -1,3 +1,4 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import style from "./card.module.css"
 
 const CardTestimoni = () => {

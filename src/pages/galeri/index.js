@@ -1,20 +1,24 @@
 import Header from "../../components/header/header";
 import Footer from "../../components/footer/footer";
-import style from "./galeri.module.css"
+import style from "./galeri.module.css";
 import React, { useState } from 'react';
 import Box from '@mui/material/Box';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Typography from "@mui/material/Typography";
 import { lightGreen } from "@mui/material/colors";
-import { Poppins } from 'next/font/google'
-import ImageGaleri from "../../components/ImageGaleri/image"
-
+import { Poppins } from 'next/font/google';
+import ImageGaleri from "../../components/ImageGaleri/image";
+import GaleriCard from "../../components/card/GaleriCard/GaleriCard";
+import Pagination from '@mui/material/Pagination';
+import Stack from '@mui/material/Stack';
+import Tooltip from '@mui/material/Tooltip';
+import WhatsApp from "../../components/Whatsapp/WhatsApp"
 const poppins = Poppins({
     weight: '500',
     subsets: ['latin'],
     // display: 'swap'
-  })
+})
 
 
 
@@ -46,18 +50,27 @@ function a11yProps(index) {
     };
 }
 
+
+// const useStyles = makeStyles(theme => ({
+//     tab: { 
+//         '& .MuiBox-root': {
+//           padding: '0px',
+//           },
+//         },
+//     }));
+
 const GaleriTestimoni = () => {
     const second = lightGreen[500];
-
 
     const [value, setValue] = React.useState(0);
 
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };
+
     return (
         <main className={poppins.className}>
-        <Header/>
+            <Header />
             <div className={style.container}>
                 <div className={style.containerBase}>
                     <div className={style.textGaleri}>
@@ -72,20 +85,28 @@ const GaleriTestimoni = () => {
                                         "&:hover": { color: "#94B60F" },
                                         " .Mui-selected": {
                                             color: "#94B60F !important",
-                                            }, 
+                                        },
                                         "& button:active": {
                                             color: "#94B60F"
                                         }
                                     }}
                                     TabIndicatorProps={{ style: { backgroundColor: "#94B60F" } }}
                                 >
-                                    <Tab sx={{textTransform: "none"}} label="Semua" {...a11yProps(0)} />
-                                    <Tab sx={{textTransform: "none"}} label="Foto" {...a11yProps(1)} />
-                                    <Tab sx={{textTransform: "none"}} label="Video" {...a11yProps(2)} />
+                                    <Tab sx={{ textTransform: "none" }} label="Semua" {...a11yProps(0)} />
+                                    <Tab sx={{ textTransform: "none" }} label="Foto" {...a11yProps(1)} />
+                                    <Tab sx={{ textTransform: "none" }} label="Video" {...a11yProps(2)} />
                                 </Tabs>
                             </Box>
-                            <TabPanel value={value} index={0}>
-                                {/* <ImageGaleri/> */}
+                            <TabPanel className={style.tabPanel} value={value} index={0}>
+                                <div className={style.boxGaleri}>
+                                    <GaleriCard/>
+                                    <GaleriCard/>
+                                    <GaleriCard/>
+                                    <GaleriCard/>
+                                    <GaleriCard/>
+                                    <GaleriCard/>
+                                </div>
+                                    
                             </TabPanel>
                             <TabPanel value={value} index={1}>
                                 Item Two
@@ -93,22 +114,19 @@ const GaleriTestimoni = () => {
                             <TabPanel value={value} index={2}>
                                 Item Three
                             </TabPanel>
+                                <Stack spacing={2}>
+                                    <Pagination count={10} variant="outlined" shape="rounded" sx={{display: 'flex', justifyContent: 'center', placeItems: 'center'}}/>
+                                </Stack>
                         </Box>
                     </div>
                 </div>
             </div>
-        <Footer/>
+            <Footer />
+            <WhatsApp />
         </main>
     )
 }
 
 export default GaleriTestimoni;
 
-{/* <div className={style.navigation} aria-label="Tabs example" onChange={handleChange}>
-                            <button className={style.navLink}  defaultValue= {0} >Semua</button>
-                            <button className={style.navLink}  defaultValue={1}>Foto</button>
-                            <button className={style.navLink}  defaultValue={2}>Video</button>
-                        </div>
-                        <div className={style.tabPanel} defaultValue={0}>Page 1</div>
-                        <div className={style.tabPanel} defaultValue={1}>Page 2</div>
-                        <div className={style.tabPanel} defaultValue={2}>Page 3</div> */}
+
