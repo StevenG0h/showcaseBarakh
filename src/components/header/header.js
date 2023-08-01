@@ -58,6 +58,10 @@ const Header = () => {
                         <li>
                             <Link className={style.navitem} style={{color: router.pathname === '/bantuan' ? '#94B60F' : ''}}
                                 onClick={() => handleLinkClick('/bantuan')} href="/bantuan">Bantuan</Link>
+                            <Link className={style.navitem} href="/galeri">Galeri</Link>
+                        </li>
+                        <li>
+                            <Link className={style.navitem} href="/bantuan">Bantuan</Link>
                         </li>
                     </ul>
                 </div>
