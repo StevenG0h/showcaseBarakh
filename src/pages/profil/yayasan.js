@@ -29,8 +29,9 @@ const Yayasan = () => {
                         </div>
                     </div>
                     <div className={style.colVisiMisi}>
-                        <div className={style.ImageYas}></div>
-                        <Image src={YayasanImg} alt="Gambar" className={style.yayasanImage} />
+                        <div className={style.ImageYas}>
+                            <Image src={YayasanImg} alt="Gambar" className={style.yayasanImage} />
+                        </div>
                         <div className={style.colDetailVisiMisi}>
                             <div className={style.visi}>
                                 <p className={style.title}>Visi Yayasan</p>

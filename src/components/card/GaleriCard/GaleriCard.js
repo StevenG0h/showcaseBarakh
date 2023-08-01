@@ -18,11 +18,12 @@ const GaleriCard = () => {
                     alt="gambar"
                     sx={{position:'relative', overflow: 'hidden',bgcolor: '#872D', width: '100%', height: '200', objectFit: 'cover'}}
                 /> */}
-                <CardContent sx={{ position: 'absolute',  zIndex: 1, bottom: 0, bgcolor: 'rgba(0, 0, 0, 0.85)', transition: '0.5s all', opacity: 0, color: '#fff', height: '6.5em', padding: '1em'}} className={style.hoverContent}>
+                <CardContent sx={{ position: 'absolute',  zIndex: 1, bottom: 0, bgcolor: 'rgba(0, 0, 0, 0.8)', transition: '0.5s all', opacity: 0, color: '#fff', height: '40%', padding: '1em', display: 'flex', flexDirection: 'column'}} className={style.hoverContent}>
+                    <Typography sx={{fontSize: '0.9em', display: 'flex', justifyContent: 'flex-end'}}>25/07/2023</Typography>
                     <Typography gutterBottom variant="h5" component="div" sx={{fontSize: '1.2em', color: '#94B60F', fontWeight: 700}}>
-                        Lizard
+                        Pesantren Ibnu Al-Mubarakh  
                     </Typography>
-                    <Typography  sx={{fontSize: '1em'}}>
+                    <Typography  sx={{fontSize: '0.9em', lineHeight: '1.3em'}}>
                         Lizards are a widespread group of squamate reptiles, with over 6,000
                     </Typography>
                 </CardContent>

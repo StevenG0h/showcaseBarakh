@@ -6,7 +6,8 @@ import Link from 'next/link';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
     faSearch,
-    faCartShopping
+    faCartShopping,
+    faBars
 } from "@fortawesome/free-solid-svg-icons";
 import { useRouter } from "next/router";
 
@@ -25,6 +26,9 @@ const Header = () => {
     return (
         <div className={style.header}>
             <div className={style.container}>
+                <button className={style.navigasiButton}>
+                    <FontAwesomeIcon icon={faBars} className={style.buttonBars} />
+                </button>
                 <div className={style.navbarbrand}>
                     <Image className={style.barakhlogo} src={ImageBrand} alt="BarakhLogo" />
                 </div>
@@ -58,10 +62,6 @@ const Header = () => {
                         <li>
                             <Link className={style.navitem} style={{color: router.pathname === '/bantuan' ? '#94B60F' : ''}}
                                 onClick={() => handleLinkClick('/bantuan')} href="/bantuan">Bantuan</Link>
-                            <Link className={style.navitem} href="/galeri">Galeri</Link>
-                        </li>
-                        <li>
-                            <Link className={style.navitem} href="/bantuan">Bantuan</Link>
                         </li>
                     </ul>
                 </div>
