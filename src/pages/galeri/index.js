@@ -75,7 +75,7 @@ const GaleriTestimoni = () => {
                 <div className={style.containerBase}>
                     <div className={style.textGaleri}>
                         <p className={style.title}>Galeri Kegiatan dan Acara</p>
-                        <p className={style.subtitle}>Telusuri kegiatan kami dengan pesantren di Indonesia. Kami siap mendigitalisasikan pesantren di Indonesia.</p>
+                        <p className={style.description}>Telusuri kegiatan kami dengan pesantren di Indonesia. Kami siap mendigitalisasikan pesantren di Indonesia.</p>
                     </div>
                     <div className={style.listWrap} >
                         <Box sx={{ width: '100%' }}>
@@ -105,8 +105,7 @@ const GaleriTestimoni = () => {
                                     <GaleriCard/>
                                     <GaleriCard/>
                                     <GaleriCard/>
-                                </div>
-                                    
+                                </div>       
                             </TabPanel>
                             <TabPanel value={value} index={1}>
                                 Item Two
