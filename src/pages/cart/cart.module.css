@@ -35,7 +35,8 @@
 }
 
 .input{
-    width: 1.8em;
+    width: 1.5em;
+    height: 1.5em;
 }
 
 .textPilih{
@@ -89,20 +90,20 @@
 .list{
     display: flex;
     flex-direction: row;
-    gap: 1em;
-    background-color: #fff;
+    gap: 1.25em;
     width: 100%;
     height: auto;
     border-radius: 7px;
-    padding: 1em 1em 0 1em ;
+    padding: 1em 1em 1em 1em ;
 }
 
 .image{
-    width: 40%;
+    width: 30% ;
+    border-radius: 1em;
 }
 
 .image .imageCart{
-    width: 91%;
+    width: 100%;
     height: auto;
 }
 
@@ -116,16 +117,12 @@
     text-decoration: none;
 }
 
-.titleProduct:hover{
-    color: #94B60F;
-}
-
-.titleProduct{
+.productName{
     color:#081B1C ;
-    font-size: 1.3em;
+    font-size: 1.2em;
     font-weight: 700;
     margin: 0px;
-    letter-spacing: 0.08rem;
+    letter-spacing: 0.1rem;
 }
 
 .remaining{
@@ -133,7 +130,7 @@
     flex-direction: column;
     margin: 0px;
     gap: 0.4em;
-    font-size: 1em;
+    font-size: 0.9em;
 }
 
 .remainingCheck{
@@ -145,7 +142,7 @@
 .price{
     margin: 0px;
     color: #081B1C;
-    font-size: 1em;
+    font-size: 0.9em;
     font-weight: 700;
     letter-spacing: 0.08rem;
 }
@@ -155,7 +152,7 @@
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    gap: 6.5em;
+    margin-top: 0.5em ;
 }
 
 .hapus{
@@ -168,48 +165,6 @@
     flex-direction: row;
     gap: 20px;
     align-items: center;
-}
-
-.tambah{
-    border: 3.11111px solid #CDCDCD;
-    border-radius: 100%;
-    padding:0.1em;
-    padding-left: 0.4em;
-    padding-right: 0.4em;
-    background-color: #fff;
-    font-size: 1.5em;
-    color: #CDCDCD;
-    transition: 0.2s;
-    /* display: flex;
-    align-items: center; */
-}
-
-.tambah:hover{
-    border-color: #94B60F;
-    color: #94B60F;
-}
-
-.amount{
-    color: #081B1C;
-    font-size: 1.8em;
-    font-weight: 300;
-}
-
-.kurang{
-    border: 3.11111px solid #CDCDCD;
-    border-radius: 100%;
-    padding:0.1em;
-    padding-left: 0.5em;
-    padding-right: 0.5em;
-    background-color: #fff;
-    font-size: 1.5em;
-    color: #CDCDCD;
-    transition: 0.2s;
-}
-
-.kurang:hover{
-    border-color: #94B60F;
-    color: #94B60F;
 }
 
 .ringkasanBelanja{
@@ -233,7 +188,7 @@
 
 .titleRingkasan{
     color: #081B1C;
-    font-size: 1.4em;
+    font-size: 1.2em;
     font-weight: 700;
     letter-spacing: 0.08rem;
     margin: 0px;
@@ -247,13 +202,13 @@
 
 .textTotal{
     color: #081B1C;
-    font-size: 1em;
+    font-size: 0.9em;
     letter-spacing: 0.09rem;
     font-weight: 700;
 }
 
 .total{
-    font-size: 1em;
+    font-size: 0.9em;
     letter-spacing: 0.09rem;
     font-weight: 700;
     color: #94B60F;
@@ -330,3 +285,86 @@
     color: #94B60F;
 }
 
+@media screen and (max-width: 768px) {
+    .containerCart{
+        width: 90%;
+    }
+
+    .topCart{
+        margin: 2em 0;
+    }
+
+    .titleProduct{
+        font-size: 1em;
+    }
+
+    .remainingCheck{
+        font-size: 0.7em;
+    }
+
+    .price{
+        font-size: 0.8em;
+    }
+
+    .ringkasanBelanja{
+        gap: 2em;
+    }
+
+    .descRingkasan{
+        gap: 2em;
+    }
+
+    .titleRingkasan{
+        font-size: 1em;
+    }
+
+    .textTotal{
+        font-size: 0.6em;
+    }
+    
+    .total{
+        font-size: 0.6em;
+    }
+
+    .buttonBuy{
+        font-size: 0.6em;
+    }
+
+/* Sesi Rekomendsi  */
+
+    .containerRekomendasi{
+        width: 90%;
+        padding: 0;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .container{
+        padding: 1.5em 0;
+    }
+
+    .containerCart{
+        width: 90%;
+    }
+
+    .title{
+        font-size: 2em;
+    }
+
+    .mainCart{
+        flex-direction: column;
+        row-gap: 2em;
+    }
+
+    .fieldList{
+        width: 100%;
+    }
+
+    .ringkasanBelanja{
+        width: auto;
+    }
+
+    .titleRekom{
+        font-size: 1.5em;
+    }
+}

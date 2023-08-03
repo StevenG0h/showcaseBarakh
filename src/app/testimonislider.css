@@ -115,7 +115,7 @@
 
 .slider_image  .slick-slider{
     /* margin: auto !important; */
-    border-radius: 0.8em ;
+    border-radius: 0 ;
 }
 
 /* the parent */

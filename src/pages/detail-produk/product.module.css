@@ -2,7 +2,12 @@
     width: 100%;
     display: flex;
     justify-content: center;
-    margin: 4em 0px 9em 0px;
+    padding: 4em 0px 9em 0px;
+    background-image: url('../../../public/assets/images/PropertiDark.png'),
+                    url('../../../public/assets/images/PropertiDark.png');
+    background-size: 50%, 70% ; 
+    background-repeat: no-repeat, no-repeat;
+    background-position: top 1em right 77em, bottom 18em right -30em;
 }
 
 .containerDetailProduct{
@@ -15,13 +20,12 @@
 }
 
 .fieldImage{
-    width: 50%;
-    
+    width: 50%;  
 }
 
 .imageDetail{
     object-fit: cover;
-    aspect-ratio: 1/1;
+    aspect-ratio: 1.5/1;
     width: 100%;
     border-radius: 10px;
 }
@@ -57,7 +61,6 @@
     margin: 0px;
     font-size: 1em;
     color: #fff;
-    letter-spacing: 0.09rem;
 }
 
 .priceAmount{
@@ -103,12 +106,59 @@
     border: #081B1C;
     cursor: pointer;
     width: auto;
+    font-weight: 700;
 }
 
 .cartButton:hover{
     background-color: #D5F06B;
 }
 
+@media screen and (max-width: 768px) {
+    .containerDetailProduct{
+        width: 90%;
+    }
+}
+
+@media screen and (max-width: 480px){
+    .container{
+        padding: 2em 0 4em 0;
+    }
+
+    .containerDetailProduct{
+        width: 90%;
+        flex-direction: column;
+        gap: 1em;
+    }
+
+    .fieldImage{
+        width: 100%;
+    }
+
+    .fieldDetailProduct { 
+        width: 100%;
+        gap: 0.5em;
+    }
+
+    .titleProduct{
+        font-size: 1.6em;
+    }
+    
+    .stockProduct{
+        font-size: 0.9em;
+    }
+
+    .priceProduct{
+        font-size: 0.9em;
+    }
+
+    .unitUsaha{
+        font-size: 0.9em;
+    }
+
+    .descriptionProduct{
+        font-size: 0.9em;
+    }
+}
 
 
 

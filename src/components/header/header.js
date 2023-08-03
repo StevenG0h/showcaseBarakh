@@ -9,7 +9,11 @@ import {
     faCartShopping,
     faBars
 } from "@fortawesome/free-solid-svg-icons";
+import { IconButton } from "@mui/material";
+import MenuIcon from '@mui/icons-material/Menu'; 
 import { useRouter } from "next/router";
+import HeaderMobile from "./HeaderMobile/HeaderMobile";
+import Badge from "@mui/material/Badge";
 
 const Header = () => {
 
@@ -23,12 +27,28 @@ const Header = () => {
                 setActiveLink(path);
     };
 
+    // const [anchorX, setAnchorX] = useState(false);
+
+    // const handleDrawerOpen = () => {
+    //     setAnchorX(true);
+    // }
+
+    // const handleDrawerClose = () => {
+    //     setAnchorX(false);
+    // }
+
     return (
         <div className={style.header}>
             <div className={style.container}>
-                <button className={style.navigasiButton}>
+                {/* <IconButton onClick={handleDrawerOpen} onClose={handleDrawerClose}>
+                    <MenuIcon sx={{color: 'white', fontSize: '1.3em'}}/>
+                </IconButton> */}
+                <div className={style.iconBar}>
+                    <HeaderMobile anchor='left' className={style.headerMobile}/>
+                </div>
+                {/* <button className={style.navigasiButton}>
                     <FontAwesomeIcon icon={faBars} className={style.buttonBars} />
-                </button>
+                </button> */}
                 <div className={style.navbarbrand}>
                     <Image className={style.barakhlogo} src={ImageBrand} alt="BarakhLogo" />
                 </div>
@@ -66,7 +86,14 @@ const Header = () => {
                     </ul>
                 </div>
                 <div className={style.srccart}>
-                    <Link style={{color: router.pathname === '/cart' ? '#94B60F' : ''}} href="/cart" ><FontAwesomeIcon className={style.iconJ} icon={faCartShopping} /></Link>
+                    <Badge badgeContent={3} sx={{
+                        '& .MuiBadge-badge':{
+                            backgroundColor: '#94B60F',
+                            color: '#ffffff'
+                        }
+                    }}>
+                        <Link style={{color: router.pathname === '/cart' ? '#94B60F' : ''}} href="/cart" ><FontAwesomeIcon className={style.iconJ} icon={faCartShopping} /></Link>
+                    </Badge>
                 </div>
                 {/* <Search Visible={searchActive} closeClick={() => setSearchActive(false)} /> */}
                 {/* <div className={style.searchBox}>
