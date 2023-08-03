@@ -18,6 +18,8 @@
     width: 75%;
     height: auto;
     margin-top: 2.7em;
+    justify-content: center;
+    align-items: center;
 }
 
 .titleUnitUsaha{
@@ -31,11 +33,8 @@
 
 .containerCard{
     grid-column: 1/3;
-    height: auto;
     display: grid;
     grid-template-columns: 1fr 1fr;
-    flex-direction: row;
-    flex-wrap: wrap;
     width: 100%;
     height: auto;
     gap: 40px;
@@ -46,22 +45,24 @@
 }
 
 .cardUsaha{
-    display: flex;
     background-color: #fff;
     box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.05);
-    border-radius: 10px;
-    padding: 1.3em 1.2em;
+    border-radius: 0.6em;
+    padding: 1em;
+    padding-bottom: 0;
+    display: flex;
     flex-direction: column;
     gap: 3px;
-    height: 30em;
+    /* height: 23em; */
+    height: 100%;
 }
 
 .image{
-    width: 100%;
-    height: auto;
-    aspect-ratio: 4/3;
+    width: 100%;    
+    aspect-ratio: 4/2;
     object-fit: cover;
     margin-bottom: 1em;
+    border-radius: 0.6em;
 }
 
 .titleCard{
@@ -82,7 +83,14 @@
     line-height: 18px;
     color: #303030;
     margin: 0px;
-    margin-bottom: 14px;
+    margin-bottom: 0;
+}
+
+.cardUsaha .cardDescription{
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
 }
 
 @media screen and (max-width: 768px){
@@ -101,13 +109,16 @@
     }
 
     .cardUsaha{
-        width: 18em;
-        height: auto;
-        padding: 0.9em 0.9em;
+        /* width: 18em; */
+        /* height: auto; */
+        padding: 0.7em;
+        padding-bottom: 0;
+        border-radius:0.4em ;
     }
 
     .image{
         margin: 0;
+        border-radius: 0.4em;
     }
 
     .titleCard{
@@ -120,22 +131,52 @@
         line-height: 1.7em;
         margin: 0;
     }
+
+    .cardUsaha .cardDescription{
+        -webkit-line-clamp: 2;
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+    }
 }
 
 @media screen and (max-width: 480px){
+    .container{
+        padding-bottom: 4em;
+    }
+
     .containerUsaha{
-        width: 85%;
+        width: 90%;
+
     }
 
     .titleUnitUsaha{
         font-size: 1.6em;
     }
 
+    .containerCard{
+        row-gap: 2em;
+    }
+
     .cardUsaha{
-        width: 19.5em;
+        padding: 0.5em;
+        gap: 0.2em;
+    }
+
+    .titleCard{
+        font-size: 0.8em;
+        line-height: 2em;
     }
     
     .cardDescription{
         font-size: 0.65em;
+    }
+
+    .cardUsaha .cardDescription{
+        font-size: 0.6em;
+        -webkit-line-clamp: 2;
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
     }
 }

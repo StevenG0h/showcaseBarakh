@@ -12,7 +12,7 @@ export async function getServerSideProps({req,res,query}){
   let unitUsaha = await axios.get('/api/profil/'+query.unit_usaha_id).catch((e)=>{
     console.log(e);
   });
-
+  console.log(unitUsaha)
   return {
     props:{
       data:unitUsaha.data

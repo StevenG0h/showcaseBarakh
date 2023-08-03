@@ -61,13 +61,13 @@ const Profile = () => {
                                 <div className={style.columInfo}>
                                     <p className={style.titleInfo}>Bidang Usaha</p>
                                     <ul className={style.ul}>
-                                        <li className={style.li}><Link href="">Rumah Jahit</Link></li>
-                                        <li className={style.li}><Link href="">Pendidikan</Link></li>
-                                        <li className={style.li}><Link href="">Pertanian</Link></li>
-                                        <li className={style.li}><Link href="">Perternakan</Link></li>
-                                        <li className={style.li}><Link href="">Perikanan</Link></li>
-                                        <li className={style.li}><Link href="">Dapur UTI</Link></li>
-                                        <li className={style.li}><Link href="">Bank Sampah</Link></li>
+                                        <li className={style.li}><Link href="" className={style.listUnitUsaha}>Rumah Jahit</Link></li>
+                                        <li className={style.li}><Link href="" className={style.listUnitUsaha}>Pendidikan</Link></li>
+                                        <li className={style.li}><Link href="" className={style.listUnitUsaha}>Pertanian</Link></li>
+                                        <li className={style.li}><Link href="" className={style.listUnitUsaha}>Perternakan</Link></li>
+                                        <li className={style.li}><Link href="" className={style.listUnitUsaha}>Perikanan</Link></li>
+                                        <li className={style.li}><Link href="" className={style.listUnitUsaha}>Dapur UTI</Link></li>
+                                        <li className={style.li}><Link href="" className={style.listUnitUsaha}>Bank Sampah</Link></li>
                                     </ul>
                                 </div>
                                 <div className={style.columInfo}>

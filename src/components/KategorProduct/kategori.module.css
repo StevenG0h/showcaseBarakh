@@ -70,7 +70,6 @@
 }
 
 .imageKatalog{
-    object-fit: cover;
     border-top-left-radius: 40px;
     border-top-right-radius: 40px;
     margin-bottom: 15px;
@@ -104,11 +103,15 @@
     }
 
     .titleCategory{
-        font-size: 1.5em;
+        font-size: 1.8em;
     }
 
     .descriptionTitle{
-        font-size: 0.8em;
+        font-size: 1em;
+    }
+
+    .textCategory{
+        width: 30em;
     }
 
     .containerKatalog{
@@ -118,10 +121,6 @@
         grid-template-columns: 1fr 1fr !important;
     }
 
-    .katalogWrapper{
-        width: 300px;
-        height: 348px;
-    }
     .imageKatalog{
         width: 100%;
     }
@@ -138,6 +137,11 @@
         width: 85%;
     }
 
+    
+    .textCategory{
+        width: 25em;
+    }
+
     .titleCategory{
         font-size: 1.4em;
     }
@@ -148,7 +152,7 @@
     }
 
     .containerKatalog{
-        width: 100%;
+        width: 80%;
         display: grid;
         grid-template-columns: 1fr !important;
     }
@@ -161,8 +165,7 @@
         border-top-left-radius: 40px;
         border-top-right-radius: 40px;
         margin-bottom: 13px;
-        width: 316px;
-        height: 318px;
+        width:100%
     }
 
     .titleKatalog{

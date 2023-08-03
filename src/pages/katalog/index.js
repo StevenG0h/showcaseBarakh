@@ -69,7 +69,7 @@ const Katalog = ({products, unitUsaha}) => {
                         {
                             product.length != 0 ? product.map((product)=>{
                                 return (
-                                    <Grid item xs={3} key={product.id}>
+                                    <Grid item xs={6} sm={4} lg={3} key={product.id}>
                                         <KatalogCard style={style} row={product}></KatalogCard>
                                     </Grid>
                                 )

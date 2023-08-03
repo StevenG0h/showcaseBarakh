@@ -14,5 +14,20 @@
     position: relative;
     overflow: hidden;
     width: 100%;
+    object-fit: cover;
     /* object-fit: cover; */
+}
+
+@media screen and (max-width: 768px) {
+    .CardArea{
+        width: 23em;
+        height:13em ;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .CardArea{
+        width: 24em;
+        height:14em ;
+    }
 }
