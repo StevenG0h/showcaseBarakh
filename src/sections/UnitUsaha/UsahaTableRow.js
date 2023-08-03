@@ -32,7 +32,7 @@ export default function UsahaTableRow({row, num, onShowImage, onDelete, onEdit})
                         {usahaImage}
                     </Button>
                 </TableCell>
-                <TableCell align="center" width={'150px'} sx={{display:'flex'}}>
+                <TableCell align="center" width={'150px'}>
                     <IconButton onClick={onEdit} sx={{marginX:'0.5em'}} variant="contained" color="warning" >
                         <Edit></Edit>
                     </IconButton>

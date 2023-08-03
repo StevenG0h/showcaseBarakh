@@ -26,9 +26,6 @@ export default function ProfilUsahaTableRow({row, num, onShowImage, onDelete, on
                     <IconButton onClick={onEdit} sx={{marginX:'0.5em'}} variant="contained" color="warning" >
                         <Edit></Edit>
                     </IconButton>
-                    <IconButton onClick={onDelete} sx={{marginX:'0.5em'}} variant="contained" color="error" >
-                        <Delete></Delete>
-                    </IconButton>
                 </TableCell>
             </TableRow>
         </>

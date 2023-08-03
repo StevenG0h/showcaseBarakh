@@ -6,6 +6,8 @@ import Footer from "../../components/footer/footer";
 import { Container, ImageList, ImageListItem, ImageListItemBar, Typography } from "@mui/material";
 import { poppinsFont } from "../../utils/font";
 import axios from "../../utils/axios";
+import  ChevronRight  from "@mui/icons-material/ChevronRight";
+import  ChevronLeft  from "@mui/icons-material/ChevronLeft";
 
 export async function getServerSideProps({req,res,query}){
   console.log(query);

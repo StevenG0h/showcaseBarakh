@@ -12,8 +12,8 @@ export async function getAllUnitUsaha(){
 }
 
 export async function getAllUnitUsahaProduct(id){
-    let unitUsahas = await axios.get(process.env.NEXT_PUBLIC_BACKEND_URL+'/api/unit-usaha/'+id);
-    unitUsahas = unitUsahas?.data.products.map((product)=>{
+    let unitUsahas = await axios.get(process.env.NEXT_PUBLIC_BACKEND_URL+'/api/unit-usaha/product-option/'+id);
+    unitUsahas = unitUsahas?.data.map((product)=>{
         return {
             id: product.id,
             label: product.productName,
@@ -65,4 +65,9 @@ export async function getAllKelurahanById(id){
         }
     })
     return provinsis;
+}
+
+export async function setVisitor(){
+    let visitor = await axios.get(process.env.NEXT_PUBLIC_BACKEND_URL+'/api/visitor/');
+    return visitor;
 }

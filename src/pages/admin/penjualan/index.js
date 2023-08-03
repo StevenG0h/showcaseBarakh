@@ -5,7 +5,7 @@ import * as yup from "yup";
 import {yupResolver} from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 import AdminLayout from "../../../layouts/adminLayout/AdminLayout";
-import { Button, Card, Dialog, DialogTitle, DialogContent, FormControl, Grid, IconButton, ImageList, ImageListItem, ImageListItemBar, Input, MenuItem, Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
+import { Button, Card, Dialog, DialogTitle, DialogContent, FormControl, Grid, IconButton, ImageList, ImageListItem, ImageListItemBar, Input, MenuItem, Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Box } from "@mui/material";
 import RHFTextField from "../../../components/form/RHFTextField";
 import RHFAutocomplete from "../../../components/form/RHFAutocomplete";
 import CustomTableHead from "../../../components/table/CustomTableHead";
@@ -13,6 +13,9 @@ import { getAllUnitUsaha, getAllUnitUsahaProduct } from "../../../helper/dataOpt
 import PenjualanTableRow from "../../../sections/penjualan/PenjualanTableRow";
 import DetailPenjualanTableRow from "../../../sections/penjualan/DetailPenjualanTableRow";
 import {getCookie} from 'cookies-next';
+import  ChevronRight  from "@mui/icons-material/ChevronRight";
+import  ChevronLeft  from "@mui/icons-material/ChevronLeft";
+import { useEffect } from "react";
 
 export async function getServerSideProps({req,res}){
     let token = getCookie('token',{req,res});
@@ -41,13 +44,14 @@ export async function getServerSideProps({req,res}){
     })
    
     try{
-        let produk = await axios.get('/api/admin/penjualan',{
+        let produk = await axios.get('/api/admin/transaksi/penjualan',{
             headers:{
                 Authorization: 'Bearer '+token,
             },
             withCredentials:true
         });
         let unitusaha = await getAllUnitUsaha();
+        console.log(produk.data)
         return {
             props:{
                 produk: produk.data,
@@ -69,9 +73,11 @@ export async function getServerSideProps({req,res}){
 }
 
 export default function product({produk, options}){
+    let [loading, setLoading] = useState(false)
     let token = getCookie('token');
     let title = 'Stock';
     let [products, setProducts] = useState(produk.data);
+    let [productsLink, setProductsLink] = useState(produk.links);
     let [transaction, setTransaction] = useState([]);
     let [formTitle, setFormTitle] = useState([]);
     let [addDetailTransactionForm, setAddDetailTransactionForm] = useState('');
@@ -112,8 +118,9 @@ export default function product({produk, options}){
       })
     
       const onSubmit = async (data) => {
-        let token = getCookie('token');
+        setLoading(true)
         try{
+            handleCloseAddForm()
             await axios.get('/sanctum/csrf-cookie',{
                 withCredentials:true
             }).then(async(r)=>{
@@ -126,8 +133,8 @@ export default function product({produk, options}){
         }catch(e){
             console.log(e)
         }finally{
-            handleCloseAddForm()
-            router.reload()
+            router.replace(router.asPath)
+            setLoading(false)
         }
       }
 
@@ -150,7 +157,7 @@ export default function product({produk, options}){
             console.log(e)
         }finally{
             handleCloseAddSalesTransactionForm()
-            router.reload()
+            router.replace(router.asPath)
         }
 
       }
@@ -201,7 +208,7 @@ export default function product({produk, options}){
         }catch(e){
             
         }finally{
-            router.reload();
+            router.replace(router.asPath);
         }
 
     }
@@ -218,25 +225,45 @@ export default function product({produk, options}){
 
     let handleProductOption = async (id)=>{
         let products = await getAllUnitUsahaProduct(id)
+        console.log(products)
         setProductOptions(products);
+    }
+
+    let handleChangePage = async (link)=>{
+        if(link != null){
+            let unitUsaha = await axios.get(link,{
+                headers:{
+                    Authorization: 'Bearer '+token,
+                },
+                withCredentials:true
+            });
+            setProducts(unitUsaha?.data?.data)
+            setProductsLink(unitUsaha?.data?.links)
+        }
     }
 
     let TABLEHEAD = [
         {value: 'No',align: 'left'},
         {value: 'Nama Client',align: 'left'},
         {value: 'Alamat',align: 'left'},
-        {value: 'Status',align: 'left'},
+        {value: 'Tanggal', align:'left'},
         {value: 'Total', align:'left'},
+        {value: 'Status',align: 'left'},
         {value: 'Action',align: 'left'}
     ]
     
     let num = 0;
     let detailNum = 0;
 
+    useEffect(() => {
+        setProducts(produk.data)
+        setProductsLink(produk.links)
+      }, [produk]);
+
     return (
         <>
-            <AdminLayout>
-            <Typography variant="h3" fontWeight={400}>Penjualan</Typography>
+            <AdminLayout handleLoading={loading}>
+            <Typography variant="h3" color={'#94B60F'} sx={{textDecoration:'underline'}} fontWeight={400}>Penjualan</Typography>
                 {/* <Typography variant="h3" fontWeight={400}>{title}</Typography>
                 <Select defaultValue={'*'}
                 onChange={(e)=>handleChangeFilter(e.target.value)}
@@ -392,6 +419,17 @@ export default function product({produk, options}){
                             </TableBody>
                         </Table>
                     </TableContainer>
+                    <Box sx={{display:'flex', flexDirection:'row', justifyContent:'center'}}>
+                    {
+                        productsLink.map((link)=>{
+                            return (
+                                <Button fullWidth size="sm" sx={{margin:'0.5em',paddingY:'1em', paddingX:'0', width:0, height:0}} key={link.label} variant={link.active ? 'contained' : 'outlined'} color={'success'} onClick={()=> handleChangePage(link.url)}>{
+                                    link.label == '&laquo; Previous'? <ChevronLeft ></ChevronLeft> : link.label == 'Next &raquo;' ? <ChevronRight></ChevronRight> : link.label
+                                }</Button>
+                            )
+                        })
+                    }
+                    </Box>
                 </Card>
             </AdminLayout>
         </>

@@ -20,43 +20,28 @@ import {
   );
   
   export const options = {
-    maintainAspectRatio:false,
-    responsive: true,
-    plugins: {
-      legend: {
-        position: 'top',
-      },
-      title: {
-        display: true,
-        text: 'Chart.js Line Chart',
-      },
-    },
+    
   };
   
-  const labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July','August','September','October','November','December'];
   
-  export const data = {
-    labels,
-    datasets: [
-      {
-        label: 'Dataset 1',
-        data: labels.map(() => faker.datatype.number({ min: 0, max: 100 })),
-        borderColor: '#049ffb',
-        backgroundColor: '#049ffb',
-      },
-      {
-        label: 'Dataset 2',
-        data: labels.map(() => faker.datatype.number({ min: 0, max: 100 })),
-        borderColor: '#58B63B',
-        backgroundColor: '#58B63B',
-      },
-    ],
-  };
   
-  export default function CustomDoughnutChart({dataset = data}) {
+  
+  export default function CustomDoughnutChart({dataset, chartTitle}) {
       return (
-          <Bar options={
-              options
+          <Bar title='' options={
+              {
+                maintainAspectRatio:false,
+                responsive: true,
+                plugins: {
+                  legend: {
+                    position: 'top',
+                  },
+                  title: {
+                    display: true,
+                    text: chartTitle,
+                  },
+                },
+              }
           } data={dataset}></Bar>
       )
   }

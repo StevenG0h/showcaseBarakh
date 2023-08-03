@@ -22,38 +22,25 @@ import {
     Legend
   );
   
-  export const options = {
-    maintainAspectRatio:false,
-    responsive: true,
-    plugins: {
-      legend: {
-        position: 'top',
-      },
-      title: {
-        display: true,
-        text: 'Chart.js Line Chart',
-      },
-    },
-  };
   
   const labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July','August','September','October','November','December'];
   
-  export const data = {
-    labels,
-    datasets: [
-      {
-        label: 'Dataset 1',
-        data: labels.map(() => faker.datatype.number({ min: 0, max: 100 })),
-        borderColor: '#58B63B',
-        backgroundColor: '#58B63B',
-      }
-    ],
-  };
-  
-  export default function CustomLineChart({dataset = data}) {
+  export default function CustomLineChart({dataset, chartTitle}) {
       return (
           <Line options={
-              options
+            {
+              maintainAspectRatio:false,
+              responsive: true,
+              plugins: {
+                legend: {
+                  position: 'top',
+                },
+                title: {
+                  display: true,
+                  text: chartTitle,
+                },
+              },
+            }
           } data={dataset}></Line>
       )
   }

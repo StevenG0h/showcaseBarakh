@@ -10,7 +10,7 @@ import Testimoni from "../components/Testimoni/testimonislider"
 import axios from '../utils/axios'
 import { Button } from '@mui/material'
 import WhatsApp from '../components/Whatsapp/WhatsApp'
-
+import { setVisitor } from '../helper/dataOptions'
 
 const poppins = Poppins({
   weight: '500',
@@ -22,6 +22,7 @@ const inter = Inter({ subsets: ['latin'] })
 
 export async function getServerSideProps(){
   let unitUsaha = await axios.get('/api/unit-usaha');
+  setVisitor()
   return {
     props:{
       data:{

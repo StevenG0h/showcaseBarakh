@@ -11,6 +11,9 @@ import * as yup from "yup";
 import {yupResolver} from "@hookform/resolvers/yup";
 import { useRouter } from "next/router";
 import {getCookie} from 'cookies-next';
+import  ChevronRight  from "@mui/icons-material/ChevronRight";
+import  ChevronLeft  from "@mui/icons-material/ChevronLeft";
+import { useEffect } from "react";
 
 export async function getServerSideProps({req,res}){
     let token = getCookie('token',{req,res});
@@ -64,11 +67,13 @@ export async function getServerSideProps({req,res}){
 }
 
 export default function admin({data}){
-    
+    let [loading, setLoading] = useState(false)
     let [unitUsaha, setUnitUsaha] = useState(data.data);
     let [unitUsahaLink, setUnitUsahaLink] = useState(data.links);
+    let [error, setError] = useState('');
     //Next router
     const router = useRouter();
+    const [editMode, setEditMode] = useState(false);
 
     //React hook form and YUP validator
     const schema = yup.object().shape({
@@ -84,7 +89,37 @@ export default function admin({data}){
             }else{
                 return true;
             }
-          })
+          }),
+          adminName: yup.string().when([],{
+            is: editMode == false,
+            then: ()=>{
+                yup.string().required('Nama tidak boleh kosong')
+            }
+          }),
+          adminNum: yup.string().when([],{
+            is: editMode == false,
+            then: ()=>{
+                yup.string().required('Nomor WhatsApp tidak boleh kosong')
+            },
+          }),
+          email: yup.string().when([],{
+            is: editMode == false,
+            then: ()=>{
+                yup.string().email().required('Email tidak boleh kosong')
+            },
+          }),
+          password: yup.string().when([],{
+            is: editMode == false,
+            then: ()=>{
+                yup.string().min('Password minimal 8 Karakter')
+            }
+          }),
+          password_confirmation: yup.string().when([],{
+            is: ()=>editMode == false,
+            then: ()=>{
+                yup.string().oneOf([yup.ref('password')], 'Password Anda tidak cocok')
+            },
+          }),
     })
 
     const { control, handleSubmit, setValue,getValues, reset, register , formState:{errors}} = useForm({
@@ -92,33 +127,38 @@ export default function admin({data}){
           usahaName: "",
           usahaDesc: "",
           usahaImage: "",
-          usahaPicNumber: ""
+          usahaPicNumber: "",
+
         },
         resolver: yupResolver(schema)
       })
     
       const onSubmit = async (data) => {
         let token = getCookie('token');
+        setLoading(true)
+        
+        console.log(data)
         if(!editMode){
             await axios.get('/sanctum/csrf-cookie',{
                 headers: { Authorization: `Bearer `+token},
                 withCredentials: true
             }).then(async (r)=>{
-                await axios.post('/api/admin/unit-usaha/',data,{
+                let unitUsaha = await axios.post('/api/admin/unit-usaha/',data,{
                     headers: { Authorization: `Bearer `+token,'Content-Type': 'multipart/form-data'},
                     withCredentials: true
                 }).then((r)=>{
                     console.log(r.data)
+                    setError('')
                 }).catch((e)=>{
                     console.log(e);
+                    setError(e.response.data.message)
                 })
+                handleCloseAddForm()
             }).catch((e)=>{
                 console.log(e)
+                setError(e.response.data.message)
             })
         }else{
-            if(data.usahaImage == ''){
-                delete data.usahaImage;
-            }
             console.log(data);
 
             await axios.get('/sanctum/csrf-cookie',{
@@ -130,21 +170,25 @@ export default function admin({data}){
                     withCredentials: true
                 }).then((r)=>{
                     console.log(r.data)
+                    setError('')
                 }).catch((e)=>{
                     console.log(e);
+                    setError(e.response.data.message)
                 })
+                handleCloseAddForm()
             }).catch((e)=>{
                 console.log(e)
+                setError(e.response.data.message)
             })
         }
-        router.reload()
-        handleCloseAddForm()
+        router.replace(router.asPath)
+        setLoading(false)
       }
       
       //states
     const [showImage, setShowImage] = useState('');
     const [AddForm, setAddForm] = useState(false);
-    const [editMode, setEditMode] = useState(false);
+   
     const [usahaId, setUsahaId] = useState('');
     
     //handler
@@ -180,7 +224,6 @@ export default function admin({data}){
         setValue('usahaName','');
         setValue('usahaDesc','');
         setValue('usahaImage','');
-        setValue('usahaPicNumber','');
         setUsahaId('');
         reset({
             usahaDesc:'',
@@ -194,7 +237,6 @@ export default function admin({data}){
         setEditMode(true);
         setValue('usahaName',data.usahaName);
         setValue('usahaDesc',data.usahaDesc);
-        setValue('usahaPicNumber',data.usahaPicNumber)
         setValue('usahaImage',data.usahaImage)
         setUsahaId(data.id);
         setAddForm(true)
@@ -210,8 +252,8 @@ export default function admin({data}){
 
     let handleChangePage = async (link)=>{
         let unitUsaha = await axios.get(link);
-        setUnitUsaha(unitUsaha?.data?.data?.data)
-        setUnitUsahaLink(unitUsaha?.data?.data?.links)
+        setUnitUsaha(unitUsaha?.data?.data)
+        setUnitUsahaLink(unitUsaha?.data.links)
     }
 
     //utils
@@ -228,9 +270,14 @@ export default function admin({data}){
     
     let num = 0;
 
+    useEffect(() => {
+        setUnitUsaha(data.data)
+        setUnitUsahaLink(data.links)
+      }, [data]);
+
     return (
         <>
-            <AdminLayout>
+            <AdminLayout handleLoading={loading}>
                 <Dialog open={showImage != ''} onClose={handleCloseShowImage} fullWidth maxWidth={'md'}>
                         <img height={"100%"} style={{objectFit:'contain'}} src={showImage}></img>
                 </Dialog>
@@ -238,6 +285,16 @@ export default function admin({data}){
                     <DialogContent>
                         <Typography variant="h5" sx={{marginBottom:'1em'}} fontWeight={600}>Tambah Unit Usaha</Typography>
                         <form onSubmit={handleSubmit(onSubmit)}>
+                            {
+                                error != '' ?
+                                <Alert color="error">
+                                    {error}
+                                </Alert>
+                                : ''
+                            }
+                            <Typography variant="h6" sx={{borderBottom:'1px solid black', paddingBottom:'0.5em'}}>
+                                Data Unit Usaha
+                            </Typography>
                             <FormControl sx={{width:'100%', marginY:'0.5em'}}>
                                 <RHFTextField hiddenLabel={false} label={'Nama Unit Usaha'} name={"usahaName"} control={control}></RHFTextField>
                             </FormControl>
@@ -245,13 +302,36 @@ export default function admin({data}){
                                 <RHFTextField hiddenLabel={false} label={'Deskripsi Unit Usaha'} name={"usahaDesc"} control={control}></RHFTextField>
                             </FormControl>
                             <FormControl sx={{width:'100%', marginY:'0.5em'}}>
-                                <RHFTextField hiddenLabel={false} label={'Nomor WhatsApp admin'} name={"usahaPicNumber"} control={control}></RHFTextField>
-                            </FormControl>
-                            <FormControl sx={{width:'100%', marginY:'0.5em'}}>
                                 <RHFDnd control={control} name={'usahaImage'} files={process.env.NEXT_PUBLIC_BACKEND_URL+'/storage/unitUsaha/'+getValues('usahaImage')}>
                                     
                                 </RHFDnd>
                             </FormControl>
+                            {
+                                editMode == false ? (
+                                    <>
+                                        <Typography variant="h6" sx={{borderBottom:'1px solid black', paddingBottom:'0.5em',marginTop:'1em'}}>
+                                            Data Admin
+                                        </Typography>
+
+                                        <FormControl sx={{width:'100%', marginY:'0.5em'}}>
+                                            <RHFTextField hiddenLabel={false} label={'Nama'} name={"adminName"} control={control}></RHFTextField>
+                                        </FormControl>
+                                        <FormControl sx={{width:'100%', marginY:'0.5em'}}>
+                                            <RHFTextField hiddenLabel={false} label={'Nomor Whatsapp'} name={"adminNum"} control={control}></RHFTextField>
+                                        </FormControl>
+                                        <FormControl sx={{width:'100%', marginY:'0.5em'}}>
+                                            <RHFTextField hiddenLabel={false} label={'Email'} name={"email"} control={control}></RHFTextField>
+                                        </FormControl>
+                                        <FormControl sx={{width:'100%', marginY:'0.5em'}}>
+                                            <RHFTextField type={'password'} hiddenLabel={false} label={'Password'} name={"password"} control={control}></RHFTextField>
+                                        </FormControl>
+                                        <FormControl sx={{width:'100%', marginY:'0.5em'}}>
+                                            <RHFTextField type={'password'} hiddenLabel={false} label={'Ketik Ulang Password'} name={"password_confirmation"} control={control}></RHFTextField>
+                                        </FormControl>
+                                    </>
+                                ) : ''
+                            }
+                            
                             <Button variant="contained" color="success" sx={{width:'100%'}} type="submit">{editMode ? 'Simpan Perubahan' : 'Tambah Unit Usaha'}</Button>
                         </form>
                     </DialogContent>
@@ -293,15 +373,17 @@ export default function admin({data}){
                             </TableBody>
                         </Table>
                     </TableContainer>
-                    {
-                        unitUsahaLink.map((link)=>{
-                            return (
-                                <Button key={link.label} sx={{color:link.active ? '' : 'grey' }} onClick={()=> handleChangePage(link.url)}>{
-                                    link.label == '&laquo; Previous'? '' : link.label == 'Next &raquo;' ? '' : link.label
-                                }</Button>
-                            )
-                        })
-                    }
+                    <Box sx={{display:'flex', flexDirection:'row', justifyContent:'center'}}>
+                        {
+                            unitUsahaLink.map((link)=>{
+                                return (
+                                    <Button fullWidth size="sm" sx={{margin:'0.5em',paddingY:'1em', paddingX:'0', width:0, height:0}} key={link.label} variant={link.active ? 'contained' : 'outlined'} color={'success'} onClick={()=> handleChangePage(link.url)}>{
+                                        link.label == '&laquo; Previous'? <ChevronLeft ></ChevronLeft> : link.label == 'Next &raquo;' ? <ChevronRight></ChevronRight> : link.label
+                                    }</Button>
+                                )
+                            })
+                        }
+                    </Box>
                 </Card>
             </AdminLayout>
         </>

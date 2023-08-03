@@ -14,18 +14,18 @@ import MenuIcon from '@mui/icons-material/Menu';
 import { useRouter } from "next/router";
 import HeaderMobile from "./HeaderMobile/HeaderMobile";
 import Badge from "@mui/material/Badge";
+import { setVisitor } from "../../helper/dataOptions";
 
 const Header = () => {
 
     const [active, setActive] = useState(false);
     const router = useRouter();
-    console.log(router.pathname);
     const [searchActive, setSearchActive] = useState(false);
-
     const [activeLink, setActiveLink] = useState('');
      const handleLinkClick = (path) => {
                 setActiveLink(path);
     };
+    
 
     // const [anchorX, setAnchorX] = useState(false);
 
