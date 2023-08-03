@@ -23,26 +23,33 @@ function RHFDnd({name,control, files='', onDelete, required = false}) {
             {field:{value, onChange, ...field},fieldState:{error}}
         )=>(
             <Box>
-                <FileUploader value="true" required={disableRequire} handleChange={
+                <FileUploader value="true" required={disableRequire} dropMessageStyle={
+                    {display:'none'}
+                } handleChange={
                 (event)=>{
                     onChange(event)
                     handleChange(event)
                     setRequired(false)
                 }
                 } types={fileTypes} {...field}>
-                <Box sx={{width:'100%',border:'0.1em solid #cccccc', overflow:'hidden', borderRadius:'0.3em'}}>
+                <Box sx={{width:'100%', cursor:'pointer',border:'0.1em solid #cccccc', overflow:'hidden', position:'relative', borderRadius:'0.3em'}}>
                     {
-                        file == '' ? <Typography sx={{margin:'auto', textAlign:'center', paddingY:'5em'}}>Upload</Typography> : <img style={{width:'100%',objectFit:'cover',aspectRatio:'1/1'}} src={file}></img>
+                        file == '' ? <Typography sx={{margin:'auto', textAlign:'center', paddingY:'5em'}}>Upload</Typography> : 
+                        <>
+                                <img style={{width:'100%',objectFit:'cover',aspectRatio:'1/1'}} src={file}></img>
+                                <IconButton  onClick={(e)=>{
+                                    e.preventDefault()
+                                    setFile('')
+                                    onDelete()
+                                    }} sx={{color: '#fff',marginLeft:'0.5em', backgroundColor:'red', left:0, position:'absolute', zIndex:'5000', marginTop:'0.5em'}} >
+                                    <Delete></Delete>
+                                </IconButton>
+                        </>
                     }
                     <Typography>{error?.message}</Typography>
                 </Box>
                 </FileUploader>
-                <Button startIcon={<Delete></Delete>} onClick={()=>{
-                    setFile('')
-                    onDelete()
-                    }} color="error" sx={{marginBottom:'1em', marginTop:'0.5em'}} variant="contained">
-                    Delete
-                </Button>
+                
             </Box>
         )
     }

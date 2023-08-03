@@ -14,6 +14,8 @@ import RHFDnd from "../../../components/form/RHFDnd";
 import { getAllUnitUsaha } from "../../../helper/dataOptions";
 import {getCookie} from 'cookies-next';
 import GaleriTableRow from "../../../sections/galeri/GaleriTableRow";
+import  ChevronRight  from "@mui/icons-material/ChevronRight";
+import  ChevronLeft  from "@mui/icons-material/ChevronLeft";
 
 export async function getServerSideProps({req,res}){
     let token = getCookie('token',{req,res});
@@ -67,6 +69,7 @@ export async function getServerSideProps({req,res}){
 
 export default function galeri({data}){
     const token = getCookie('token');
+    let [loading, setLoading] = useState(false)
     let [galeris, setgaleriUsahas] = useState(data?.data);
     let [links, setUnitUsahaLink] = useState(data?.links);
     let [imageData, setImage] = useState([]);
@@ -212,7 +215,7 @@ export default function galeri({data}){
 
     return (
         <>
-            <AdminLayout>
+            <AdminLayout handleLoading={loading}>
                 <Dialog open={showImage != ''} onClose={handleCloseShowImage} fullWidth maxWidth={'md'}>
                         <img height={"100%"} style={{objectFit:'contain'}} src={showImage}></img>
                 </Dialog>
@@ -235,10 +238,10 @@ export default function galeri({data}){
                         </form>
                     </DialogContent>
                 </Dialog>
-                <Typography variant="h3" fontWeight={400}>Galeri</Typography>
-                <Box sx={{display:'flex',flexDirection:'row',alignItems:'center'}}>
+                <Typography variant="h3" color={'#94B60F'} sx={{textDecoration:'underline'}} fontWeight={400}>Galeri</Typography>
+                <Box sx={{display:'flex',flexDirection:'row',alignItems:'center', marginBottom:'1em'}}>
                     <Button onClick={handleOpenAddForm} color="success" variant="contained" startIcon="">
-                        Tambah Profil
+                        Tambah Galeri
                     </Button>
                 </Box>
                 <Card sx={{marginY:'1em'}}>
@@ -269,15 +272,17 @@ export default function galeri({data}){
                             </TableBody>
                         </Table>
                     </TableContainer>
-                    {
-                        links.map((link,index)=>{
-                            return (
-                                <Button key={link.label} sx={{color:link.active ? '' : 'grey' }} onClick={()=> handleChangePage(link.url)}>{
-                                    link.label == '&laquo; Previous'? '' : link.label == 'Next &raquo;' ? '' : link.label
-                                }</Button>
-                            )
-                        })
-                    }
+                    <Box sx={{display:'flex', flexDirection:'row', justifyContent:'center'}}>
+                        {
+                            links.map((link)=>{
+                                return (
+                                    <Button fullWidth size="sm" sx={{margin:'0.5em',paddingY:'1em', paddingX:'0', width:0, height:0}} key={link.label} variant={link.active ? 'contained' : 'outlined'} color={'success'} onClick={()=> handleChangePage(link.url)}>{
+                                        link.label == '&laquo; Previous'? <ChevronLeft ></ChevronLeft> : link.label == 'Next &raquo;' ? <ChevronRight></ChevronRight> : link.label
+                                    }</Button>
+                                )
+                            })
+                        }
+                    </Box>
                 </Card>
             </AdminLayout>
         </>

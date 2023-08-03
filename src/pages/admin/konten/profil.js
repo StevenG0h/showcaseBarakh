@@ -14,6 +14,8 @@ import  Star  from "@mui/icons-material/Star";
 import RHFDnd from "../../../components/form/RHFDnd";
 import { getAllUnitUsaha } from "../../../helper/dataOptions";
 import {getCookie} from 'cookies-next';
+import  ChevronRight  from "@mui/icons-material/ChevronRight";
+import  ChevronLeft  from "@mui/icons-material/ChevronLeft";
 
 export async function getServerSideProps({req,res}){
     let token = getCookie('token',{req,res});
@@ -47,11 +49,10 @@ export async function getServerSideProps({req,res}){
             },
             withCredentials:true
         });
-        let option = await getAllUnitUsaha();
+        console.log(UnitUsaha.data)
         return {
             props:{
-                unitUsaha: UnitUsaha.data,
-                option: option
+                unitUsaha: UnitUsaha.data.data,
             }
         }
     }catch(e){
@@ -67,8 +68,9 @@ export async function getServerSideProps({req,res}){
 }
 
 export default function profil({unitUsaha,option}){
-    let {usahaName} = unitUsaha;
+    let [loading, setLoading] = useState(false)
     let [profilUsahas, setprofilUsahas] = useState(unitUsaha.data);
+    let [profilUsahasLink, setprofilUsahasLink] = useState(unitUsaha.links);
     let [imageData, setImage] = useState([]);
     let [deletedImage, setDeletedImage] = useState([]);
     let [imageBackup, setImageBackup] = useState([]);
@@ -136,9 +138,9 @@ export default function profil({unitUsaha,option}){
     
       const onSubmit = async (data) => {
         let token = getCookie('token');
-        console.log(data)
         data.deletedImage = deletedImage;
-        if(editMode == false){
+        console.log(data)
+        if(data.id == ''){
             
             data.profilUsahaImages = data.profilUsahaImages.map((image)=>{
                 if(image?.isFile != false){
@@ -213,9 +215,11 @@ export default function profil({unitUsaha,option}){
     
     let handleOpenEditForm = (data)=>{
         setEditMode(true);
-        setValue('id',data?.profil?.id);
+        if(data.profil != null){
+            setValue('id',data?.profil?.id);
+            setValue('profil_usaha_desc',data.profil?.profil_usaha_desc);
+        }
         setValue('unit_usaha_id',data?.id);
-        setValue('profil_usaha_desc',data.profil?.profil_usaha_desc);
         let images = [];
         for(let i=0; i<10;i++){
             let found = false;
@@ -251,6 +255,20 @@ export default function profil({unitUsaha,option}){
             setDeletedImage(deleteImage);
         }
     }
+
+    let handleChangePage = async (link)=>{
+        if(link != null){
+            let unitUsaha = await axios.get(link,{
+                headers:{
+                    Authorization: 'Bearer '+token,
+                },
+                withCredentials:true
+            });
+            setprofilUsahas(unitUsaha?.data?.data?.data)
+            setprofilUsahasLink(unitUsaha?.data?.data?.links)
+        }
+    }
+
     //utils
 
     let TABLEHEAD = [
@@ -265,31 +283,11 @@ export default function profil({unitUsaha,option}){
 
     return (
         <>
-            <AdminLayout>
+            <AdminLayout handleLoading={loading}>
                 <Dialog open={AddForm} sx={{overflow:'hidden'}} onClose={handleCloseAddForm} fullWidth maxWidth='xs'>
                     <DialogContent>
                         <Typography variant="h5" sx={{marginBottom:'1em'}} fontWeight={600}>Tambah Profil</Typography>
                         <form onSubmit={handleSubmit(onSubmit)}>
-                            {
-                                getValues('unit_usaha_id') === '' ?
-                            <FormControl sx={{width:'100%', marginY:'0.5em'}}>
-                                
-                                    <Select name={'unit_usaha_id'}
-                                onChange={(e)=>{setValue('unit_usaha_id',e.target.value)}}
-                                >
-                                    <MenuItem value={'*'}>Semua</MenuItem>
-                                    {
-                                        option.map((unitUsaha)=>{
-                                            return (
-                                                <MenuItem value={unitUsaha.id}>{unitUsaha.label}</MenuItem>
-                                            )
-                                        })
-                                    }
-                                </Select>
-                            </FormControl>
-                                : ''
-                            }
-                            
                             <FormControl sx={{width:'100%', marginY:'0.5em'}}>
                                 <RHFTextField hiddenLabel={false} label={'Deskripsi profil'} name={"profil_usaha_desc"} control={control}></RHFTextField>
                             </FormControl>
@@ -325,16 +323,11 @@ export default function profil({unitUsaha,option}){
                                     <RHFDnd name="profilUsahaImages[9]" onDelete={()=>{handleDeletePreview(imageData[4]?.id)}} files={imageData[4] == undefined || imageData[4] == null ? '' : process.env.NEXT_PUBLIC_BACKEND_URL+'/storage/profil/'+imageData[4]?.path} control={control}></RHFDnd>
                                 </Box>
                             </FormControl>
-                            <Button variant="contained" color="success" sx={{width:'100%'}} type="submit">{editMode ? 'Simpan Perubahan' : 'Tambah Unit Usaha'}</Button>
+                            <Button variant="contained" color="success" sx={{width:'100%'}} type="submit">{editMode ? 'Simpan Perubahan' : 'Simpan Perubahan'}</Button>
                         </form>
                     </DialogContent>
                 </Dialog>
-                <Typography variant="h3" fontWeight={400}>Profil Unit Usaha</Typography>
-                <Box sx={{display:'flex',flexDirection:'row',alignItems:'center'}}>
-                    <Button onClick={handleOpenAddForm} color="success" variant="contained" startIcon="">
-                        Tambah Profil
-                    </Button>
-                </Box>
+                <Typography variant="h3" color={'#94B60F'} sx={{textDecoration:'underline'}} fontWeight={400}>Profil Unit Usaha</Typography>
                 <Card sx={{marginY:'1em'}}>
                     <TableContainer>
                         <Table>
@@ -363,6 +356,17 @@ export default function profil({unitUsaha,option}){
                             </TableBody>
                         </Table>
                     </TableContainer>
+                    <Box sx={{display:'flex', flexDirection:'row', justifyContent:'center'}}>
+                    {
+                        profilUsahasLink.map((link)=>{
+                            return (
+                                <Button fullWidth size="sm" sx={{margin:'0.5em',paddingY:'1em', paddingX:'0', width:0, height:0}} key={link.label} variant={link.active ? 'contained' : 'outlined'} color={'success'} onClick={()=> handleChangePage(link.url)}>{
+                                    link.label == '&laquo; Previous'? <ChevronLeft ></ChevronLeft> : link.label == 'Next &raquo;' ? <ChevronRight></ChevronRight> : link.label
+                                }</Button>
+                            )
+                        })
+                    }
+                    </Box>
                 </Card>
             </AdminLayout>
         </>

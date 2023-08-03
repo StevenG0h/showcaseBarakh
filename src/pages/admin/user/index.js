@@ -5,11 +5,15 @@ import * as yup from "yup";
 import {yupResolver} from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 import AdminLayout from "../../../layouts/adminLayout/AdminLayout";
-import { Alert, Button, Card, Dialog, DialogContent, FormControl, MenuItem, Select, Table, TableBody, TableCell, TableContainer, TableRow, Typography } from "@mui/material";
+import { Alert, Box, Button, Card, Dialog, DialogContent, FormControl, MenuItem, Select, Table, TableBody, TableCell, TableContainer, TableRow, Typography } from "@mui/material";
 import RHFTextField from "../../../components/form/RHFTextField";
 import CustomTableHead from "../../../components/table/CustomTableHead";
 import UserTableRow from "../../../sections/user/UserTableRow";
 import {getCookie} from 'cookies-next';
+
+import  ChevronRight  from "@mui/icons-material/ChevronRight";
+import  ChevronLeft  from "@mui/icons-material/ChevronLeft";
+import { useEffect } from "react";
 
 export async function getServerSideProps({req,res}){
     let token = getCookie('token',{req,res});
@@ -61,9 +65,11 @@ export async function getServerSideProps({req,res}){
 }
 
 export default function product({user}){
+    let [loading, setLoading] = useState(false)
     let token = getCookie('token');
     let title = 'User';
-    let [products, setProducts] = useState(user);
+    let [products, setProducts] = useState(user.data);
+    let [productsLink, setProductsLink] = useState(user.links);
     let [formTitle, setFormTitle] = useState('');
     let [error, setError] = useState('');
     //Next router
@@ -89,7 +95,8 @@ export default function product({user}){
       })
     
       const onSubmit = async (data) => {
-        
+        setLoading(true)
+        handleCloseAddForm()
         if(editMode == false){
             await axios.get('/sanctum/csrf-cookie',{
                 headers: { Authorization: `Bearer `+token},
@@ -102,7 +109,7 @@ export default function product({user}){
                     withCredentials: true
                 }).then((r)=>{
                     console.log(r.data)
-                    router.reload();
+                    router.replace(router.asPath)
                 }).catch((e)=>{
                     console.log(e);
                     setError(e.response.data.message)
@@ -121,7 +128,7 @@ export default function product({user}){
                     withCredentials: true
                 }).then((r)=>{
                     console.log(r.data)
-                    router.reload();
+                    router.replace(router.asPath)
                 }).catch((e)=>{
                     console.log(e);
                     setError(e.response.data.message)
@@ -130,6 +137,8 @@ export default function product({user}){
                 console.log(e)
             })
         }
+        setLoading(false)
+
       }
       
       //states
@@ -180,6 +189,20 @@ export default function product({user}){
             console.log(e)
         })
     }
+
+    let handleChangePage = async (link)=>{
+        if(link != null){
+            let unitUsaha = await axios.get(link,{
+                headers:{
+                    Authorization: 'Bearer '+token,
+                },
+                withCredentials:true
+            });
+            setProducts(unitUsaha?.data?.data?.data)
+            setProductsLink(unitUsaha?.data?.data?.links)
+        }
+    }
+
     //utils
 
     let TABLEHEAD = [
@@ -193,9 +216,14 @@ export default function product({user}){
     
     let num = 0;
 
+    useEffect(() => {
+        setProducts(user.data)
+        setProductsLink(user.links)
+      }, [user]);
+
     return (
         <>
-            <AdminLayout>
+            <AdminLayout handleLoading={loading}>
                 <Dialog open={AddForm} onClose={handleCloseAddForm} fullWidth maxWidth='xs'>
                     <DialogContent>
                         <Typography variant="h5" sx={{marginBottom:'1em'}} fontWeight={600}>Edit Admin</Typography>
@@ -227,7 +255,6 @@ export default function product({user}){
                     </DialogContent>
                 </Dialog>
                 <Typography variant="h3" fontWeight={400}>{title}</Typography>
-                <Button onClick={()=>{handleOpenAddForm()}}>Tambah Admin</Button>
                 <Card sx={{marginY:'1em'}}>
                     <TableContainer>
                         <Table>
@@ -255,6 +282,17 @@ export default function product({user}){
                             </TableBody>
                         </Table>
                     </TableContainer>
+                    <Box sx={{display:'flex', flexDirection:'row', justifyContent:'center'}}>
+                    {
+                        productsLink.map((link)=>{
+                            return (
+                                <Button fullWidth size="sm" sx={{margin:'0.5em',paddingY:'1em', paddingX:'0', width:0, height:0}} key={link.label} variant={link.active ? 'contained' : 'outlined'} color={'success'} onClick={()=> handleChangePage(link.url)}>{
+                                    link.label == '&laquo; Previous'? <ChevronLeft ></ChevronLeft> : link.label == 'Next &raquo;' ? <ChevronRight></ChevronRight> : link.label
+                                }</Button>
+                            )
+                        })
+                    }
+                    </Box>
                 </Card>
             </AdminLayout>
         </>

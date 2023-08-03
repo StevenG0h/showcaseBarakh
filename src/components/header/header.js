@@ -10,18 +10,18 @@ import {
     faBars
 } from "@fortawesome/free-solid-svg-icons";
 import { useRouter } from "next/router";
+import { setVisitor } from "../../helper/dataOptions";
 
 const Header = () => {
 
     const [active, setActive] = useState(false);
     const router = useRouter();
-    console.log(router.pathname);
     const [searchActive, setSearchActive] = useState(false);
-
     const [activeLink, setActiveLink] = useState('');
      const handleLinkClick = (path) => {
                 setActiveLink(path);
     };
+    
 
     return (
         <div className={style.header}>

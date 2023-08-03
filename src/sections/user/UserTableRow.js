@@ -30,13 +30,13 @@ export default function UserTableRow({row, num, onShowImage, onDelete, onEdit}){
                     <IconButton onClick={onEdit} sx={{marginX:'0.5em'}} variant="contained" color="warning" >
                         <Edit></Edit>
                     </IconButton>
-                    {
+                    {/* {
                         adminLevel == 1 ? '' : (
                             <IconButton onClick={onDelete} sx={{marginX:'0.5em'}} variant="contained" color="error" >
                                 <Delete></Delete>
                             </IconButton>
                         )
-                    }
+                    } */}
                 </TableCell>
             </TableRow>
         </>

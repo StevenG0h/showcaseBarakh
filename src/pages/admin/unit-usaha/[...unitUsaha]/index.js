@@ -14,6 +14,9 @@ import  Star  from "@mui/icons-material/Star";
 import RHFDnd from "../../../../components/form/RHFDnd";
 import {getCookie} from 'cookies-next';
 import { getAllUnitUsaha } from "../../../../helper/dataOptions";
+import  ChevronRight  from "@mui/icons-material/ChevronRight";
+import  ChevronLeft  from "@mui/icons-material/ChevronLeft";
+import { useEffect } from "react";
 
 export async function getServerSideProps({req,res,query}){
     let token = getCookie('token',{req,res});
@@ -49,7 +52,8 @@ export async function getServerSideProps({req,res,query}){
         });
         return {
             props:{
-                unitUsaha: produk.data,
+                unitUsaha: produk.data.unitUsaha,
+                product: produk.data.product
             }
         }
     }catch(e){
@@ -64,9 +68,12 @@ export async function getServerSideProps({req,res,query}){
     }
 }
 
-export default function product({unitUsaha}){
+export default function product({unitUsaha,product}){
+    let token = getCookie('token')
+    let [loading, setLoading] = useState(false)
     let {usahaName} = unitUsaha;
-    let [products, setProducts] = useState(unitUsaha.products);
+    let [products, setProducts] = useState(product.data);
+    let [productsLink, setProductsLink] = useState(product.links);
     let [imageData, setImage] = useState([]);
     let [deletedImage, setDeletedImage] = useState([]);
     let [imageBackup, setImageBackup] = useState([]);
@@ -122,11 +129,9 @@ export default function product({unitUsaha}){
       })
     
       const onSubmit = async (data) => {
-        let token = getCookie('token');
         data.unit_usaha_id = unitUsaha.id;
         data.deletedImage = deletedImage;
-        console.log(data);
-        console.log(editMode);
+        setLoading(true)
         if(editMode == false){
             data.productImages = data.productImages.map((image)=>{
                 if(image?.isFile != false){
@@ -137,6 +142,7 @@ export default function product({unitUsaha}){
                 headers: { Authorization: `Bearer `+token},
                 withCredentials: true
             }).then(async (r)=>{
+                handleCloseAddForm()
                 await axios.post('/api/admin/produk/',data,{
                     headers: { Authorization: `Bearer `+token,
                     'Content-Type': 'multipart/form-data'
@@ -154,6 +160,7 @@ export default function product({unitUsaha}){
             if(data.usahaImage == ''){
                 delete data.usahaImage;
             }
+            handleCloseAddForm()
             await axios.get('/sanctum/csrf-cookie',{
                 headers: { Authorization: `Bearer `+token},
                 withCredentials: true
@@ -172,7 +179,8 @@ export default function product({unitUsaha}){
                 console.log(e)
             })
         }
-        router.reload();
+        router.replace(router.asPath);
+        setLoading(false)
       }
       
       //states
@@ -183,7 +191,7 @@ export default function product({unitUsaha}){
     
     //handler
     async function handleDelete(id){
-        let token = getCookie('token')
+        
         const csrf = await axios.get('/sanctum/csrf-cookie').then(async(r)=>{
             const deleteUnitUsaha = await axios.delete('/api/admin/produk/'+id,
             {headers:{
@@ -192,7 +200,7 @@ export default function product({unitUsaha}){
         }).catch((e)=>{
             console.log(e);
         })
-        router.reload()
+        router.replace(router.asPath)
     }
 
     //state handler
@@ -247,20 +255,47 @@ export default function product({unitUsaha}){
             setDeletedImage(deleteImage);
         }
     }
+
+    let handleChangePage = async (link)=>{
+        if(link != null){
+            try{
+                let unitUsaha = await axios.get(link,{
+                    headers:{
+                        Authorization: 'Bearer '+token,
+                    },
+                    withCredentials:true
+                });
+                console.log(unitUsaha.data)
+                setProducts(unitUsaha?.data.product.data)
+                setProductsLink(unitUsaha?.data.product.links)
+            }catch(e){
+                console.log(e)
+            }
+        }
+    }
+
     //utils
 
     let TABLEHEAD = [
         {value: 'No',align: 'left'},
         {value: 'Nama produk',align: 'left'},
+        {value: 'Stok',align: 'left'},
         {value: 'Harga',align: 'left'},
+        {value: 'Dibuat pada',align: 'left'},
+        {value: 'Terakhir diedit',align: 'left'},
         {value: 'Action',align: 'center'}
     ]
     
     let num = 0;
 
+    useEffect(() => {
+        setProducts(product.data)
+        setProductsLink(product.links)
+      }, [product]);
+
     return (
         <>
-            <AdminLayout>
+            <AdminLayout handleLoading={loading}>
                 <Dialog open={AddForm} sx={{overflow:'hidden'}} onClose={handleCloseAddForm} fullWidth maxWidth='xs'>
                     <DialogContent>
                         <Typography variant="h5" sx={{marginBottom:'1em'}} fontWeight={600}>Tambah Produk</Typography>
@@ -294,12 +329,12 @@ export default function product({unitUsaha}){
                                     <RHFDnd name="productImages[4]" onDelete={()=>{handleDeletePreview(imageData[4]?.id)}} files={imageData[4] == undefined || imageData[4] == null ? '' : process.env.NEXT_PUBLIC_BACKEND_URL+'/storage/product/'+imageData[4]?.path} control={control}></RHFDnd>
                                 </Box>
                             </FormControl>
-                            <Button variant="contained" color="success" sx={{width:'100%'}} type="submit">{editMode ? 'Simpan Perubahan' : 'Tambah Unit Usaha'}</Button>
+                            <Button variant="contained" color="success" sx={{width:'100%'}} type="submit">{editMode ? 'Simpan Perubahan' : 'Tambah Produk'}</Button>
                         </form>
                     </DialogContent>
                 </Dialog>
-                <Typography variant="h3" fontWeight={400}>{usahaName}</Typography>
-                <Box sx={{display:'flex',flexDirection:'row',alignItems:'center'}}>
+                <Typography variant="h3" color={'#94B60F'} sx={{textDecoration:'underline'}} fontWeight={400}>{usahaName}</Typography>
+                <Box sx={{display:'flex',flexDirection:'row',alignItems:'center',marginY:'1em'}}>
                     <Button onClick={handleOpenAddForm} color="success" variant="contained" startIcon="">
                         Tambah Produk
                     </Button>
@@ -332,6 +367,17 @@ export default function product({unitUsaha}){
                             </TableBody>
                         </Table>
                     </TableContainer>
+                    <Box sx={{display:'flex', flexDirection:'row', justifyContent:'center'}}>
+                        {
+                            productsLink.map((link,index)=>{
+                                return (
+                                    <Button fullWidth size="sm" sx={{margin:'0.5em',paddingY:'1em', paddingX:'0', width:0, height:0}} key={link.label} variant={link.active ? 'contained' : 'outlined'} color={'success'} onClick={()=> handleChangePage(link.url)}>{
+                                        link.label == '&laquo; Previous'? <ChevronLeft ></ChevronLeft> : link.label == 'Next &raquo;' ? <ChevronRight></ChevronRight> : link.label
+                                    }</Button>
+                                )
+                            })
+                        }
+                    </Box>
                 </Card>
             </AdminLayout>
         </>
