@@ -14,6 +14,8 @@ import RHFDnd from "../../../components/form/RHFDnd";
 import { getAllUnitUsaha } from "../../../helper/dataOptions";
 import {getCookie} from 'cookies-next';
 import TestimoniTableRow from "../../../sections/testimoni/TestimoniTableRow";
+import  ChevronRight  from "@mui/icons-material/ChevronRight";
+import  ChevronLeft  from "@mui/icons-material/ChevronLeft";
 
 export async function getServerSideProps({req,res}){
     let token = getCookie('token',{req,res});
@@ -66,6 +68,7 @@ export async function getServerSideProps({req,res}){
 }
 
 export default function testimoni({data}){
+    let [loading, setLoading] = useState(false)
     const token = getCookie('token');
     let [testimonis, settestimoniUsahas] = useState(data?.data);
     let [links, setUnitUsahaLink] = useState(data?.links);
@@ -210,7 +213,7 @@ export default function testimoni({data}){
 
     return (
         <>
-            <AdminLayout>
+            <AdminLayout handleLoading={loading}>
                 <Dialog open={showImage != ''} onClose={handleCloseShowImage} fullWidth maxWidth={'md'}>
                         <img height={"100%"} style={{objectFit:'contain'}} src={showImage}></img>
                 </Dialog>
@@ -224,11 +227,11 @@ export default function testimoni({data}){
                             <FormControl sx={{width:'100%', marginY:'0.5em'}}>
                                 <RHFTextField hiddenLabel={false} label={'Testimoni'} name={"testimonyDesc"} control={control}></RHFTextField>
                             </FormControl>
-                            <Button variant="contained" color="success" sx={{width:'100%'}} type="submit">{editMode ? 'Simpan Perubahan' : 'Tambah Unit Usaha'}</Button>
+                            <Button variant="contained" color="success" sx={{width:'100%'}} type="submit">{editMode ? 'Simpan Perubahan' : 'Tambah Testimoni'}</Button>
                         </form>
                     </DialogContent>
                 </Dialog>
-                <Typography variant="h3" fontWeight={400}>Testimoni</Typography>
+                <Typography variant="h3" color={'#94B60F'} sx={{textDecoration:'underline'}} fontWeight={400}>Testimoni</Typography>
                 <Box sx={{display:'flex',flexDirection:'row',alignItems:'center'}}>
                     <Button onClick={handleOpenAddForm} color="success" variant="contained" startIcon="">
                         Tambah Testimoni
@@ -262,15 +265,18 @@ export default function testimoni({data}){
                             </TableBody>
                         </Table>
                     </TableContainer>
+                    <Box sx={{display:'flex', flexDirection:'row', justifyContent:'center'}}>
                     {
+                        
                         links.map((link,index)=>{
                             return (
-                                <Button key={link.label} sx={{color:link.active ? '' : 'grey' }} onClick={()=> handleChangePage(link.url)}>{
-                                    link.label == '&laquo; Previous'? '' : link.label == 'Next &raquo;' ? '' : link.label
+                                <Button fullWidth size="sm" sx={{margin:'0.5em',paddingY:'1em', paddingX:'0', width:0, height:0}} key={link.label} variant={link.active ? 'contained' : 'outlined'} color={'success'} onClick={()=> handleChangePage(link.url)}>{
+                                    link.label == '&laquo; Previous'? <ChevronLeft ></ChevronLeft> : link.label == 'Next &raquo;' ? <ChevronRight></ChevronRight> : link.label
                                 }</Button>
-                            )
-                        })
-                    }
+                                )
+                            })
+                        }
+                        </Box>
                 </Card>
             </AdminLayout>
         </>

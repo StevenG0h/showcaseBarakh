@@ -22,8 +22,9 @@ export default function StockTableRow({row, num, onShowImage, onDelete, onEdit})
                 <TableCell>
                     {productStock}
                 </TableCell>
-                <TableCell align="left" width={'150px'} sx={{display:'flex'}}>
-                    <IconButton onClick={onEdit} sx={{marginX:'0.5em'}} variant="contained" color="warning" >
+                <TableCell align="left" width={'150px'}>
+            
+                    <IconButton  onClick={onEdit} sx={{marginX:'0.5em'}} variant="contained" color="warning" >
                         <Edit></Edit>
                     </IconButton>
                 </TableCell>

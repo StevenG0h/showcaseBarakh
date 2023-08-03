@@ -5,12 +5,15 @@ import * as yup from "yup";
 import {yupResolver} from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 import AdminLayout from "../../../layouts/adminLayout/AdminLayout";
-import { Button, Card, Dialog, DialogContent, FormControl, Grid, IconButton, ImageList, ImageListItem, ImageListItemBar, Input, MenuItem, Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
+import { Box, Button, Card, Chip, Dialog, DialogContent, FormControl, Grid, IconButton, ImageList, ImageListItem, ImageListItemBar, Input, MenuItem, Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
 import RHFTextField from "../../../components/form/RHFTextField";
 import CustomTableHead from "../../../components/table/CustomTableHead";
 import { getAllUnitUsaha } from "../../../helper/dataOptions";
 import StockTableRow from "../../../sections/stock/StockTableRow";
 import {getCookie} from 'cookies-next';
+import  ChevronRight  from "@mui/icons-material/ChevronRight";
+import  ChevronLeft  from "@mui/icons-material/ChevronLeft";
+import { useEffect } from "react";
 
 export async function getServerSideProps({req,res}){
     let token = getCookie('token',{req,res});
@@ -47,7 +50,7 @@ export async function getServerSideProps({req,res}){
         let unitusaha = await getAllUnitUsaha();
         return {
             props:{
-                produk: produk.data,
+                produk: produk.data.data,
                 options:{
                     unitUsaha: unitusaha
                 }
@@ -66,10 +69,13 @@ export async function getServerSideProps({req,res}){
 }
 
 export default function product({produk, options}){
+    let [loading, setLoading] = useState(false)
     let title = 'Stock';
     const token = getCookie('token');
     let [products, setProducts] = useState(produk.data);
+    let [productsLink, setProductsLink] = useState(produk.links);
     let [formTitle, setFormTitle] = useState('');
+    let [activeLink, setActiveLink] = useState('*');
     //Next router
     const router = useRouter();
 
@@ -90,7 +96,9 @@ export default function product({produk, options}){
       })
     
       const onSubmit = async (data) => {
+        setLoading(true)
         if(editMode == true){
+            handleCloseAddForm();
             await axios.get('/sanctum/csrf-cookie', {
                 headers:{token: 'Bearer '+token},
                 withCredentials: true
@@ -108,8 +116,8 @@ export default function product({produk, options}){
             })
             
         }
-        handleCloseAddForm();
-        router.reload();
+        router.replace(router.asPath);
+        setLoading(false)
       }
       
       //states
@@ -118,6 +126,7 @@ export default function product({produk, options}){
 
     //state handler
     let handleChangeFilter = async (data)=>{
+        setActiveLink(data);
         if(data != '*'){
             let unitUsaha = await axios.get('/api/admin/produk/withFilter/'+data, {
                 headers:{
@@ -125,16 +134,17 @@ export default function product({produk, options}){
                 },
                 withCredentials:true
             });
-            setProducts(unitUsaha?.data)
+            setProducts(unitUsaha?.data?.data)
         }else{
-            let unitUsaha = await axios.get('/api/admin/produk/'+data, {
+            let unitUsaha = await axios.get('/api/admin/produk/', {
                 headers:{
                     Authorization: 'Bearer '+token
                 },
                 withCredentials:true
             });
-            setProducts(unitUsaha?.data?.data)
-        }
+            setProducts(unitUsaha?.data.data.data)
+            setProductsLink(unitUsaha?.data.data.links)
+        }   
     }
 
     let handleCloseAddForm = ()=>{
@@ -159,6 +169,19 @@ export default function product({produk, options}){
     }
     //utils
 
+    let handleChangePage = async (link)=>{
+        if(link != null){
+            let unitUsaha = await axios.get(link,{
+                headers:{
+                    Authorization: 'Bearer '+token,
+                },
+                withCredentials:true
+            });
+            setProducts(unitUsaha?.data?.data?.data)
+            setProductsLink(unitUsaha?.data?.data?.links)
+        }
+    }
+
     let TABLEHEAD = [
         {value: 'No',align: 'left'},
         {value: 'Nama produk',align: 'left'},
@@ -169,9 +192,14 @@ export default function product({produk, options}){
     
     let num = 0;
 
+    useEffect(() => {
+        setProducts(produk.data)
+        setProductsLink(produk.links)
+      }, [produk]);
+
     return (
         <>
-            <AdminLayout>
+            <AdminLayout handleLoading={loading}>
                 <Dialog open={AddForm} onClose={handleCloseAddForm} fullWidth maxWidth='xs'>
                     <DialogContent>
                         <Typography variant="h5" sx={{marginBottom:'1em'}} fontWeight={600}>Edit Stok</Typography>
@@ -189,26 +217,27 @@ export default function product({produk, options}){
                         </form>
                     </DialogContent>
                 </Dialog>
-                <Typography variant="h3" fontWeight={400}>{title}</Typography>
-                <Select defaultValue={'*'}
-                onChange={(e)=>handleChangeFilter(e.target.value)}
-                >
-                    <MenuItem value={'*'}>Semua</MenuItem>
+                <Typography variant="h3" color={'#94B60F'} fontWeight={400} sx={{textDecoration:'underline'}}>{title}</Typography>
+                <Box sx={{display:'flex', gap:'1em', marginY:'1em', flexDirection:'row'}}>
+                    <Typography variant="h6" sx={{margin:0}}>
+                        Unit Usaha:
+                    </Typography>
+                    <Button color="success" variant={activeLink === '*' ? 'contained' : 'outlined'} sx={{borderRadius:'5em'}} onClick={()=>{handleChangeFilter('*')}}>Semua</Button>
                     {
                         options.unitUsaha.map((unitUsaha)=>{
                             return (
-                                <MenuItem value={unitUsaha.id}>{unitUsaha.label}</MenuItem>
+                                <Button color="success" variant={activeLink === unitUsaha.id ? 'contained' : 'outlined'} sx={{borderRadius:'5em'}} onClick={()=>{handleChangeFilter(unitUsaha.id)}}>{unitUsaha.label}</Button>
                             )
                         })
                     }
-                </Select>
+                </Box>
                 <Card sx={{marginY:'1em'}}>
                     <TableContainer>
                         <Table>
                             <CustomTableHead tableHead={TABLEHEAD}></CustomTableHead>
                             <TableBody>
                                 {
-                                    products === [] || products==='' || products === undefined ? (
+                                    products?.length === 0 || products === [] || products === undefined ? (
                                         <TableRow>
                                             <TableCell>Data kosong</TableCell>
                                         </TableRow>
@@ -228,6 +257,19 @@ export default function product({produk, options}){
                             </TableBody>
                         </Table>
                     </TableContainer>
+                    <Box sx={{display:'flex', flexDirection:'row', justifyContent:'center'}}>
+                    {
+                        productsLink.map((link)=>{
+                            return (
+                                <Button fullWidth size="sm" sx={{margin:'0.5em',paddingY:'1em', paddingX:'0', width:0, height:0}} key={link.label} variant={link.active ? 'contained' : 'outlined'} color={'success'} onClick={()=> handleChangePage(link.url)}>{
+                                    link.label == '&laquo; Previous'? <ChevronLeft ></ChevronLeft> : link.label == 'Next &raquo;' ? <ChevronRight></ChevronRight> : link.label
+                                }</Button>
+                            )
+                        })
+                    }
+                    </Box>
+
+                    
                 </Card>
             </AdminLayout>
         </>

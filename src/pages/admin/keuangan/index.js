@@ -5,7 +5,7 @@ import * as yup from "yup";
 import {yupResolver} from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 import AdminLayout from "../../../layouts/adminLayout/AdminLayout";
-import { Button, Card, Dialog, DialogTitle, DialogContent, FormControl, Grid, IconButton, ImageList, ImageListItem, ImageListItemBar, Input, MenuItem, Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
+import { Button, Card, Dialog, DialogTitle, DialogContent, FormControl, Grid, IconButton, ImageList, ImageListItem, ImageListItemBar, Input, MenuItem, Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Box } from "@mui/material";
 import RHFTextField from "../../../components/form/RHFTextField";
 import RHFAutocomplete from "../../../components/form/RHFAutocomplete";
 import CustomTableHead from "../../../components/table/CustomTableHead";
@@ -13,6 +13,10 @@ import { getAllUnitUsaha, getAllUnitUsahaProduct } from "../../../helper/dataOpt
 import KeuanganTableRow from "../../../sections/keuangan/KeuanganTableRow";
 import SpendingTableRow from "../../../sections/keuangan/SpendingTableRow";
 import {getCookie} from 'cookies-next';
+import  ChevronRight  from "@mui/icons-material/ChevronRight";
+import  ChevronLeft  from "@mui/icons-material/ChevronLeft";
+import { formatCurrency } from "../../../helper/currency";
+import { useEffect } from "react";
 
 export async function getServerSideProps({req,res}){
     let token = getCookie('token',{req,res});
@@ -46,10 +50,25 @@ export async function getServerSideProps({req,res}){
             },
             withCredentials:true
         });
+        let stat = await axios.post('/api/admin/transaksi/pencatatan',{        
+            "from":"2018-01-01",
+            "to":"2025-01-01",
+            "kelurahan":'',
+            "unitUsaha":'',
+            "kecamatan":'',
+            "kota":'',
+            "provinsi":''
+        },{
+            headers:{
+                Authorization: 'Bearer '+token,
+            },
+            withCredentials:true
+        });
         let unitUsaha = await getAllUnitUsaha();
         return {
             props:{
                 produk: produk.data.data,
+                stat:stat.data,
                 options:{
                     unitUsaha: unitUsaha
                 }
@@ -67,12 +86,13 @@ export async function getServerSideProps({req,res}){
     }
 }
 
-export default function keuangan({produk, options}){
-
+export default function keuangan({produk, stat, options}){
+    let [loading, setLoading] = useState(false)
     const router = useRouter();
-
+    let token = getCookie('token');
     let title = 'Stock';
     let [products, setProducts] = useState(produk.data);
+    let [productsLink, setProductsLink] = useState(produk.links);
     let [transaction, setTransaction] = useState([]);
     let [formTitle, setFormTitle] = useState([]);
     let [addDetailTransactionForm, setAddDetailTransactionForm] = useState('');
@@ -98,11 +118,12 @@ export default function keuangan({produk, options}){
       })
     
       const onSubmit = async (data) => {
-        let token = getCookie('token');
+        setLoading(true)
         await axios.get('/sanctum/csrf-cookie',{
             headers: { Authorization: `Bearer `+token},
             withCredentials: true
         }).then(async (r)=>{
+            handleCloseAddForm();
             await axios.post('/api/admin/transaksi/',data,{
                 headers: { Authorization: `Bearer `+token},
                 withCredentials: true
@@ -114,8 +135,8 @@ export default function keuangan({produk, options}){
         }).catch((e)=>{
             console.log(e)
         })
-        handleCloseAddForm();
-        router.reload();
+        router.replace(router.asPath);
+        setLoading(false)
       }
       
       //states
@@ -145,21 +166,62 @@ export default function keuangan({produk, options}){
         detailNum = 0;
     }
 
+    let handleChangePage = async (link)=>{
+        if(link != null){
+            let unitUsaha = await axios.get(link,{
+                headers:{
+                    Authorization: 'Bearer '+token,
+                },
+                withCredentials:true
+            });
+            setProducts(unitUsaha?.data?.data?.data)
+            setProductsLink(unitUsaha?.data?.data?.links)
+        }
+    }
+
     let TABLEHEAD = [
         {value: 'No',align: 'left'},
-        {value: 'Nama Client',align: 'left'},
+        {value: 'Nama',align: 'left'},
+        {value: 'Tanggal',align: 'left'},
         {value: 'Tipe Transaksi',align: 'left'},
-        {value: 'Total',align: 'left'}
+        {value: 'Total',align: 'left'},
     ]
     
     let num = 0;
     let detailNum = 0;
 
+    useEffect(() => {
+        setProducts(produk.data)
+        setProductsLink(produk.links)
+      }, [produk]);
+
     return (
         <>
-            <AdminLayout>
-            <Typography variant="h3" fontWeight={400}>Keuangan</Typography>
-            <Button color="success" variant="contained" onClick={()=>{openSpendingForm()}}>
+            <AdminLayout handleLoading={loading}>
+            <Typography variant="h3" color={'#94B60F'} fontWeight={400} sx={{textDecoration:'underline'}}>Pencatatan</Typography>
+            
+            <Box sx={{justifyContent:'space-between', flexDirection:'row', display:'flex', marginY:'1em', gap:'1em'}}>
+                <Card sx={{width:'100%',padding:'1em'}}>
+                    <Typography>
+                        Pemasukan
+                    </Typography>
+                    Rp.{formatCurrency(Number(stat.penjualan.total))}
+                </Card>
+                <Card sx={{width:'100%',padding:'1em'}}>
+                    <Typography>
+                        Pengeluaran
+                    </Typography>
+                    Rp.{ formatCurrency(Number(stat.pengeluaran.total))}
+                </Card>
+                <Card sx={{width:'100%',padding:'1em'}}>
+                    <Typography>
+                        Total
+                    </Typography>
+                    Rp.{ formatCurrency(Number(stat.pengeluaran.total) - Number(stat.penjualan.total) )}
+                </Card>
+            </Box>
+            
+            <Button color="success" sx={{marginY:'1em'}} variant="contained" onClick={()=>{openSpendingForm()}}>
                 Tambah Pengeluaran
             </Button>
                 {/* <Typography variant="h3" fontWeight={400}>{title}</Typography>
@@ -247,6 +309,17 @@ export default function keuangan({produk, options}){
                             </TableBody>
                         </Table>
                     </TableContainer>
+                    <Box sx={{display:'flex', flexDirection:'row', justifyContent:'center'}}>
+                    {
+                        productsLink.map((link)=>{
+                            return (
+                                <Button fullWidth size="sm" sx={{margin:'0.5em',paddingY:'1em', paddingX:'0', width:0, height:0}} key={link.label} variant={link.active ? 'contained' : 'outlined'} color={'success'} onClick={()=> handleChangePage(link.url)}>{
+                                    link.label == '&laquo; Previous'? <ChevronLeft ></ChevronLeft> : link.label == 'Next &raquo;' ? <ChevronRight></ChevronRight> : link.label
+                                }</Button>
+                            )
+                        })
+                    }
+                    </Box>
                 </Card>
             </AdminLayout>
         </>
