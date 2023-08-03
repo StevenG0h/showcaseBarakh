@@ -14,7 +14,7 @@
 }
 
 .fieldSekilas{
-    height: 560px;
+    height: auto !important;
     margin-bottom: 50px;
     width: 100%;
     background-image: url("../../../public/assets/images/bgProfile.png");
@@ -59,7 +59,7 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    margin: 50px;
+    margin: 2em;
     width: auto;
 
 }
@@ -176,7 +176,7 @@
     width: 55%;
     display: flex;
     flex-direction: column;
-    gap: 40px;
+    gap: 3em;
 }
 
 .titleSection{
@@ -208,24 +208,46 @@
     font-size: 1.1em;
 }
 
-@media screen and (max-width: 935px){
+@media screen and (max-width: 768px){
     .containerProfile{
-        width: 100%;
-        margin: 30px 30px;
+        width: 90%;
     }
 
-    /* .fieldSekilasEx{
-        padding: 20px 0px;
-    } */
-
     .fieldSekilas{
-        margin-bottom: 30px;
+        margin-bottom: 5em;
+        background-size: 60%;
+        background-position: top right;
+        top: 0;
+    }
+
+    .fieldSekilasEx{
+        padding: 4em 0 0 0;
+
+    }
+
+    .sekilas{
+        font-size: 1.8em;
+        margin:1em 0; 
+    }
+
+    .wrapDescSekilas{
+        padding: 2.5em;
+        width: 60%;
+        margin-top: 3em;
+    }
+
+    .descriptions{
+        font-size: 1em;
+
     }
 
     .fieldProfileUmkm{
         align-items: center;
-        margin : 0px;
-        margin: 80px 0px;
+        margin: 0  0 1.5em 0;
+    }
+
+    .titleUnit{
+        font-size: 0.9em;
     }
 
     .profileUmkm{
@@ -235,52 +257,115 @@
         line-height: 2.5rem;
     }
 
-    .underLine{
-        width: 200px;
+    .underline{
         border: 3px solid #94B60F;
+    }
+
+    .containerInformation{
+        margin: 0 0 5em 0;
+    }
+
+    .titleInfo{
+        font-size: 1.3em;
+    }
+
+    .description{
+        font-size: 0.9em;
+    }
+
+    .listUnitUsaha{
+        font-size: 0.9em;
+    }
+
+    .containerVisiMisi{
+        column-gap: 1.8em;
+    }
+
+    .ImageVisiMisi{
+        width: 100%;
+    }
+
+    .fieldVisiMisi{
+        row-gap: 1.5em;
+    }
+
+    .ul{
+        margin: 0;
+    }
+
+    .titleVisiMisi{
+        font-size: 1.9em;
+    }
+
+    .descriptionVisi{
+        font-size: 0.9em;
+    }
+
+    .list{
+        font-size: 0.9em;
     }
 }
 
 @media screen and (max-width: 480px){
+    .container{
+        background-image: url('../../../public/assets/images/PropertiLight.png'),
+        url('../../../public/assets/images/PropertiLight.png');
+        background-size: 80%, 60% ; 
+        background-repeat: no-repeat, no-repeat;
+        background-position: top -10em left -10em, bottom right -9em;
+    }
+
     .containerProfile{
-        width: 100%;
-        margin: 0px 20px;
+        width: 90%;
+        margin: 2em 0;
+        
     }
 
     .fieldSekilas{
-        margin-bottom: 30px;
+        margin-bottom: 3em;
+        background-image: none;
+        margin-bottom:3em ;
     }
 
     .fieldSekilasEx{
-        background-image: none;
-        padding: 0px;
+        padding: 0;
     }
 
     .sekilas{
-        font-size: 30px;
-        margin: 20px 0px;
-    }
-
-    .fieldPrfileUmkm{
-        margin: 30px 0px;
-    }
-
-    .profileUmkm{
-        font-size: 30px;
-        margin-top: 0px;
-        line-height: 2.5rem;
-    }
-
-    .underLine{
-        width: 200px;
-        border: 3px solid #94B60F;
+        font-size: 1.6em;
+        margin: 1em 0px;
     }
 
     .wrapDescSekilas{
+        margin: 0;
         padding: 15px;
-        width: 90%;
-        background: #E5EBEA;
-        border: 5px solid #94B60F;  
+        width: auto;
+        background: #fefefe;
+        border: 4px solid #94B60F;  
+    }
+
+    .descriptions{
+        font-size: 0.8em;
+        padding: 0.8em;
+    }
+
+    .fieldProfileUmkm{
+        margin: 1em 0 ;
+    }
+
+    .profileUmkm{
+        font-size: 1.8em;
+        letter-spacing: 0.04em;
+        margin-top: 0px;
+    }
+
+    .underline{
+        width: 100%;
+        border: 3px solid #94B60F;
+    }
+
+    .containerInformation{
+        margin-bottom: 3em;
     }
 
     .wrapInformation{
@@ -300,29 +385,40 @@
     }
 
     .garisTegak{
-        border: 3px solid #94B60F;
+        border: 2px solid #94B60F;
         width: 0;
         border-radius: 99px;
     }
 
     .titleInfo{
-        font-size: 20px;
+        font-size: 1.2em;
     }
 
     .description{
-        font-size: 12px;
+        font-size: 0.8em;
     }
 
-
-    .wrapAspek{
-        margin: 30px 0px;
-    }
-    .titleAspek{
-        font-size: 20px;
-        line-height: 1.8rem;
+    .listUnitUsaha{
+        font-size: 0.8em;
     }
 
-    .descriptionAspek{
-        font-size: 12px;
+    .fieldVisiMisi{
+        width: 100%;
+    }
+
+    .titleVisiMisi{
+        font-size: 1.4em;
+    }
+
+    .fieldImage{
+        display: none;
+    }
+
+    .descriptionVisi{
+        font-size: 0.8em;
+    }
+
+    .list{
+        font-size: 0.8em;
     }
 }

@@ -25,18 +25,20 @@
     height: auto;
     border: 5px solid #94B60F;
     background-color: #fff;
-    column-gap: 2.3em;
-    padding: 2em 0em;
+    column-gap: 3em;
+    padding: 2em 2em;
     margin: 4em 0 5em 0;
     border-radius: 1em; 
 }
 
 .row1{
     padding: 1em 0;
+    width: 50%;
 }
 
 .row2{
     padding: 2.6em 0;
+    width: 50%;
 }
 
 .title{
@@ -45,11 +47,12 @@
     color: #081B1C;
     margin: 0px;
     letter-spacing: 0.06em;
+    margin-bottom: 0.2em;
 }
 
 .map{
-    width: 30em;
-    height: 37.3em;
+    width: 100%;
+    height: 65%;
 }
 
 .titleContact{
@@ -113,4 +116,48 @@
 
 .kirim:hover{
     background-color: #D5F06B;
+}
+
+@media screen and (max-width: 768px){
+    .containerBeranda {
+        width: 90%;
+    }
+
+    .wrapForm{
+        flex-direction: column;
+        row-gap: 2em;
+    }
+
+    .row1, .row2{
+        width: 100%;
+        padding: 0;
+    }
+
+    .map{
+        height: 25em;
+    }
+}
+
+@media screen and (max-width: 480px){
+    .containerBeranda{
+        width: 85%;
+    }
+
+    .wrapForm{
+        border: 4px solid #94B60F;
+        padding: 1.5em 1em;
+    }
+
+    .title{
+        font-size: 1.6em;
+        margin-bottom: 0.6em;
+    }
+
+    .titleContact{
+        font-size: 1em;
+    }
+
+    .contactDetail{
+        font-size: 0.9em;
+    }
 }

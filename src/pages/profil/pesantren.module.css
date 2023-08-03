@@ -87,3 +87,8 @@
     font-size: 1.1em;
 }
 
+@media screen and (max-width: 768px){
+    /* .containerPesantren { 
+        width: 90%;
+    } */
+}

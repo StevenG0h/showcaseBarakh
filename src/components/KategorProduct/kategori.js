@@ -22,7 +22,7 @@ const ProductCategory = ({unitUsaha}) => {
                         <p className={style.descriptionKatalog}>{data.usahaDesc}</p>
                     </div>
                 </Link>
-                        )
+                    )    
                     })
                 }
             </div>
