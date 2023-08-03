@@ -1,0 +1,15 @@
+.sliderKatalog .slick-dots{
+    bottom: 10px;
+}
+
+.sliderKatalog .slick-dots li.slick-active button:before{
+    color: #94B60F;
+}
+
+.sliderKatalog li{
+    margin: 0;
+}
+
+.sliderKatalog > .slick-list{
+    border-radius: 1em;
+}

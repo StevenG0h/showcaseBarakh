@@ -142,11 +142,11 @@
 
 @media screen and (max-width: 480px){
     .container{
-        padding-bottom: 5em;
+        padding-bottom: 4em;
     }
 
     .containerUsaha{
-        width: 85%;
+        width: 90%;
 
     }
 
@@ -160,7 +160,7 @@
 
     .cardUsaha{
         padding: 0.5em;
-        gap: 0;
+        gap: 0.2em;
     }
 
     .titleCard{
@@ -174,7 +174,7 @@
 
     .cardUsaha .cardDescription{
         font-size: 0.6em;
-        -webkit-line-clamp: 1;
+        -webkit-line-clamp: 2;
         overflow: hidden;
         display: -webkit-box;
         -webkit-box-orient: vertical;
