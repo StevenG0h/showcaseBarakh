@@ -1,0 +1,15 @@
+
+.containerHead .MuiButtonBase-root.MuiButton-root{
+    padding: 0;
+    min-width: 0;
+}
+
+.containerHead.MuiList-root.MuiList-padding{
+    padding: 0;
+}
+
+.activeMobile{
+    background-color: #CDEC58;
+    color: #fff;
+}
+/* .containerHead . */

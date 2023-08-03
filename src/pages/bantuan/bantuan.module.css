@@ -126,6 +126,7 @@
     .wrapForm{
         flex-direction: column;
         row-gap: 2em;
+        padding: 1em 1.5em ;
     }
 
     .row1, .row2{
@@ -136,11 +137,15 @@
     .map{
         height: 25em;
     }
+
+    .title{
+        font-size: 2em;
+    }
 }
 
 @media screen and (max-width: 480px){
     .containerBeranda{
-        width: 85%;
+        width: 90%;
     }
 
     .wrapForm{
@@ -154,7 +159,7 @@
     }
 
     .titleContact{
-        font-size: 1em;
+        font-size: 1.2em;
     }
 
     .contactDetail{

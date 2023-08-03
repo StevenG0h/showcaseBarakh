@@ -1,5 +1,5 @@
 .card{
-    margin:1zem;
+    /* margin:1em; */
     width: 100%;
     background: #FFFFFF;
     box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.05);
@@ -7,15 +7,13 @@
     display: flex;
     height: 100%;
     flex-direction: column; 
-    /* justify-content: space-between; */
 }
 .imageCarousel{
     height: auto;
 }
 
- .image{
+.image{
     object-fit: cover;
-    background-color: aqua;
     width: 100%;
     aspect-ratio: 3/2;
     border-radius: 28px 28px 0px 0px ;
@@ -32,7 +30,7 @@
 }
 
 .kategoriProduct{
-    font-size: 11px;
+    font-size: 0.6em;
     font-weight: 500;
     color: #999999;
     letter-spacing: 0.25em;
@@ -42,20 +40,21 @@
 
 .titleCard{
     color: #94B60F;
-    font-size: 19px;
+    font-size: 1em;
     margin: 0px;
     font-weight: 700;
     line-height: 22px;
 }
 
 .descriptionCard{
-    font-size: 10px;
+    font-size: 0.6em;
     margin: 0px;
+    line-height: 2em;
     /* margin-bottom: 9px; */
 }
 
 .price{
-    font-size: 10px ;
+    font-size: 0.6em ;
     color: #303030;
     margin: 0px;
     line-height: 14px;
@@ -75,13 +74,13 @@
 }
 
 .detil{
-    background-color: #303030;
+    background-color: #000;
     color: #fff;
     text-decoration: none;
-    font-size: 0.8em;
+    font-size: 0.7em;
     border-radius: 0.5em;
     padding: 0.4em;
-    cursor: pointer
+    cursor: pointer;
 }
 
 .cart{
@@ -91,6 +90,35 @@
     border-radius: 0.5em;
     cursor: pointer;
     outline: none;
+    border-color: white !important;
+}
+
+
+
+@media screen and (max-width: 768px){
+    .titleCard{
+        font-size: 0.7em;
+    }
+    
+    .caption{
+        padding: 0.8em;
+        gap: 0.4em;
+    }
+
+    .kategoriProduct {
+        font-size: 0.5em;
+    }
+
+    .detil {
+        font-size: 0.6em;
+    }
+
+    .descriptionCard {
+        -webkit-line-clamp: 4;
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+    }
 }
 
 @media screen and (max-width: 480px){

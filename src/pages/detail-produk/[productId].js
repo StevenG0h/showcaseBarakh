@@ -7,6 +7,8 @@ import {formatCurrency} from "../../helper/currency";
 import { Poppins } from 'next/font/google'
 import axios from "../../utils/axios";
 import { setCookie, getCookie } from "cookies-next";
+import  RatingModal  from "../../components/Rating/rating_modal";
+import {useState} from "react";
 
 const poppins = Poppins({
     weight: '500',
@@ -49,11 +51,22 @@ const detailProduct = ({data}) => {
         }
     }
 
+    const [open, setOpen] = useState(false)
+
+    const handleClickOpen = () => {
+        setOpen(true);
+    };
+
+    const handleClose = (value) => {
+        setOpen(false);
+    };
+
     return (
         <>
             <main className={poppins.className}>
             <Header/>
                     <div className={style.container}>
+                        <RatingModal open={open} onClose={handleClose}></RatingModal>
                         <div className={style.containerDetailProduct}>
                             <div className={style.fieldImage}>
                                 <img src={process.env.NEXT_PUBLIC_BACKEND_URL+"/storage/product/"+data.product_images[0].path} alt="Gambar" className={style.imageDetail} />
@@ -66,7 +79,7 @@ const detailProduct = ({data}) => {
                                 {/* <p className={style.weightProduct}>Berat : <span className={style.weightAmount}>0.1 Kg</span></p> */}
                                 <p className={style.descriptionProduct}>Deskripsi : <span className={style.description}><br />{data.productDesc}</span></p>
                                 <div className={style.buttonContainer}>    
-                                    <button className={style.cartButton}>Rating Untuk Produk Kami</button>
+                                    <button className={style.cartButton} onClick={handleClickOpen}>Rating Untuk Produk Kami</button>
                                     <button onClick={()=>{handleCart()}} className={style.cartButton}>Masukkan Ke Keranjang</button>
                                 </div>
                             </div>
