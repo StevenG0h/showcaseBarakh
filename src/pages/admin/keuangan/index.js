@@ -202,19 +202,19 @@ export default function keuangan({produk, stat, options}){
             
             <Box sx={{justifyContent:'space-between', flexDirection:'row', display:'flex', marginY:'1em', gap:'1em'}}>
                 <Card sx={{width:'100%',padding:'1em'}}>
-                    <Typography>
+                    <Typography variant="h6">
                         Pemasukan
                     </Typography>
                     Rp.{formatCurrency(Number(stat.penjualan.total))}
                 </Card>
                 <Card sx={{width:'100%',padding:'1em'}}>
-                    <Typography>
+                    <Typography variant="h6">
                         Pengeluaran
                     </Typography>
                     Rp.{ formatCurrency(Number(stat.pengeluaran.total))}
                 </Card>
                 <Card sx={{width:'100%',padding:'1em'}}>
-                    <Typography>
+                    <Typography variant="h6">
                         Total
                     </Typography>
                     Rp.{ formatCurrency(Number(stat.pengeluaran.total) - Number(stat.penjualan.total) )}

@@ -254,7 +254,7 @@ export default function product({user}){
                         </form>
                     </DialogContent>
                 </Dialog>
-                <Typography variant="h3" fontWeight={400}>{title}</Typography>
+                <Typography variant="h3" color={'#94B60F'} sx={{textDecoration:'underline'}} fontWeight={400}>{title}</Typography>
                 <Card sx={{marginY:'1em'}}>
                     <TableContainer>
                         <Table>

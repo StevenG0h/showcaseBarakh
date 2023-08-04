@@ -36,7 +36,8 @@ export async function getServerSideProps({ req, res }) {
     let product = await axios.get('/api/produk');
     let provinsi = await getAllProvinsi();
     let count = 0;
-    if (cookie != undefined) {
+    console.log(product)
+    if(cookie != undefined){
         cookie = JSON.parse(cookie)
         cookie.map((data) => {
             count += data.item * Number(data.productData.productPrice)
@@ -47,8 +48,8 @@ export async function getServerSideProps({ req, res }) {
             cookie: cookie === undefined ? [] : cookie,
             option: {
                 provinsi: provinsi
-            }, totalPayment: count,
-            product: product.data.data
+            },totalPayment: count,
+            product: product.data.data.data
         }
     }
 }
@@ -207,7 +208,6 @@ const Cart = ({ cookie, option, totalPayment, product }) => {
                     isInCart = true
                 }
             })
-            console.log(isInCart)
             return isInCart !== true
         })
         setCookie('barakh-cart-cookie', newCookie);

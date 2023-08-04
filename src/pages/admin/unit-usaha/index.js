@@ -336,7 +336,7 @@ export default function admin({data}){
                         </form>
                     </DialogContent>
                 </Dialog>
-                <Typography variant="h3" fontWeight={400}>Unit Usaha</Typography>
+                <Typography variant="h3" color={'#94B60F'} sx={{textDecoration:'underline'}} fontWeight={400}>Unit Usaha</Typography>
                 <Box sx={{display:'flex',flexDirection:'row',alignItems:'center'}}>
                     {/* <Typography variant="h6" fontWeight={400} sx={{marginY:'1em',marginRight:'0.5em'}}>Unit Usaha: </Typography>
                     <Select variant="standard" displayEmpty>

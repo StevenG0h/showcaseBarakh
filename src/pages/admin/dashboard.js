@@ -6,7 +6,7 @@ import CustomDoughnutChart from "../../components/chart/CustomDoughnutChart";
 import {getCookie} from 'cookies-next';
 import axios from "../../utils/axios";
 import { useState } from "react";
-import { getAllProvinsi, getAllUnitUsaha } from "../../helper/dataOptions";
+import { getAllKecamatanById, getAllKelurahanById, getAllKotaById, getAllProvinsi, getAllUnitUsaha } from "../../helper/dataOptions";
 import  FilterAlt  from "@mui/icons-material/FilterAlt";
 import {RHFAutocomplete} from "../../components/form/RHFAutocomplete";
 
@@ -18,14 +18,14 @@ function formatDashboardData(dashboard){
             label: 'Penjualan',
             data:[],
             backgroundColor:[
-                'rgba(255, 99, 132, 0.2)',
+                'rgba(75, 255, 75, 0.5)',
             ]
         },
             {
             label: 'Pengeluaran',
             data:[],
             backgroundColor:[
-                'rgba(75, 192, 192, 0.2)',
+                'rgba(75, 100, 255, 0.5)',
             ]
         }
         ]
@@ -37,7 +37,7 @@ function formatDashboardData(dashboard){
                 label: 'Penjualan',
                 data:[],
                 backgroundColor:[
-                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(99, 255, 200, 0.5)',
                 ]
             }
         ]
@@ -50,7 +50,7 @@ function formatDashboardData(dashboard){
                 label: 'Terlaris',
                 data:[],
                 backgroundColor:[
-                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(200, 99, 255, 0.5)',
                 ]
             }
         ]
@@ -69,6 +69,7 @@ function formatDashboardData(dashboard){
         penjualan.datasets[1].data.push(data.total)
     })
     dashboard.data.produkTerlaris.map((data,index)=>{
+        console.log(data)
         produkTerlaris.datasets[index].data.push(data.total);
         produkTerlaris.labels.push(data.product.unit_usaha.usahaName);
     })
@@ -120,7 +121,7 @@ export async function getServerSideProps({req,res}){
     }).catch(e=>{
         console.log(e)
     });
-    console.log(dashboard);
+    console.log(dashboard.data);
     let unitUsaha = await getAllUnitUsaha()
     let provinsi = await getAllProvinsi();
     return {
@@ -144,10 +145,20 @@ export default function Dashboard({data, options}){
         locationId:'',
         unitUsaha:''
     });
+    let [kota, setKota] = useState([])
+    let [kecamatan, setkecamatan] = useState([])
+    let [kelurahan, setKelurahan] = useState([])
     let handleChange = async ()=>{
         console.log(filterData);
         let dashboard = await axios.post('/api/dashboard/',filterData);
         setData(formatDashboardData(dashboard))
+        setFilter({"from":"2018-01-01",
+        "to":"2025-01-01",
+        "kelurahan":'',
+        "unitUsaha":'',
+        "kecamatan":'',
+        "kota":'',
+        "provinsi":''})
     }
     const [openFilter, setOpenFilter] = useState(false);
     return (
@@ -164,7 +175,7 @@ export default function Dashboard({data, options}){
                                     Dari
                                 </Typography>
                             </label>
-                            <TextField type="date" onChange={(e)=>{
+                            <TextField type="date" defaultValue={filterData.from} onChange={(e)=>{
                                 let filter = filterData;
                                 filter.from = e.target.value
                                 setFilter(filter);
@@ -176,7 +187,7 @@ export default function Dashboard({data, options}){
                                     Hingga
                                 </Typography>
                             </label>
-                            <TextField type="date" onChange={(e)=>{
+                            <TextField type="date" defaultValue={filterData.to} onChange={(e)=>{
                                 let filter = filterData;
                                 filter.to = e.target.value
                                 setFilter(filter);
@@ -192,10 +203,12 @@ export default function Dashboard({data, options}){
                         <Autocomplete
                         options={options.unitUsaha}
                         renderInput={(params) => <TextField {...params} label={'Unit Usaha'} />}
-                        onChange={(e, data) => {
+                        onChange={(e, unitUsahaData) => {
                             let filter = filterData;
-                            filter.unitUsaha = e.target.value
-                            return data
+                            filter.unitUsaha = unitUsahaData.id
+                            console.log(unitUsahaData)
+                            setFilter(filter);
+                            return unitUsahaData
                         }}
                         />
                     </FormControl>
@@ -207,15 +220,78 @@ export default function Dashboard({data, options}){
                         </label>
                         <Autocomplete
                         options={options.provinsi}
-                        renderInput={(params) => <TextField {...params} label={'Unit Usaha'} />}
-                        onChange={(e, data) => {
+                        active
+                        renderInput={(params) => <TextField {...params} label={'Provinsi'} />}
+                        onChange={async(e, unitUsahaData) => {
                             let filter = filterData;
-                            filter.unitUsaha = e.target.value
-                            return data
+                            filter.provinsi = unitUsahaData.id
+                            console.log(unitUsahaData)
+                            setFilter(filter);
+                            setKota(await getAllKotaById(unitUsahaData.id))
+                            return unitUsahaData
                         }}
                         />
-                    <Button onClick={()=>{handleChange()}}>Terapkan Filter</Button>
                     </FormControl>
+                    <FormControl>
+                        <label>
+                            <Typography>
+                                Kota
+                            </Typography>
+                        </label>
+                        <Autocomplete
+                        options={kota}
+                        disabled={kota.length == 0}
+                        renderInput={(params) => <TextField {...params} label={'Kota'} />}
+                        onChange={async(e, unitUsahaData) => {
+                            let filter = filterData;
+                            filter.kota = unitUsahaData.id
+                            console.log(unitUsahaData)
+                            setFilter(filter);
+                            setkecamatan(await getAllKecamatanById(unitUsahaData.id))
+                            return unitUsahaData
+                        }}
+                        />
+                    </FormControl>
+                    <FormControl>
+                        <label>
+                            <Typography>
+                                Kecamatan
+                            </Typography>
+                        </label>
+                        <Autocomplete
+                        options={kecamatan}
+                        disabled={kecamatan.length == 0}
+                        renderInput={(params) => <TextField {...params} label={'Kecamatan'} />}
+                        onChange={async(e, unitUsahaData) => {
+                            let filter = filterData;
+                            filter.kecamatan = unitUsahaData.id
+                            console.log(unitUsahaData)
+                            setFilter(filter);
+                            setKelurahan(await getAllKelurahanById(unitUsahaData.id))
+                            return unitUsahaData
+                        }}
+                        />
+                    </FormControl>
+                    <FormControl>
+                        <label>
+                            <Typography>
+                                Kelurahan
+                            </Typography>
+                        </label>
+                        <Autocomplete
+                        options={kelurahan}
+                        disabled={kelurahan.length == 0}
+                        renderInput={(params) => <TextField {...params} label={'Kelurahan'} />}
+                        onChange={(e, unitUsahaData) => {
+                            let filter = filterData;
+                            filter.kelurahan = unitUsahaData.id
+                            console.log(unitUsahaData)
+                            setFilter(filter);
+                            return unitUsahaData
+                        }}
+                        />
+                    </FormControl>
+                    <Button color="success" sx={{marginTop:'1em'}} variant="contained" onClick={()=>{handleChange()}}>Terapkan Filter</Button>
                 </DialogContent>
             </Dialog>
                 
@@ -228,10 +304,10 @@ export default function Dashboard({data, options}){
     
                             <Grid item xs={'12'}>
                                 <Box sx={{margin:'1em', display:'flex', flexDirection:'row', justifyContent:'space-between'}}>
-                                <Typography variant={'h3'}>
+                                <Typography variant="h3" color={'#94B60F'} sx={{textDecoration:'underline'}} fontWeight={400}>
                                     Dashboard
                                 </Typography>
-                                <Button variant="contained" sx={{height:'0',marginY:'auto'}} onClick={()=>{setOpenFilter(true)}} startIcon={<FilterAlt></FilterAlt>}>
+                                <Button variant="contained" color="success" sx={{height:'0',marginY:'auto'}} onClick={()=>{setOpenFilter(true)}} startIcon={<FilterAlt></FilterAlt>}>
                                     Filter
                                 </Button>
                                 </Box>
@@ -246,25 +322,25 @@ export default function Dashboard({data, options}){
                             <Grid item xs={'12'} sx={{marginX:'1em'}}>
                                 <Box sx={{justifyContent:'space-between', flexDirection:'row', display:'flex', gap:'1em'}}>
                                     <Card sx={{width:'100%',padding:'1em'}}>
-                                        <Typography>
+                                        <Typography sx={{fontWeight:'600'}}>
                                             Pengunjung
                                         </Typography>
                                         {dashboardData?.visitor[0]?.total}
                                     </Card>
                                     <Card sx={{width:'100%',padding:'1em'}}>
-                                        <Typography>
+                                        <Typography sx={{fontWeight:'600'}}>
                                             Pelanggan
                                         </Typography>
                                         {dashboardData?.pelangganStat}
                                     </Card>
                                     <Card sx={{width:'100%',padding:'1em'}}>
-                                        <Typography>
+                                        <Typography sx={{fontWeight:'600'}}>
                                             Jumlah Produk Terjual
                                         </Typography>
                                         {dashboardData?.totalProdukTerjual}
                                     </Card>
                                     <Card sx={{width:'100%',padding:'1em'}}>
-                                    <Typography>
+                                    <Typography sx={{fontWeight:'600'}}>
                                         Stok
                                     </Typography>
                                         {dashboardData?.totalStok[0]?.total}
