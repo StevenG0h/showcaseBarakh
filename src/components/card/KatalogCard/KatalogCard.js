@@ -15,7 +15,7 @@ import { ConfirmDialog } from "../../dialog/ConfirmDialog";
 import RatingLabel from "../../Rating/rating_label";
 
 
-export default function KatalogCard({ row }) {
+export default function KatalogCard({ row, isCart=false }) {
     const router = useRouter();
     let { id, product_images, productName, productDesc, productPrice, unit_usaha } = row;
     const settings = {
@@ -56,12 +56,15 @@ export default function KatalogCard({ row }) {
                 cookieDatas.push({ productId: data.id, item: 1, productData: data });
                 setCookie('barakh-cart-cookie', cookieDatas);
             }
-            console.log(cookieDatas);
         }
     }
 
     let [newTransactionStatus, setNewTransactionStatus] = useState(false);
     let handleChangeStatus = (data) => {
+        if(isCart){
+            addItem(data)
+            return router.replace(router.asPath);
+        }
         addItem(data)
         setNewTransactionStatus(true)
     }
@@ -88,7 +91,7 @@ export default function KatalogCard({ row }) {
             <div className={style.caption}>
                 <p className={style.kategoriProduct}>{unit_usaha.usahaName}</p>
                 <p className={style.titleCard}>{productName}</p>
-                <RatingLabel />
+                <RatingLabel value={row.rating} />
                 <p className={style.price}>Harga : <span className={style.nominal}>{formatCurrency(productPrice)}</span></p>
                 <p className={style.descriptionCard}>{
                     productDesc

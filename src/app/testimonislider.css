@@ -1,3 +1,17 @@
+
+.slick-track
+{
+    display: flex !important;
+}
+
+.slick-slide
+{
+    height: inherit !important;
+}
+.slick-slide > div
+{
+    height: 100% !important;
+}
 .container{
     width: 100%;
     display: flex;
@@ -9,7 +23,7 @@
     background-repeat: no-repeat, no-repeat;
     background-position: bottom 19em right 55em, bottom 4em right -27em;
 }
-.containerTest{
+.containerTest{ 
     display: flex;
     flex-direction: column;
     width: 75%;
@@ -303,6 +317,7 @@
     .containerTest  .slick-slide {
         margin: 50px -1px;
     }
+    
 
     /* the parent */
     .containerTest  .slick-list {
@@ -348,6 +363,7 @@
     
     .slider_image .slick-slide > div {
         margin: 0;
+
     }
 
     .slider_image  .slick-slide{

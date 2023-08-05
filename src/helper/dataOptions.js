@@ -71,3 +71,8 @@ export async function setVisitor(){
     let visitor = await axios.get(process.env.NEXT_PUBLIC_BACKEND_URL+'/api/visitor/');
     return visitor;
 }
+
+export async function getAdminNumber(){
+    let admin = await axios.get(process.env.NEXT_PUBLIC_BACKEND_URL+'/api/admin/get-number');
+    return admin;
+}

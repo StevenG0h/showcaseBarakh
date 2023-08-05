@@ -139,9 +139,9 @@ export default function profil({unitUsaha,option}){
       const onSubmit = async (data) => {
         let token = getCookie('token');
         data.deletedImage = deletedImage;
-        console.log(data)
         if(data.id == ''){
             
+            console.log(data)
             data.profilUsahaImages = data.profilUsahaImages.map((image)=>{
                 if(image?.isFile != false){
                     return image;
@@ -151,6 +151,7 @@ export default function profil({unitUsaha,option}){
                 headers: { Authorization: `Bearer `+token},
                 withCredentials: true
             }).then(async (r)=>{
+                console.log(data)
                 await axios.post('/api/admin/profil/',data,{
                     headers: { Authorization: `Bearer `+token, "Content-Type":'multipart/form-data'},
                     withCredentials: true,
@@ -163,14 +164,15 @@ export default function profil({unitUsaha,option}){
                 console.log(e)
             })
         }else{
-            if(data.usahaImage == ''){
-                delete data.usahaImage;
+            console.log(data)
+            if(data.profilUsahaImages == ''){
+                delete data.profilUsahaImages;
             }
             await axios.get('/sanctum/csrf-cookie',{
                 headers: { Authorization: `Bearer `+token},
-                withCredentials: true
+                withCredentials: true   
             }).then(async (r)=>{
-                await await axios.post('/api/admin/profil/edit/'+data.id,data,{
+                await  axios.post('/api/admin/profil/edit/'+data.id,data,{
                     headers: { Authorization: `Bearer `+token, "Content-Type":'multipart/form-data'},
                     withCredentials: true,
                 }).then((r)=>{
@@ -183,6 +185,7 @@ export default function profil({unitUsaha,option}){
             })
             
         }
+        handleCloseAddForm()
         // router.reload();
       }
       

@@ -14,6 +14,7 @@ import Pagination from '@mui/material/Pagination';
 import Stack from '@mui/material/Stack';
 import Tooltip from '@mui/material/Tooltip';
 import WhatsApp from "../../components/Whatsapp/WhatsApp"
+import axios from "../../utils/axios";
 const poppins = Poppins({
     weight: '500',
     subsets: ['latin'],
@@ -59,7 +60,16 @@ function a11yProps(index) {
 //         },
 //     }));
 
-const GaleriTestimoni = () => {
+export async function getServerSideProps(serverSide) {
+    let galeri = await axios.get('/api/galeri');
+    return {
+        props:{
+            galeri: galeri.data.data
+        }
+    }
+}
+
+const GaleriTestimoni = ({galeri}) => {
     const second = lightGreen[500];
 
     const [value, setValue] = React.useState(0);
@@ -79,43 +89,16 @@ const GaleriTestimoni = () => {
                     </div>
                     <div className={style.listWrap} >
                         <Box sx={{ width: '100%' }}>
-                            <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-                                <Tabs value={value} onChange={handleChange} aria-label="basic tabs example" centered
-                                    sx={{
-                                        "&:hover": { color: "#94B60F" },
-                                        " .Mui-selected": {
-                                            color: "#94B60F !important",
-                                        },
-                                        "& button:active": {
-                                            color: "#94B60F"
-                                        }
-                                    }}
-                                    TabIndicatorProps={{ style: { backgroundColor: "#94B60F" } }}
-                                >
-                                    <Tab sx={{ textTransform: "none" }} label="Semua" {...a11yProps(0)} />
-                                    <Tab sx={{ textTransform: "none" }} label="Foto" {...a11yProps(1)} />
-                                    <Tab sx={{ textTransform: "none" }} label="Video" {...a11yProps(2)} />
-                                </Tabs>
-                            </Box>
-                            <TabPanel className={style.tabPanel} value={value} index={0}>
-                                <div className={style.boxGaleri}>
-                                    <GaleriCard/>
-                                    <GaleriCard/>
-                                    <GaleriCard/>
-                                    <GaleriCard/>
-                                    <GaleriCard/>
-                                    <GaleriCard/>
-                                </div>       
-                            </TabPanel>
-                            <TabPanel value={value} index={1}>
-                                Item Two
-                            </TabPanel>
-                            <TabPanel value={value} index={2}>
-                                Item Three
-                            </TabPanel>
-                                <Stack spacing={2}>
-                                    <Pagination count={10} variant="outlined" shape="rounded" sx={{display: 'flex', justifyContent: 'center', placeItems: 'center'}}/>
-                                </Stack>
+                            <div className={style.boxGaleri}>
+                                {
+                                    galeri.map((data)=>{
+                                        return <GaleriCard data={data}/>
+                                    })
+                                }
+                            </div>       
+                            <Stack spacing={2} marginTop={'1em'}>
+                                <Pagination count={10} variant="outlined" shape="rounded" sx={{display: 'flex', justifyContent: 'center', placeItems: 'center'}}/>
+                            </Stack>
                         </Box>
                     </div>
                 </div>

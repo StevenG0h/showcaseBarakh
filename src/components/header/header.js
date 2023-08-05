@@ -15,9 +15,12 @@ import { useRouter } from "next/router";
 import HeaderMobile from "./HeaderMobile/HeaderMobile";
 import Badge from "@mui/material/Badge";
 import { setVisitor } from "../../helper/dataOptions";
+import { getCookie } from "cookies-next";
 
 const Header = () => {
-
+    let cart = getCookie('barakh-cart-cookie');
+    cart = cart == undefined ? [] : JSON.parse(cart);
+    console.log(cart);
     const [active, setActive] = useState(false);
     const router = useRouter();
     const [searchActive, setSearchActive] = useState(false);
@@ -86,7 +89,7 @@ const Header = () => {
                     </ul>
                 </div>
                 <div className={style.srccart}>
-                    <Badge badgeContent={3} sx={{
+                    <Badge badgeContent={cart.length} sx={{
                         '& .MuiBadge-badge':{
                             backgroundColor: '#94B60F',
                             color: '#ffffff'

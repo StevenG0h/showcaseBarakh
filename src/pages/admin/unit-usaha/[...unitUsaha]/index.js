@@ -138,6 +138,7 @@ export default function product({unitUsaha,product}){
                     return image;
                 }
             })
+            console.log(data)
             await axios.get('/sanctum/csrf-cookie',{
                 headers: { Authorization: `Bearer `+token},
                 withCredentials: true
@@ -146,7 +147,7 @@ export default function product({unitUsaha,product}){
                 await axios.post('/api/admin/produk/',data,{
                     headers: { Authorization: `Bearer `+token,
                     'Content-Type': 'multipart/form-data'
-                    },
+                    },  
                     withCredentials: true
                 }).then((r)=>{
                     console.log(r.data)
@@ -160,7 +161,7 @@ export default function product({unitUsaha,product}){
             if(data.usahaImage == ''){
                 delete data.usahaImage;
             }
-            handleCloseAddForm()
+            console.log(data)
             await axios.get('/sanctum/csrf-cookie',{
                 headers: { Authorization: `Bearer `+token},
                 withCredentials: true
@@ -168,7 +169,7 @@ export default function product({unitUsaha,product}){
                 await axios.post('/api/admin/produk/edit/'+data.productId,data,{
                     headers: { Authorization: `Bearer `+token,
                     'Content-Type': 'multipart/form-data'
-                    },
+                },
                     withCredentials: true
                 }).then((r)=>{
                     console.log(r.data)
@@ -181,6 +182,7 @@ export default function product({unitUsaha,product}){
         }
         router.replace(router.asPath);
         setLoading(false)
+        handleCloseAddForm()
       }
       
       //states

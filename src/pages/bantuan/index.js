@@ -3,13 +3,42 @@ import Footer from "../../components/footer/footer";
 import style from "./bantuan.module.css";
 import { TextField } from "@mui/material";
 import { Poppins } from 'next/font/google';
-
+import { getAdminNumber } from "../../helper/dataOptions";
+import {useState} from "react";
 const poppins = Poppins({
     weight: '500',
     subsets: ['latin'],
     })
 
-const Bantuan = ()=> {
+export async function getServerSideProps(serverSide) { 
+    let adminNum = await getAdminNumber();
+    
+    return {
+        props:{
+            adminNum:adminNum.data.adminNum
+        }
+    }
+}
+
+const Bantuan = ({adminNum})=> {
+    let [msg, setMsg] = useState({
+        nama:'',
+        alamat:'',
+        nohp:'',
+        email:'',
+        pesan:''
+    })
+
+    let handleSendMsg = ()=>{
+        console.log(msg)
+        let sendMsg = "Nama: "+msg.nama + '%0a'
+                    +'Alamat: '+msg.alamat+'%0a'
+                    +'No.Hp: '+msg.nohp+"%0a"
+                    +'Email: '+msg.email+"%0a"
+                    +"Pesan: "+msg.pesan+"%0a"
+        window.open('https://api.whatsapp.com/send/?phone='+adminNum+"&text="+sendMsg);
+    }
+
     return(
         <main className={poppins.className}>
             <Header/>
@@ -27,24 +56,43 @@ const Bantuan = ()=> {
                                     <p className={style.titleContact}>Detail Kontak</p>
                                     <hr className={style.hr}/>
                                     <div className={style.contactDetail}>
-                                        <p>Jl. Sri Palas, Rumbai Bukit, Kec. Rumbai, Kota Pekanbaru, Riau 28264</p>
+                                        <p>Alamat: Jl. Sri Palas, Rumbai Bukit, Kec. Rumbai, Kota Pekanbaru, Riau 28264</p>
                                     </div>
                                     <div className={style.contactDetail}>
-                                        <p>pondokpesantrenibnualmubarok@gmail.com</p>
+                                        <p>Email: pondokpesantrenibnualmubarok@gmail.com</p>
                                     </div>
                                     <div className={style.contactDetail}>
-                                        <p>+62 813 9224 8571</p>
+                                        <p>Nomor Whatsapp: +{adminNum}</p>
                                     </div>
                                 </div>
                                 <div className={style.formInput}>
-                                    <TextField id="" label="Masukkan Nama" variant="outlined" />
-                                    <TextField id="" label="Masukkan Alamat" variant="outlined" />
-                                    <TextField id="" label="Masukkan No. Hp" variant="outlined" />
-                                    <TextField id="" label="Masukkan Email" variant="outlined" />
-                                    <TextField id="" label="Masukkan Bantuan" variant="outlined" multiline rows={5} maxRows={4}/>
+                                    <TextField id="" onChange={(e)=>{
+                                        let data = msg;
+                                        msg.nama = e.target.value;
+                                        setMsg(data);
+                                    }} label="Masukkan Nama" variant="outlined" />
+                                    <TextField id="" onChange={(e)=>{
+                                        let data = msg;
+                                        msg.alamat = e.target.value;
+                                        setMsg(data);
+                                    }} label="Masukkan Alamat" variant="outlined" />
+                                    <TextField id="" onChange={(e)=>{
+                                        let data = msg;
+                                        msg.nohp = e.target.value;
+                                        setMsg(data);
+                                    }} label="Masukkan No. Hp" variant="outlined" />
+                                    <TextField id="" onChange={(e)=>{
+                                        let data = msg;
+                                        msg.email = e.target.value;
+                                        setMsg(data);
+                                    }} label="Masukkan Email" variant="outlined" />
+                                    <TextField id="" onChange={(e)=>{
+                                        let data = msg;
+                                        msg.pesan = e.target.value;
+                                        setMsg(data);
+                                    }} label="Masukkan Bantuan" variant="outlined" multiline rows={5} maxRows={4}/>
                                     <div className={style.Button}>
-                                        <button className={style.batal}>Batal</button>
-                                        <button className={style.kirim}>Kirim</button>
+                                        <button onClick={()=>handleSendMsg()} className={style.kirim}>Kirim</button>
                                     </div>
                                 </div>
                             </div>

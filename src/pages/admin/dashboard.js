@@ -70,8 +70,8 @@ function formatDashboardData(dashboard){
     })
     dashboard.data.produkTerlaris.map((data,index)=>{
         console.log(data)
-        produkTerlaris.datasets[index].data.push(data.total);
-        produkTerlaris.labels.push(data.product.unit_usaha.usahaName);
+        produkTerlaris.datasets[0].data.push(data.total);
+        produkTerlaris.labels.push(data.product.productName);
     })
     return {
         penjualan: penjualan,
@@ -111,17 +111,16 @@ export async function getServerSideProps({req,res}){
         };
     })
     let dashboard = await axios.post('/api/dashboard/',{        
-        "from":"2018-01-01",
-        "to":"2025-01-01",
-        "kelurahan":'',
-        "unitUsaha":'',
-        "kecamatan":'',
-        "kota":'',
-        "provinsi":''
+            "from":"2018-01-01",
+            "to":"2025-01-01",
+            "kelurahan":'',
+            "unitUsaha":'',
+            "kecamatan":'',
+            "kota":'',
+            "provinsi":''
     }).catch(e=>{
         console.log(e)
     });
-    console.log(dashboard.data);
     let unitUsaha = await getAllUnitUsaha()
     let provinsi = await getAllProvinsi();
     return {
@@ -347,15 +346,15 @@ export default function Dashboard({data, options}){
                                     </Card>
                                 </Box>
                             </Grid>
-    
-                            <Grid item xs={'6'}>
-                                <Card sx={{height:'50vh',padding:'1em', margin:'1em'}}>
+
+                            <Grid item xs={'6'} paddingY={'1em'} paddingLeft={'1em'} paddingRight={'0.5em'}>
+                                <Card sx={{height:'50vh',padding:'1em'}}>
                                     <CustomLineChart chartTitle={'Penjualan'} dataset={dashboardData?.total}></CustomLineChart>
                                 </Card>
                             </Grid>  
                             
-                            <Grid item xs={'6'}>
-                                <Card sx={{height:'50vh',padding:'1em', margin:'1em'}}>
+                            <Grid item xs={'6'} paddingY={'1em'} paddingLeft={'0.5em'} paddingRight={'1em'}>
+                                <Card sx={{height:'50vh',padding:'1em'}}>
                                     <CustomBarChart chartTitle={'Unit usaha dengan produk terlaris'} dataset={dashboardData?.produkTerlaris} color={['#049ffb','#58B63B']}></CustomBarChart>
                                 </Card>
                             </Grid>  

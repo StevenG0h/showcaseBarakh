@@ -4,13 +4,17 @@ import Rating from '@mui/material/Rating';
 import Typography from '@mui/material/Typography';
 
 
-const RatingLabel = () => {
-    const [value, setValue] = useState(3);
+const RatingLabel = ({value}) => {
+    let rating = 0;
+    rating = value.map((data)=>{
+        return rating += data.rating
+    })
+    const res =rating[0] / value.length;
     return (
         <Box sx={{
             '& > legend': { mt: 2 }, display: 'flex', flexDirection: 'row', gap: '0.5em'}}>
-                <Typography style={{fontSize: '0.8em',textDecoration: 'underline', color: '#94B60F'}} underline="always">{value}</Typography>
-                <Rating name="read-only" value={value} size="small" precision={0.5} readOnly />
+                <Typography style={{fontSize: '0.8em', color: '#94B60F', fontWeight:'600'}} underline="always">{isNaN(res) ? 0 : res}</Typography>
+                <Rating name="read-only" value={res} size="small" precision={0.5} readOnly />
         </Box>
     )
 }

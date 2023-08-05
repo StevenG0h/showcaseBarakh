@@ -22,11 +22,14 @@ const inter = Inter({ subsets: ['latin'] })
 
 export async function getServerSideProps(){
   let unitUsaha = await axios.get('/api/unit-usaha');
+  let testimoni = await axios.get('/api/testimoni');
+  console.log(testimoni.data.data.data)
   setVisitor()
   return {
     props:{
       data:{
-        unitUsaha: unitUsaha.data.data
+        unitUsaha: unitUsaha.data.data,
+        testimoni: testimoni.data.data
       }
     }
   }
@@ -34,6 +37,7 @@ export async function getServerSideProps(){
 
 export default function Home({data}) {
   let unitUsaha = data.unitUsaha.data;
+  let testimoni = data.testimoni.data;
   return (
     <main className={poppins.className}>
       <Header/>
@@ -50,7 +54,7 @@ export default function Home({data}) {
         </div>
       </div>
       <ProductCategory unitUsaha={unitUsaha} />
-      <Testimoni />
+      <Testimoni testimoni={testimoni} />
       <Footer />
       <WhatsApp />
     </main>

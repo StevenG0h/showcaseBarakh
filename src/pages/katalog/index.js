@@ -24,7 +24,7 @@ export async function getServerSideProps({context}){
     let unitUsaha = await axios.get('/api/unit-usaha')
     return {
         props:{
-            products:produk.data.data,
+            products:produk.data.data.data,
             unitUsaha: unitUsaha.data.data.data
         }
     }
@@ -38,10 +38,10 @@ const Katalog = ({products, unitUsaha}) => {
         if(data != 'all'){
             let unitUsaha = await axios.get('/api/produk/withFilter/'+data);
             console.log(unitUsaha);
-            setProducts(unitUsaha?.data)
+            setProducts(unitUsaha?.data.data)
         }else{
             let unitUsaha = await axios.get('/api/produk/');
-            setProducts(unitUsaha?.data?.data)
+            setProducts(unitUsaha?.data?.data.data)
         }
         setFilter(data);
     }
@@ -65,11 +65,11 @@ const Katalog = ({products, unitUsaha}) => {
                             }
                         </ul>
                     </div>
-                    <Grid container gap={'1em'}>
+                    <Grid container sx={{margin:'-0.5em'}}>
                         {
                             product.length != 0 ? product.map((product)=>{
                                 return (
-                                    <Grid item xs={6} sm={4} lg={3} key={product.id}>
+                                    <Grid item xs={6} sm={4} lg={3} key={product.id} sx={{padding:'0.5em'}}>
                                         <KatalogCard style={style} row={product}></KatalogCard>
                                     </Grid>
                                 )

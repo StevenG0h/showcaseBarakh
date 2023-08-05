@@ -8,7 +8,7 @@ const theme = {
     
 }
 
-export default function Testimoni() {
+export default function Testimoni({testimoni}) {
     const settings = {
         dots: false,
         infinite: true,
@@ -35,10 +35,11 @@ export default function Testimoni() {
         <div className="containerTest">
             <h2 className="titleTest">Komentar Mereka</h2>
             <Slider  {...settings}>
-                <Card />
-                <Card />
-                <Card />
-                <Card />
+                {
+                    testimoni.map((map)=>{
+                        return <Card row={map}></Card>
+                    })
+                }
             </Slider>
         </div>
         </div>

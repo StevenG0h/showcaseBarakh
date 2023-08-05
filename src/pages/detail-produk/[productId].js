@@ -66,7 +66,7 @@ const detailProduct = ({data}) => {
             <main className={poppins.className}>
             <Header/>
                     <div className={style.container}>
-                        <RatingModal open={open} onClose={handleClose}></RatingModal>
+                        <RatingModal id={data.id} open={open} onClose={handleClose}></RatingModal>
                         <div className={style.containerDetailProduct}>
                             <div className={style.fieldImage}>
                                 <img src={process.env.NEXT_PUBLIC_BACKEND_URL+"/storage/product/"+data.product_images[0].path} alt="Gambar" className={style.imageDetail} />

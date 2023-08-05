@@ -38,7 +38,7 @@ const UnitUsaha = ({data})=> {
                         {
                             usaha.map((data)=>{
                                 return(
-                                    <Link href="/detailKategori" className={style.link}>
+                                    <Link href={'/detail-usaha/'+data.id} className={style.link}>
                                         <div className={style.cardUsaha}>
                                             <img src={process.env.NEXT_PUBLIC_BACKEND_URL+"/storage/unitUsaha/"+data.usahaImage} alt="Gambar" className={style.image}/>
                                             <p className={style.titleCard}>{data.usahaName}</p>

@@ -14,6 +14,7 @@ import { getCookie, setCookie } from "cookies-next";
 import axios from "../../utils/axios";
 import { formatCurrency } from "../../helper/currency";
 import { Box, Button, Checkbox, Container, Dialog, DialogContent, DialogTitle, FormControl, Grid, IconButton, StepIcon, Typography } from "@mui/material";
+import {useEffect} from 'react'
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMinus, faPlus, faShoppingCart } from "@fortawesome/free-solid-svg-icons";
@@ -33,7 +34,10 @@ const poppins = Poppins({
 
 export async function getServerSideProps({ req, res }) {
     let cookie = getCookie('barakh-cart-cookie', { req, res })
-    let product = await axios.get('/api/produk');
+    let product = await axios.get('/api/produk').catch(e=>{
+        console.log(e)
+    });
+    console.log(product.data)
     let provinsi = await getAllProvinsi();
     let count = 0;
     console.log(product)
@@ -49,13 +53,14 @@ export async function getServerSideProps({ req, res }) {
             option: {
                 provinsi: provinsi
             },totalPayment: count,
-            product: product.data.data.data
+            products: product.data.data.data
         }
     }
 }
 
-const Cart = ({ cookie, option, totalPayment, product }) => {
+const Cart = ({ cookie, option, totalPayment, products }) => {
     let [cartList, setCart] = useState(cookie);
+    let [product, setProduct] = useState(products);
     let [showCheckout, setShowCheckout] = useState(cookie.length != 0)
     let [total, setTotal] = useState(totalPayment);
     const router = useRouter()
@@ -140,10 +145,24 @@ const Cart = ({ cookie, option, totalPayment, product }) => {
                 'Content-Type': 'multipart/form-data'
             }
         })
+        console.log(data)
+        let msg = 'Alamat: '+data.clientAddress +'%0a'+
+                'Nama: '+data.clientName + '%0a'+
+                'Email: '+data.clientNum + '%0a'+
+                'Keranjang: '+'\n';
+        let total = 0;
+        let product = data.product.map((produk)=>{
+            let cart = '- '+produk.productData.productName + ' ' + produk.item + 'x '+produk.productData.productPrice+'%0a'
+            total += produk.productData.productPrice * produk.item
+            return msg+= cart
+        })
+        msg += msg+'%0a'+ 'total: Rp.' + total
+    
+        window.open('https://api.whatsapp.com/send/?phone='+createTransaction.data.adminNumber.unit_usaha.admin.adminNum+"&text="+msg);
 
         setCookie('barakh-cart-cookie', []);
         setCart([]);
-
+        handleCloseCheckoutDialog()
         // router.replace(router.asPath);
     }
 
@@ -154,6 +173,7 @@ const Cart = ({ cookie, option, totalPayment, product }) => {
 
     const handleCloseCheckoutDialog = () => {
         setCheckoutDialog(false)
+        setTotal(0  )
     }
 
     const handleProvinsi = async (id) => {
@@ -232,6 +252,13 @@ const Cart = ({ cookie, option, totalPayment, product }) => {
         setTotal(count)
     }
 
+    useEffect(() => {
+        setCart(cookie)
+        setShowCheckout(cookie.length !=0)
+        setTotal(totalPayment)
+        setProduct(product)
+      }, [cookie, option, totalPayment, product]);
+
     return (
         <main className={poppins.className} style={{ backgroundColor: '#fff' }}>
             <Header />
@@ -272,7 +299,7 @@ const Cart = ({ cookie, option, totalPayment, product }) => {
                                                                 </Link>
                                                                 <div className={style.remaining}>
                                                                     <p className={style.remainingCheck}>sisa {productData.productStock}</p>
-                                                                    <p className={style.price}>{formatCurrency(Number(productData.productPrice))}</p>
+                                                                    <p className={style.price}>Rp.{formatCurrency(Number(productData.productPrice))}</p>
                                                                 </div>
                                                                 <div className={style.detailSetProduct}>
                                                                     <div className={style.setAmount}>
@@ -301,7 +328,7 @@ const Cart = ({ cookie, option, totalPayment, product }) => {
                                             <p className={style.titleRingkasan}>Ringkasan Belanja</p>
                                             <div className={style.detailPrice}>
                                                 <div className={style.textTotal}>Total Belanja Anda : </div>
-                                                <div className={style.total}>{formatCurrency(total)}</div>
+                                                <div className={style.total}>Rp.{formatCurrency(total)}</div>
                                             </div>
                                         </div>
                                         <Button onClick={() => setShowNotice(true)} sx={{ py: '1em' }} className={style.buttonBuy} variant="contained" startIcon={<FontAwesomeIcon icon={faShoppingCart}></FontAwesomeIcon>}>
@@ -335,7 +362,7 @@ const Cart = ({ cookie, option, totalPayment, product }) => {
                         product.map((data) => {
                             return (
                                 <Grid item xs={6} sm={4} lg={3} sx={{ padding: '0.4em' }}>
-                                    <KatalogCard row={data} style={style}></KatalogCard>
+                                    <KatalogCard isCart={true} row={data} style={style}></KatalogCard>
                                 </Grid>
                             )
                         })
