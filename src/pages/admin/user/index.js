@@ -96,7 +96,6 @@ export default function product({user}){
     
       const onSubmit = async (data) => {
         setLoading(true)
-        handleCloseAddForm()
         if(editMode == false){
             await axios.get('/sanctum/csrf-cookie',{
                 headers: { Authorization: `Bearer `+token},
@@ -110,6 +109,8 @@ export default function product({user}){
                 }).then((r)=>{
                     console.log(r.data)
                     router.replace(router.asPath)
+                    handleCloseAddForm()
+                    setLoading(false)
                 }).catch((e)=>{
                     console.log(e);
                     setError(e.response.data.message)
@@ -129,6 +130,8 @@ export default function product({user}){
                 }).then((r)=>{
                     console.log(r.data)
                     router.replace(router.asPath)
+                    handleCloseAddForm()
+                    setLoading(false)
                 }).catch((e)=>{
                     console.log(e);
                     setError(e.response.data.message)
@@ -137,7 +140,6 @@ export default function product({user}){
                 console.log(e)
             })
         }
-        setLoading(false)
 
       }
       
@@ -154,6 +156,7 @@ export default function product({user}){
     let handleCloseAddForm = ()=>{
         setEditMode(false);
         setAddForm(false);
+        setError('');
         setValue('id','');
         setValue('adminName','');
         setValue('adminNum','');

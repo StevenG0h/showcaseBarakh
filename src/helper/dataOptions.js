@@ -73,6 +73,8 @@ export async function setVisitor(){
 }
 
 export async function getAdminNumber(){
-    let admin = await axios.get(process.env.NEXT_PUBLIC_BACKEND_URL+'/api/admin/get-number');
+    let admin = await axios.get(process.env.NEXT_PUBLIC_BACKEND_URL+'/api/get-number').catch(e=>{
+        console.log(e)
+    });
     return admin;
 }

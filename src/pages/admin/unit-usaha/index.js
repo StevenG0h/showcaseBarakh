@@ -1,7 +1,7 @@
 import CustomTableHead from "../../../components/table/CustomTableHead"
 import AdminLayout from "../../../layouts/adminLayout/AdminLayout"
 import UsahaTableRow from "../../../sections/UnitUsaha/UsahaTableRow";
-import { Box, Button, Card, Dialog, DialogContent, DialogTitle, FormControl, Input, MenuItem, MenuList, Select, Table, TableBody, TableContainer, TextField, Typography } from "@mui/material"
+import {Alert, Box, Button, Card, Dialog, DialogContent, DialogTitle, FormControl, Input, MenuItem, MenuList, Select, Table, TableBody, TableContainer, TextField, Typography } from "@mui/material"
 import axios from "../../../utils/axios";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -204,6 +204,7 @@ export default function admin({data}){
                 withCredentials: true
             }).then((r)=>{
                 console.log(r.data)
+                router.replace(router.asPath)
             }).catch((e)=>{
                 console.log(e);
             })
@@ -283,7 +284,9 @@ export default function admin({data}){
                 </Dialog>
                 <Dialog open={AddForm} onClose={handleCloseAddForm} fullWidth maxWidth='xs'>
                     <DialogContent>
-                        <Typography variant="h5" sx={{marginBottom:'1em'}} fontWeight={600}>Tambah Unit Usaha</Typography>
+                        <Typography variant="h5" sx={{marginBottom:'1em'}} fontWeight={600}>{
+                            editMode == false ? 'Tambah' : 'Edit'
+                        } Unit Usaha</Typography>
                         <form onSubmit={handleSubmit(onSubmit)}>
                             {
                                 error != '' ?
@@ -347,7 +350,7 @@ export default function admin({data}){
                             <Typography>Hehe</Typography>
                         </MenuItem>
                     </Select> */}
-                    <Button onClick={handleOpenAddForm} color="success" variant="contained" startIcon="">
+                    <Button onClick={handleOpenAddForm} color="success" variant="contained" startIcon="" sx={{marginY:'1em'}}>
                         Tambah Unit Usaha
                     </Button>
                 </Box>

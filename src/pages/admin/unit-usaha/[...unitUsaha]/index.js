@@ -96,7 +96,7 @@ export default function product({unitUsaha,product}){
           }),
         productPrice: yup.number().required('Harga tidak boleh kosong').min(1),
         productStock: yup.number().required('Stok tidak boleh kosong').min(1),
-        deleteImage: yup.array().min(0)
+        deletedImage: yup.array().min(0)
     })
 
     const { control, handleSubmit, setValue, reset, register , formState:{errors}} = useForm({
@@ -123,7 +123,7 @@ export default function product({unitUsaha,product}){
                 isFile:false
             },
           ],
-          deleteImages:[]
+          deletedImages:[]
         },
         resolver: yupResolver(schema)
       })
@@ -222,6 +222,7 @@ export default function product({unitUsaha,product}){
         setValue('deleteImage',[]);
         setUsahaId('');
         setImage([]);
+        setDeletedImage([])
         reset({
             productName: "",
             productImages: "",
@@ -239,6 +240,7 @@ export default function product({unitUsaha,product}){
         setValue('productStock',data.productStock);
         setValue('productPrice',data.productPrice);
         setImage(data.product_images);
+        
         setAddForm(true)
     }
    
@@ -251,6 +253,7 @@ export default function product({unitUsaha,product}){
     }
 
     let handleDeletePreview = (id)=>{
+        alert(id)
         if(id != undefined){
             let deleteImage = deletedImage;
             deleteImage.push(id);

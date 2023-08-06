@@ -11,6 +11,8 @@ import axios from '../utils/axios'
 import { Button } from '@mui/material'
 import WhatsApp from '../components/Whatsapp/WhatsApp'
 import { setVisitor } from '../helper/dataOptions'
+import Link from 'next/link'
+import { useRouter } from 'next/router'
 
 const poppins = Poppins({
   weight: '500',
@@ -23,13 +25,14 @@ const inter = Inter({ subsets: ['latin'] })
 export async function getServerSideProps(){
   let unitUsaha = await axios.get('/api/unit-usaha');
   let testimoni = await axios.get('/api/testimoni');
-  console.log(testimoni.data.data.data)
+  let produk = await axios.get('/api/produk/home');
   setVisitor()
   return {
     props:{
       data:{
         unitUsaha: unitUsaha.data.data,
-        testimoni: testimoni.data.data
+        testimoni: testimoni.data.data,
+        produk: produk.data.data
       }
     }
   }
@@ -38,6 +41,8 @@ export async function getServerSideProps(){
 export default function Home({data}) {
   let unitUsaha = data.unitUsaha.data;
   let testimoni = data.testimoni.data;
+  let produk = data.produk.data;
+  const router = useRouter()
   return (
     <main className={poppins.className}>
       <Header/>
@@ -46,10 +51,14 @@ export default function Home({data}) {
           <div className={style.content}>
             <p className={style.titleHero}>Ciptakan Produk Lokal <br /><span style={{ color: '#94B60F' }}>Ramah Lingkungan</span></p>
             <p className={style.description}>Al-Mubarok merupakan unit usaha yang dimiliki oleh pesantren Ibnu Al-Mubarkh, yang berdiri sejak 2020. Awal mula terbentuknya Unit Usaha ini adalah...</p>
-            <Button sx={{width: '30%', padding: '0.8em', backgroundColor: '#94B60F', color: '#fff'}} className={style.button} >Selengkapnya</Button>
+            <Button onClick={
+              ()=>{
+                router.push('/katalog')
+              }
+            } sx={{width: '30%', padding: '0.8em', backgroundColor: '#94B60F', color: '#fff'}} className={style.button} >Selengkapnya</Button>
           </div>
           <div className={style.contentImage}>
-            <SliderImages />
+            <SliderImages produk={produk} />
           </div>
         </div>
       </div>

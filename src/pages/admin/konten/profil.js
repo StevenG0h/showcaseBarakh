@@ -16,6 +16,7 @@ import { getAllUnitUsaha } from "../../../helper/dataOptions";
 import {getCookie} from 'cookies-next';
 import  ChevronRight  from "@mui/icons-material/ChevronRight";
 import  ChevronLeft  from "@mui/icons-material/ChevronLeft";
+import { useEffect } from "react";
 
 export async function getServerSideProps({req,res}){
     let token = getCookie('token',{req,res});
@@ -91,7 +92,6 @@ export default function profil({unitUsaha,option}){
                 return true;
             }
           }),
-        deleteImage: yup.array().min(0)
     })
 
     const { control, handleSubmit, getValues, setValue, reset, register , formState:{errors}} = useForm({
@@ -131,7 +131,6 @@ export default function profil({unitUsaha,option}){
                 isFile:false
             },
           ],
-          deleteImages:[]
         },
         resolver: yupResolver(schema)
       })
@@ -140,23 +139,24 @@ export default function profil({unitUsaha,option}){
         let token = getCookie('token');
         data.deletedImage = deletedImage;
         if(data.id == ''){
-            
-            console.log(data)
-            data.profilUsahaImages = data.profilUsahaImages.map((image)=>{
+            data.profilUsahaImageFiltered = data.profilUsahaImages.map((image)=>{
                 if(image?.isFile != false){
-                    return image;
+                    return image
+                }else{
+                    return undefined
                 }
             })
             await axios.get('/sanctum/csrf-cookie',{
                 headers: { Authorization: `Bearer `+token},
                 withCredentials: true
             }).then(async (r)=>{
-                console.log(data)
+                console.log(data);
                 await axios.post('/api/admin/profil/',data,{
                     headers: { Authorization: `Bearer `+token, "Content-Type":'multipart/form-data'},
                     withCredentials: true,
                 }).then((r)=>{
-                    console.log(r.data)
+                    console.log(r)
+                    router.replace(router.asPath)
                 }).catch((e)=>{
                     console.log(e);
                 })
@@ -164,7 +164,6 @@ export default function profil({unitUsaha,option}){
                 console.log(e)
             })
         }else{
-            console.log(data)
             if(data.profilUsahaImages == ''){
                 delete data.profilUsahaImages;
             }
@@ -177,6 +176,7 @@ export default function profil({unitUsaha,option}){
                     withCredentials: true,
                 }).then((r)=>{
                     console.log(r.data)
+                    router.replace(router.asPath)
                 }).catch((e)=>{
                     console.log(e);
                 })
@@ -214,6 +214,7 @@ export default function profil({unitUsaha,option}){
         setValue('unit_usaha_id','');
         setValue('profil_usaha_desc','');
         setImage([]);
+        setDeletedImage([])
     }
     
     let handleOpenEditForm = (data)=>{
@@ -238,7 +239,6 @@ export default function profil({unitUsaha,option}){
                 })
             }
         }
-        console.log(images);
         setImage(images);
         setAddForm(true)
     }
@@ -284,12 +284,17 @@ export default function profil({unitUsaha,option}){
     
     let num = 0;
 
+    useEffect(() => {
+        setprofilUsahas(unitUsaha.data)
+        setprofilUsahasLink(unitUsaha.links)
+      }, [unitUsaha]);
+
     return (
         <>
             <AdminLayout handleLoading={loading}>
                 <Dialog open={AddForm} sx={{overflow:'hidden'}} onClose={handleCloseAddForm} fullWidth maxWidth='xs'>
                     <DialogContent>
-                        <Typography variant="h5" sx={{marginBottom:'1em'}} fontWeight={600}>Tambah Profil</Typography>
+                        <Typography variant="h5" sx={{marginBottom:'1em'}} fontWeight={600}>Edit Profil</Typography>
                         <form onSubmit={handleSubmit(onSubmit)}>
                             <FormControl sx={{width:'100%', marginY:'0.5em'}}>
                                 <RHFTextField hiddenLabel={false} label={'Deskripsi profil'} name={"profil_usaha_desc"} control={control}></RHFTextField>

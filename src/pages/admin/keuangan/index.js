@@ -237,14 +237,14 @@ export default function keuangan({produk, stat, options}){
                         })
                     }
                 </Select> */}
-                <Dialog onClose={handleCloseAddForm} open={AddForm}>
+                <Dialog onClose={handleCloseAddForm} open={AddForm} fullWidth maxWidth="xs">
                     <DialogTitle>
-                        Tambah Transaksi
+                        Tambah Pengeluaran
                     </DialogTitle>
                     <DialogContent>
                         <form onSubmit={handleSubmit(onSubmit)}>
-                            <FormControl>
-                                <RHFAutocomplete
+                            <FormControl sx={{width:'100%'}}>
+                                <RHFAutocomplete sx={{width:'100%'}}
                                     name={'unit_usaha_id'}
                                     options={options.unitUsaha}
                                     control= {control}
@@ -254,9 +254,9 @@ export default function keuangan({produk, stat, options}){
                                         return data
                                     }}
                                 />
-                                <RHFTextField label={'Nama Pengeluaran'} control={control} name={'SpendingName'}></RHFTextField>
-                                <RHFTextField label={'Deskripsi Pengeluaran'} control={control} name={'SpendingDescription'}></RHFTextField>
-                                <RHFTextField label={'Jumlah Pengeluaran'} control={control} name={'SpendingValue'}></RHFTextField>
+                                <RHFTextField sx={{width:'100%'}} label={'Nama Pengeluaran'} control={control} name={'SpendingName'}></RHFTextField>
+                                <RHFTextField sx={{width:'100%'}} label={'Deskripsi Pengeluaran'} control={control} name={'SpendingDescription'}></RHFTextField>
+                                <RHFTextField sx={{width:'100%'}} label={'Jumlah Pengeluaran'} control={control} name={'SpendingValue'}></RHFTextField>
                                 {/* <Select defaultValue={1}>
                                     {
                                     options?.unitUsaha.map(({id, label})=>{
@@ -266,7 +266,7 @@ export default function keuangan({produk, stat, options}){
                                         })
                                     }
                                 </Select> */}
-                                <Button type="submit">Tambah Pengeluaran</Button>
+                                <Button sx={{marginTop:'1em'}} variant="contained" color="success" type="submit">Tambah Pengeluaran</Button>
                             </FormControl>
                         </form>
                     </DialogContent>

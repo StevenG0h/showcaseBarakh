@@ -16,6 +16,8 @@ import {getCookie} from 'cookies-next';
 import TestimoniTableRow from "../../../sections/testimoni/TestimoniTableRow";
 import  ChevronRight  from "@mui/icons-material/ChevronRight";
 import  ChevronLeft  from "@mui/icons-material/ChevronLeft";
+import { useEffect } from "react";
+import { ConfirmDialog } from "../../../components/dialog/ConfirmDialog";
 
 export async function getServerSideProps({req,res}){
     let token = getCookie('token',{req,res});
@@ -75,6 +77,7 @@ export default function testimoni({data}){
     let [imageData, setImage] = useState([]);
     let [deletedImage, setDeletedImage] = useState([]);
     let [imageBackup, setImageBackup] = useState([]);
+    let [deleteId, setDelete] = useState('');
     //Next router
     const router = useRouter();
 
@@ -106,7 +109,8 @@ export default function testimoni({data}){
                     withCredentials: true,
                 }).then((r)=>{
                     console.log(r.data)
-                    router.reload();
+                    router.replace(router.asPath);
+                    handleCloseAddForm()
                 }).catch((e)=>{
                     console.log(e);
                 })
@@ -118,12 +122,13 @@ export default function testimoni({data}){
                 headers: { Authorization: `Bearer `+token},
                 withCredentials: true
             }).then(async (r)=>{
-                await await axios.put('/api/admin/testimoni/'+data.id,data,{
+                await  axios.put('/api/admin/testimoni/'+data.id,data,{
                     headers: { Authorization: `Bearer `+token},
                     withCredentials: true,
                 }).then((r)=>{
                     console.log(r.data)
-                    router.reload();
+                    router.replace(router.asPath);
+                    handleCloseAddForm()
                 }).catch((e)=>{
                     console.log(e);
                 })
@@ -150,7 +155,8 @@ export default function testimoni({data}){
                     Authorization: `Bearer `+token
                 }
             }).then((r)=>{
-                router.reload()
+                setDelete('')
+                router.replace(router.asPath)
             });
         })
     }
@@ -211,8 +217,14 @@ export default function testimoni({data}){
     
     let num = 0;
 
+    useEffect(() => {
+        settestimoniUsahas(data.data)
+        setUnitUsahaLink(data.links)
+      }, [data]);
+
     return (
         <>
+            <ConfirmDialog open={deleteId != ''} onCancel={()=>{setDelete('')}} onConfirm={()=>{handleDelete(deleteId)}} msg={'Anda yakin ingin menghapus?'}></ConfirmDialog>
             <AdminLayout handleLoading={loading}>
                 <Dialog open={showImage != ''} onClose={handleCloseShowImage} fullWidth maxWidth={'md'}>
                         <img height={"100%"} style={{objectFit:'contain'}} src={showImage}></img>
@@ -232,7 +244,7 @@ export default function testimoni({data}){
                     </DialogContent>
                 </Dialog>
                 <Typography variant="h3" color={'#94B60F'} sx={{textDecoration:'underline'}} fontWeight={400}>Testimoni</Typography>
-                <Box sx={{display:'flex',flexDirection:'row',alignItems:'center'}}>
+                <Box sx={{display:'flex',flexDirection:'row',alignItems:'center', marginY:'1em'}}>
                     <Button onClick={handleOpenAddForm} color="success" variant="contained" startIcon="">
                         Tambah Testimoni
                     </Button>
@@ -252,7 +264,7 @@ export default function testimoni({data}){
                                         return ( <>
                                             <TestimoniTableRow 
                                             key={map.id} 
-                                            onDelete={() => handleDelete(map.id)} 
+                                            onDelete={() => setDelete(map.id)} 
                                             onEdit={() => handleOpenEditForm(map)} 
                                             onShowImage={()=> handleShowImage(map.path)}
                                             num={++num} row={map}>

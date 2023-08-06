@@ -15,6 +15,9 @@ import Stack from '@mui/material/Stack';
 import Tooltip from '@mui/material/Tooltip';
 import WhatsApp from "../../components/Whatsapp/WhatsApp"
 import axios from "../../utils/axios";
+import { Button } from "@mui/material";
+import  ChevronRight  from "@mui/icons-material/ChevronRight";
+import  ChevronLeft  from "@mui/icons-material/ChevronLeft";
 const poppins = Poppins({
     weight: '500',
     subsets: ['latin'],
@@ -70,6 +73,8 @@ export async function getServerSideProps(serverSide) {
 }
 
 const GaleriTestimoni = ({galeri}) => {
+    let [galeriData, setGaleri] = useState(galeri.data)
+    let [galeriLink, setGaleriLink] = useState(galeri.links)
     const second = lightGreen[500];
 
     const [value, setValue] = React.useState(0);
@@ -77,6 +82,19 @@ const GaleriTestimoni = ({galeri}) => {
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };
+
+    let handleChangePage = async (link)=>{
+        if(link != null){
+            let unitUsaha = await axios.get(link,{
+                headers:{
+                    Authorization: 'Bearer '+token,
+                },
+                withCredentials:true
+            });
+            setGaleri(unitUsaha?.data?.data?.data)
+            setGaleriLink(unitUsaha?.data?.data?.links)
+        }
+    }
 
     return (
         <main className={poppins.className}>
@@ -91,15 +109,24 @@ const GaleriTestimoni = ({galeri}) => {
                         <Box sx={{ width: '100%' }}>
                             <div className={style.boxGaleri}>
                                 {
-                                    galeri.map((data)=>{
+                                    galeriData.map((data)=>{
                                         return <GaleriCard data={data}/>
                                     })
                                 }
                             </div>       
-                            <Stack spacing={2} marginTop={'1em'}>
-                                <Pagination count={10} variant="outlined" shape="rounded" sx={{display: 'flex', justifyContent: 'center', placeItems: 'center'}}/>
-                            </Stack>
+                            
                         </Box>
+                        <Box sx={{display:'flex', flexDirection:'row', justifyContent:'center', marginTop:'1em'}}>
+                    {
+                        galeriLink.map((link)=>{
+                            return (
+                                <Button fullWidth size="sm" sx={{margin:'0.5em',paddingY:'1em', paddingX:'0', width:0, height:0}} key={link.label} variant={link.active ? 'contained' : 'outlined'} color={'success'} onClick={()=> handleChangePage(link.url)}>{
+                                    link.label == '&laquo; Previous'? <ChevronLeft ></ChevronLeft> : link.label == 'Next &raquo;' ? <ChevronRight></ChevronRight> : link.label
+                                }</Button>
+                            )
+                        })
+                    }
+                    </Box>
                     </div>
                 </div>
             </div>

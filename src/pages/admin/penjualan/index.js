@@ -82,6 +82,7 @@ export default function product({produk, options}){
     let [formTitle, setFormTitle] = useState([]);
     let [addDetailTransactionForm, setAddDetailTransactionForm] = useState('');
     let [productOption, setProductOptions] = useState([]);
+    let [activeLink, setActiveLink] = useState('*');
     //Next router
     const router = useRouter();
 
@@ -120,7 +121,6 @@ export default function product({produk, options}){
       const onSubmit = async (data) => {
         setLoading(true)
         try{
-            handleCloseAddForm()
             await axios.get('/sanctum/csrf-cookie',{
                 withCredentials:true
             }).then(async(r)=>{
@@ -129,6 +129,7 @@ export default function product({produk, options}){
                     headers:{Authorization:"Bearer "+token},
                     withCredentials:true
                 });
+                handleCloseAddForm()
             })
         }catch(e){
             console.log(e)
@@ -153,28 +154,43 @@ export default function product({produk, options}){
                     withCredentials:true
                 });
             })
+            handleCloseAddForm()
         }catch(e){
             console.log(e)
         }finally{
             handleCloseAddSalesTransactionForm()
             router.replace(router.asPath)
         }
-
       }
       
       //states
     const [AddForm, setAddForm] = useState(false);
     const [editMode, setEditMode] = useState(false);
 
+    
+
     //state handler
     let handleChangeFilter = async (data)=>{
+        setActiveLink(data);
         if(data != '*'){
-            let unitUsaha = await axios.get('/api/admin/produk/withFilter/'+data);
-            setProducts(unitUsaha?.data)
-        }else{
-            let unitUsaha = await axios.get('/api/admin/produk/');
+            let unitUsaha = await axios.get('/api/admin/transaksi/penjualan/'+data, {
+                headers:{
+                    Authorization: 'Bearer '+token
+                },
+                withCredentials:true
+            });
             setProducts(unitUsaha?.data?.data)
-        }
+            setProductsLink(unitUsaha?.data.links)
+        }else{
+            let unitUsaha = await axios.get('/api/admin/transaksi/penjualan/', {
+                headers:{
+                    Authorization: 'Bearer '+token
+                },
+                withCredentials:true
+            });
+            setProducts(unitUsaha?.data.data)
+            setProductsLink(unitUsaha?.data.links)
+        }   
     }
 
     let handleCloseAddForm = ()=>{
@@ -189,7 +205,6 @@ export default function product({produk, options}){
         setValue('id',data.id);
         setValue('productCount',data.productCount);
         setAddForm(true)
-        handleCloseTransactionDetails()
     }
     //utils
 
@@ -203,14 +218,23 @@ export default function product({produk, options}){
     }
 
     let handleDeleteDetailRow =async (data)=>{
-        try{
-            const deleteTransaction =await  axios.delete(process.env.NEXT_PUBLIC_BACKEND_URL+'/api/admin/penjualan/'+data.id);
-        }catch(e){
-            
-        }finally{
-            router.replace(router.asPath);
-        }
 
+            try{
+                await axios.get('/sanctum/csrf-cookie',{
+                    withCredentials:true
+                }).then(async(r)=>{
+                    let createSalesTransaction = await axios.delete('/api/admin/penjualan/'+data.id,
+                    {
+                        headers:{Authorization:"Bearer "+token},
+                        withCredentials:true
+                    });
+                })
+            }catch(e){
+                console.log(e)
+            }finally{
+                handleCloseAddSalesTransactionForm()
+                router.replace(router.asPath)
+            }
     }
 
     let handleAddSalesTransactionForm = (data)=>{
@@ -258,12 +282,27 @@ export default function product({produk, options}){
     useEffect(() => {
         setProducts(produk.data)
         setProductsLink(produk.links)
+        produk.data.map((data)=>{
+            if(data.id == transaction.id){
+                setTransaction(data)
+            }
+        })
       }, [produk]);
 
     return (
         <>
             <AdminLayout handleLoading={loading}>
             <Typography variant="h3" color={'#94B60F'} sx={{textDecoration:'underline'}} fontWeight={400}>Penjualan</Typography>
+            <Box sx={{display:'flex', gap:'1em', marginY:'1em', flexDirection:'row'}}>
+        <Typography variant="h6" sx={{margin:0}}>
+            Unit Usaha:
+        </Typography>
+        <Button color="success" variant={activeLink === '*' ? 'contained' : 'outlined'} sx={{borderRadius:'5em'}} onClick={()=>{handleChangeFilter('*')}}>Semua</Button>
+        <Button color="success" variant={activeLink === 'BELUMTERVERIFIKASI' ? 'contained' : 'outlined'} sx={{borderRadius:'5em'}} onClick={()=>{handleChangeFilter('BELUMTERVERIFIKASI')}}>Belum Terverifikasi</Button>
+        <Button color="success" variant={activeLink === 'TERVERIFIKASI' ? 'contained' : 'outlined'} sx={{borderRadius:'5em'}} onClick={()=>{handleChangeFilter('TERVERIFIKASI')}}>Terverifikasi</Button>
+        <Button color="success" variant={activeLink === 'PENGIRIMAN' ? 'contained' : 'outlined'} sx={{borderRadius:'5em'}} onClick={()=>{handleChangeFilter('PENGIRIMAN')}}>Pengiriman</Button>
+        <Button color="success" variant={activeLink === 'SELESAI' ? 'contained' : 'outlined'} sx={{borderRadius:'5em'}} onClick={()=>{handleChangeFilter('SELESAI')}}>Selesai</Button>
+    </Box>
                 {/* <Typography variant="h3" fontWeight={400}>{title}</Typography>
                 <Select defaultValue={'*'}
                 onChange={(e)=>handleChangeFilter(e.target.value)}
@@ -281,6 +320,7 @@ export default function product({produk, options}){
                     <DialogTitle>
                         Tambah Transaksi
                     </DialogTitle>
+          
                     <DialogContent>
                         <form onSubmit={handleSalesTransactionSubmit(onSalesTransactionSubmit)}>
                             <FormControl sx={{width:'100%', marginY:'0.5em'}}>
@@ -397,7 +437,7 @@ export default function product({produk, options}){
                             <CustomTableHead tableHead={TABLEHEAD}></CustomTableHead>
                             <TableBody>
                                 {
-                                    products === [] || products==='' || products === undefined ? (
+                                    products === [] || products==='' || products.length == 0 || products === undefined ? (
                                         <TableRow>
                                             <TableCell>Data kosong</TableCell>
                                         </TableRow>

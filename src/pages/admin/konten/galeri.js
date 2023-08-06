@@ -16,6 +16,8 @@ import {getCookie} from 'cookies-next';
 import GaleriTableRow from "../../../sections/galeri/GaleriTableRow";
 import  ChevronRight  from "@mui/icons-material/ChevronRight";
 import  ChevronLeft  from "@mui/icons-material/ChevronLeft";
+import { useEffect } from "react";
+import { ConfirmDialog } from "../../../components/dialog/ConfirmDialog";
 
 export async function getServerSideProps({req,res}){
     let token = getCookie('token',{req,res});
@@ -75,6 +77,7 @@ export default function galeri({data}){
     let [imageData, setImage] = useState([]);
     let [deletedImage, setDeletedImage] = useState([]);
     let [imageBackup, setImageBackup] = useState([]);
+    let [deleteId, setDelete] = useState('');
     //Next router
     const router = useRouter();
 
@@ -95,8 +98,6 @@ export default function galeri({data}){
       })
     
       const onSubmit = async (data) => {
-        
-        console.log(data)
         if(editMode == false){
             await axios.get('/sanctum/csrf-cookie',{
                 headers: { Authorization: `Bearer `+token},
@@ -131,7 +132,9 @@ export default function galeri({data}){
             })
             
         }
-        router.reload();
+
+        router.replace(router.asPath);
+        handleCloseAddForm()
       }
       
       //states
@@ -139,7 +142,7 @@ export default function galeri({data}){
     const [AddForm, setAddForm] = useState(false);
     const [editMode, setEditMode] = useState(false);
     const [usahaId, setUsahaId] = useState('');
-    
+
     //handler
     async function handleDelete(id){
         const csrf = await axios.get('/sanctum/csrf-cookie',{
@@ -150,7 +153,8 @@ export default function galeri({data}){
                     Authorization: `Bearer `+token
                 }
             }).then((r)=>{
-                router.reload()
+                router.replace(router.asPath)
+                setDelete('');
             });
         })
     }
@@ -166,7 +170,7 @@ export default function galeri({data}){
         setValue('id','');
         setValue('galeriTitle','');
         setValue('galeriDate','');
-        setImage('path');
+        setImage([]);
     }
     
     let handleOpenEditForm = (data)=>{
@@ -213,8 +217,14 @@ export default function galeri({data}){
     
     let num = 0;
 
+    useEffect(() => {
+        setgaleriUsahas(data.data)
+        setUnitUsahaLink(data.links)
+      }, [data]);
+
     return (
         <>
+            <ConfirmDialog open={deleteId != ''} onCancel={()=>{setDelete('')}} onConfirm={()=>{handleDelete(deleteId)}} msg={'Anda yakin ingin menghapus?'}></ConfirmDialog>
             <AdminLayout handleLoading={loading}>
                 <Dialog open={showImage != ''} onClose={handleCloseShowImage} fullWidth maxWidth={'md'}>
                         <img height={"100%"} style={{objectFit:'contain'}} src={showImage}></img>
@@ -239,7 +249,7 @@ export default function galeri({data}){
                     </DialogContent>
                 </Dialog>
                 <Typography variant="h3" color={'#94B60F'} sx={{textDecoration:'underline'}} fontWeight={400}>Galeri</Typography>
-                <Box sx={{display:'flex',flexDirection:'row',alignItems:'center', marginBottom:'1em'}}>
+                <Box sx={{display:'flex',flexDirection:'row',alignItems:'center', marginY:'1em'}}>
                     <Button onClick={handleOpenAddForm} color="success" variant="contained" startIcon="">
                         Tambah Galeri
                     </Button>
@@ -259,7 +269,7 @@ export default function galeri({data}){
                                         return ( <>
                                             <GaleriTableRow 
                                             key={map.id} 
-                                            onDelete={() => handleDelete(map.id)} 
+                                            onDelete={() => setDelete(map.id)} 
                                             onEdit={() => handleOpenEditForm(map)} 
                                             onShowImage={()=> handleShowImage(map.path)}
                                             num={++num} row={map}>
