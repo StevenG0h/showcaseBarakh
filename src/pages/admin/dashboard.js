@@ -90,11 +90,11 @@ export async function getServerSideProps({req,res}){
     if(token == undefined){
         return {
             redirect: {
-              permanent: false,
-              destination: "/auth",
+                permanent: false,
+                destination: "/auth",
             },
             props:{},
-          };
+            };
     }
     await axios.get('/user',{
         headers:{
@@ -296,11 +296,7 @@ export default function Dashboard({data, options}){
                 
                 <AdminLayout handleLoading={loading}>
                     <Container maxWidth={'lg'}>
-
-                        
-                        
                         <Grid container sx={{margin:'-1em'}}>
-    
                             <Grid item xs={'12'}>
                                 <Box sx={{margin:'1em', display:'flex', flexDirection:'row', justifyContent:'space-between'}}>
                                 <Typography variant="h3" color={'#94B60F'} sx={{textDecoration:'underline'}} fontWeight={400}>
@@ -362,7 +358,6 @@ export default function Dashboard({data, options}){
                         </Grid>
                     </Container>
                 </AdminLayout>
-            
         </>
     )
 }

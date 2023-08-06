@@ -138,9 +138,10 @@ export default function profil({unitUsaha,option}){
     
       const onSubmit = async (data) => {
         let token = getCookie('token');
+        setLoading(true);
         data.deletedImage = deletedImage;
         if(data.id == ''){
-            
+
             console.log(data)
             data.profilUsahaImages = data.profilUsahaImages.map((image)=>{
                 if(image?.isFile != false){
@@ -164,7 +165,7 @@ export default function profil({unitUsaha,option}){
                 console.log(e)
             })
         }else{
-            console.log(data)
+            handleCloseAddForm();
             if(data.profilUsahaImages == ''){
                 delete data.profilUsahaImages;
             }
@@ -186,7 +187,8 @@ export default function profil({unitUsaha,option}){
             
         }
         handleCloseAddForm()
-        // router.reload();
+        router.replace(router.asPath)
+        setLoading(false)
       }
       
       //states
@@ -289,7 +291,7 @@ export default function profil({unitUsaha,option}){
             <AdminLayout handleLoading={loading}>
                 <Dialog open={AddForm} sx={{overflow:'hidden'}} onClose={handleCloseAddForm} fullWidth maxWidth='xs'>
                     <DialogContent>
-                        <Typography variant="h5" sx={{marginBottom:'1em'}} fontWeight={600}>Tambah Profil</Typography>
+                        <Typography variant="h5" sx={{marginBottom:'1em'}} fontWeight={600}>Edit Profil</Typography>
                         <form onSubmit={handleSubmit(onSubmit)}>
                             <FormControl sx={{width:'100%', marginY:'0.5em'}}>
                                 <RHFTextField hiddenLabel={false} label={'Deskripsi profil'} name={"profil_usaha_desc"} control={control}></RHFTextField>

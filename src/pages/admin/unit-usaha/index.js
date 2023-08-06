@@ -283,7 +283,7 @@ export default function admin({data}){
                 </Dialog>
                 <Dialog open={AddForm} onClose={handleCloseAddForm} fullWidth maxWidth='xs'>
                     <DialogContent>
-                        <Typography variant="h5" sx={{marginBottom:'1em'}} fontWeight={600}>Tambah Unit Usaha</Typography>
+                        <Typography variant="h5" sx={{marginBottom:'1em'}} fontWeight={600}>{editMode? 'Edit Unit Usaha' : 'Tambah Unit Usaha'}</Typography>
                         <form onSubmit={handleSubmit(onSubmit)}>
                             {
                                 error != '' ?
@@ -302,8 +302,7 @@ export default function admin({data}){
                                 <RHFTextField hiddenLabel={false} label={'Deskripsi Unit Usaha'} name={"usahaDesc"} control={control}></RHFTextField>
                             </FormControl>
                             <FormControl sx={{width:'100%', marginY:'0.5em'}}>
-                                <RHFDnd control={control} name={'usahaImage'} files={process.env.NEXT_PUBLIC_BACKEND_URL+'/storage/unitUsaha/'+getValues('usahaImage')}>
-                                    
+                                <RHFDnd control={control} name={'usahaImage'} files={process.env.NEXT_PUBLIC_BACKEND_URL+'/storage/unitUsaha/'+getValues('usahaImage')}>            
                                 </RHFDnd>
                             </FormControl>
                             {
