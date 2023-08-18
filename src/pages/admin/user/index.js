@@ -229,7 +229,7 @@ export default function product({user}){
             <AdminLayout handleLoading={loading}>
                 <Dialog open={AddForm} onClose={handleCloseAddForm} fullWidth maxWidth='xs'>
                     <DialogContent>
-                        <Typography variant="h5" sx={{marginBottom:'1em'}} fontWeight={600}>Edit Admin</Typography>
+                        <Typography variant="h5" sx={{marginBottom:'1em'}} fontWeight={600}>Edit Pegawai</Typography>
                         <form onSubmit={handleSubmit(onSubmit)}>
                             {
                                 error != '' ?

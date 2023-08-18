@@ -124,7 +124,7 @@ export default function keuangan({produk, stat, options}){
             withCredentials: true
         }).then(async (r)=>{
             handleCloseAddForm();
-            await axios.post('/api/admin/transaksi/',data,{
+            await axios.post('/api/admin/transaksi',data,{
                 headers: { Authorization: `Bearer `+token},
                 withCredentials: true
             }).then((r)=>{
@@ -217,7 +217,7 @@ export default function keuangan({produk, stat, options}){
                     <Typography variant="h6">
                         Total
                     </Typography>
-                    Rp.{ formatCurrency(Number(stat.pengeluaran.total) - Number(stat.penjualan.total) )}
+                    Rp.{ formatCurrency( Number(stat.penjualan.total) - Number(stat.pengeluaran.total) )}
                 </Card>
             </Box>
             

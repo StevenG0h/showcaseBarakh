@@ -115,7 +115,7 @@ export default function product({produk, options}){
           usaha_id:'',
           product_id:''
         },
-        resolver: yupResolver(schemaAddSalesTransaction)
+        resolvAuthorizationer: yupResolver(schemaAddSalesTransaction)
       })
     
       const onSubmit = async (data) => {
@@ -298,9 +298,9 @@ export default function product({produk, options}){
             Unit Usaha:
         </Typography>
         <Button color="success" variant={activeLink === '*' ? 'contained' : 'outlined'} sx={{borderRadius:'5em'}} onClick={()=>{handleChangeFilter('*')}}>Semua</Button>
-        <Button color="success" variant={activeLink === 'BELUMTERVERIFIKASI' ? 'contained' : 'outlined'} sx={{borderRadius:'5em'}} onClick={()=>{handleChangeFilter('BELUMTERVERIFIKASI')}}>Belum Terverifikasi</Button>
-        <Button color="success" variant={activeLink === 'TERVERIFIKASI' ? 'contained' : 'outlined'} sx={{borderRadius:'5em'}} onClick={()=>{handleChangeFilter('TERVERIFIKASI')}}>Terverifikasi</Button>
-        <Button color="success" variant={activeLink === 'PENGIRIMAN' ? 'contained' : 'outlined'} sx={{borderRadius:'5em'}} onClick={()=>{handleChangeFilter('PENGIRIMAN')}}>Pengiriman</Button>
+        <Button color={"error"} variant={activeLink === 'BELUMTERVERIFIKASI' ? 'contained' : 'outlined'} sx={{borderRadius:'5em'}} onClick={()=>{handleChangeFilter('BELUMTERVERIFIKASI')}}>Belum Terverifikasi</Button>
+        <Button color="info" variant={activeLink === 'TERVERIFIKASI' ? 'contained' : 'outlined'} sx={{borderRadius:'5em'}} onClick={()=>{handleChangeFilter('TERVERIFIKASI')}}>Terverifikasi</Button>
+        <Button color="warning" variant={activeLink === 'PENGIRIMAN' ? 'contained' : 'outlined'} sx={{borderRadius:'5em'}} onClick={()=>{handleChangeFilter('PENGIRIMAN')}}>Pengiriman</Button>
         <Button color="success" variant={activeLink === 'SELESAI' ? 'contained' : 'outlined'} sx={{borderRadius:'5em'}} onClick={()=>{handleChangeFilter('SELESAI')}}>Selesai</Button>
     </Box>
                 {/* <Typography variant="h3" fontWeight={400}>{title}</Typography>
@@ -363,7 +363,7 @@ export default function product({produk, options}){
                                     }
                                 </Select> */}
                             <FormControl sx={{width:'100%', marginY:'0.5em'}}>
-                                <RHFTextField label={'Jumlah Beli'} control={salesTransactionControl} name={'productCount'}></RHFTextField>
+                                <RHFTextField type="number" label={'Jumlah Beli'} control={salesTransactionControl} name={'productCount'}></RHFTextField>
                                 <Button sx={{witdh:'100%', marginTop:'1em'}} type="submit" variant="contained" color="success">Tambah Transaksi</Button>
                             </FormControl>
                         </form>
@@ -424,8 +424,8 @@ export default function product({produk, options}){
                         <form onSubmit={handleSubmit(onSubmit)}>
                             <FormControl sx={{width:'100%'}}>
                                 <input type="hidden" name="id"></input>
-                                <RHFTextField control={control} label={'Jumlah Beli'} name={'productCount'} />
-                                <Button type={'submit'}>Simpan Perubahan</Button>
+                                <RHFTextField type="number" control={control} label={'Jumlah Beli'} name={'productCount'} />
+                                <Button variant="contained" color="success" type={'submit'} sx={{marginTop: '0.5em'}}>Simpan Perubahan</Button>
                             </FormControl>
                         </form>
                     </DialogContent>

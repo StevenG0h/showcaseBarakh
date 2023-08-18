@@ -143,7 +143,7 @@ export default function admin({data}){
                 headers: { Authorization: `Bearer `+token},
                 withCredentials: true
             }).then(async (r)=>{
-                let unitUsaha = await axios.post('/api/admin/unit-usaha/',data,{
+                let unitUsaha = await axios.post('/api/admin/unit-usaha',data,{
                     headers: { Authorization: `Bearer `+token,'Content-Type': 'multipart/form-data'},
                     withCredentials: true
                 }).then((r)=>{
@@ -260,8 +260,8 @@ export default function admin({data}){
     //utils
 
     let TABLEHEAD = [
-        {value: 'No',align: 'left'},
         // {value: 'Dibuat pada',align: 'left'},
+        {value: 'Urutan',align: 'left'},
         {value: 'Nama unit usaha',align: 'left'},
         {value: 'Deskripsi',align: 'left'},
         {value: 'Jumlah Produk',align: 'left'},
@@ -304,9 +304,15 @@ export default function admin({data}){
                             <FormControl sx={{width:'100%', marginY:'0.5em'}}>
                                 <RHFTextField hiddenLabel={false} label={'Deskripsi Unit Usaha'} name={"usahaDesc"} control={control}></RHFTextField>
                             </FormControl>
+                            {
+                                editMode == true ? (
+                                    <FormControl sx={{width:'100%', marginY:'0.5em'}}>
+                                        <RHFTextField type={'number'} hiddenLabel={false} label={'Urutan'} name={"orders"} control={control}></RHFTextField>
+                                    </FormControl>
+                                ): ''
+                            }
                             <FormControl sx={{width:'100%', marginY:'0.5em'}}>
-                                <RHFDnd control={control} name={'usahaImage'} files={process.env.NEXT_PUBLIC_BACKEND_URL+'/storage/unitUsaha/'+getValues('usahaImage')}>
-                                    
+                                <RHFDnd control={control} name={'usahaImage'} files={process.env.NEXT_PUBLIC_BACKEND_URL+'/storage/unitUsaha/'+getValues('usahaImage')}>            
                                 </RHFDnd>
                             </FormControl>
                             {

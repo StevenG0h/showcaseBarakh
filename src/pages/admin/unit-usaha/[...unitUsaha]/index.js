@@ -144,7 +144,7 @@ export default function product({unitUsaha,product}){
                 withCredentials: true
             }).then(async (r)=>{
                 handleCloseAddForm()
-                await axios.post('/api/admin/produk/',data,{
+                await axios.post('/api/admin/produk',data,{
                     headers: { Authorization: `Bearer `+token,
                     'Content-Type': 'multipart/form-data'
                     },  
