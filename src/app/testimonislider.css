@@ -184,7 +184,10 @@
 
 @media screen and (max-width: 768px){
     .container{
-        margin-bottom: 6em;
+        margin-bottom: 2em;
+        background-size: 70%, 75% ; 
+        background-repeat: no-repeat, no-repeat;
+        background-position: bottom 25em right 24em, bottom 20em right -17em;
     }
     .containerTest{
         width: 90%;
@@ -278,7 +281,10 @@
 
 @media screen and (max-width: 480px) {
     .container{
-        margin-bottom: 5em;
+        margin-bottom: 0;   
+        background-size: 80%, 80% ; 
+        background-repeat: no-repeat, no-repeat;
+        background-position: bottom 25em right 12em, bottom 18em right -11em;  
     }
 
     .containerTest{
@@ -288,6 +294,7 @@
 
     .titleTest{
         font-size: 1.6em;
+        margin: 0;
     }
     
     .slick-arrow {

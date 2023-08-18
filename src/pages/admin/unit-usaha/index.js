@@ -287,6 +287,7 @@ export default function admin({data}){
                         <Typography variant="h5" sx={{marginBottom:'1em'}} fontWeight={600}>{
                             editMode == false ? 'Tambah' : 'Edit'
                         } Unit Usaha</Typography>
+                    
                         <form onSubmit={handleSubmit(onSubmit)}>
                             {
                                 error != '' ?

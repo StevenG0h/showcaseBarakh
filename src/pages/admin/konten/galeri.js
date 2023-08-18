@@ -98,6 +98,8 @@ export default function galeri({data}){
       })
     
       const onSubmit = async (data) => {
+        setLoading(true)
+        console.log(data)
         if(editMode == false){
             await axios.get('/sanctum/csrf-cookie',{
                 headers: { Authorization: `Bearer `+token},
@@ -135,9 +137,8 @@ export default function galeri({data}){
             })
             
         }
-
         router.replace(router.asPath);
-        handleCloseAddForm()
+        setLoading(false)
       }
       
       //states
@@ -173,7 +174,8 @@ export default function galeri({data}){
         setValue('id','');
         setValue('galeriTitle','');
         setValue('galeriDate','');
-        setImage([]);
+        setImage('path');
+        setShowImage('')
     }
     
     let handleOpenEditForm = (data)=>{

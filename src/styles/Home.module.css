@@ -13,6 +13,7 @@
 .hero{
     display: flex;
     width: 75%;
+    justify-content: center;
 }
 
 .content{
@@ -27,8 +28,7 @@
 
 .titleHero{
     font-size: 33px;
-    font-weight: 800;
-    font-style: normal;
+    font-weight: 700;
     line-height: 48px;
     letter-spacing: 0.07em;
     margin: 0;
@@ -73,6 +73,11 @@
 @media screen and (max-width: 935px){
     .container{
         padding:  0;
+        background-image: url('../../public/assets/images/PropertiDark.png'),
+        url('../../public/assets/images/PropertiDark.png');
+    background-size: 70%, 70% ; 
+    background-repeat: no-repeat, no-repeat;
+    background-position: top 30em right 40em, bottom 39em right -17em;
     }
     
     .hero {
@@ -127,15 +132,17 @@
         display: flex;
         justify-content: center;
         width: 100%;
-        margin: 3em 0em;
+        padding: 2em 0em;
+        background-size: 100%, 100% ; 
+        background-repeat: no-repeat, no-repeat;
+        background-position: top 12em right 13em, bottom 16em right -7em;
     }
 
     .hero {
         display: flex;
         flex-direction: column-reverse;
         margin: 0px 0px;
-        row-gap: 2em;
-        padding: 0;
+        row-gap: 1em;
         width: 90%;
     }
 
@@ -143,7 +150,7 @@
         width:100%;
         color:#fff;
         padding: 0px;
-        gap: 1.2em;
+        gap: 1em;
     }
 
     .titleHero{
