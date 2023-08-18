@@ -135,6 +135,7 @@ export default function product({produk, options}){
                 withCredentials:true
             });
             setProducts(unitUsaha?.data?.data)
+            setProductsLink(unitUsaha?.data.data.links)
         }else{
             let unitUsaha = await axios.get('/api/admin/produk/', {
                 headers:{

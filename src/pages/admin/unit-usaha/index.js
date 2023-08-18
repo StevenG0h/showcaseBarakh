@@ -1,7 +1,7 @@
 import CustomTableHead from "../../../components/table/CustomTableHead"
 import AdminLayout from "../../../layouts/adminLayout/AdminLayout"
 import UsahaTableRow from "../../../sections/UnitUsaha/UsahaTableRow";
-import { Box, Button, Card, Dialog, DialogContent, DialogTitle, FormControl, Input, MenuItem, MenuList, Select, Table, TableBody, TableContainer, TextField, Typography } from "@mui/material"
+import {Alert, Box, Button, Card, Dialog, DialogContent, DialogTitle, FormControl, Input, MenuItem, MenuList, Select, Table, TableBody, TableContainer, TextField, Typography } from "@mui/material"
 import axios from "../../../utils/axios";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -143,7 +143,7 @@ export default function admin({data}){
                 headers: { Authorization: `Bearer `+token},
                 withCredentials: true
             }).then(async (r)=>{
-                let unitUsaha = await axios.post('/api/admin/unit-usaha/',data,{
+                let unitUsaha = await axios.post('/api/admin/unit-usaha',data,{
                     headers: { Authorization: `Bearer `+token,'Content-Type': 'multipart/form-data'},
                     withCredentials: true
                 }).then((r)=>{
@@ -204,6 +204,7 @@ export default function admin({data}){
                 withCredentials: true
             }).then((r)=>{
                 console.log(r.data)
+                router.replace(router.asPath)
             }).catch((e)=>{
                 console.log(e);
             })
@@ -259,8 +260,8 @@ export default function admin({data}){
     //utils
 
     let TABLEHEAD = [
-        {value: 'No',align: 'left'},
         // {value: 'Dibuat pada',align: 'left'},
+        {value: 'Urutan',align: 'left'},
         {value: 'Nama unit usaha',align: 'left'},
         {value: 'Deskripsi',align: 'left'},
         {value: 'Jumlah Produk',align: 'left'},
@@ -283,7 +284,10 @@ export default function admin({data}){
                 </Dialog>
                 <Dialog open={AddForm} onClose={handleCloseAddForm} fullWidth maxWidth='xs'>
                     <DialogContent>
-                        <Typography variant="h5" sx={{marginBottom:'1em'}} fontWeight={600}>{editMode? 'Edit Unit Usaha' : 'Tambah Unit Usaha'}</Typography>
+                        <Typography variant="h5" sx={{marginBottom:'1em'}} fontWeight={600}>{
+                            editMode == false ? 'Tambah' : 'Edit'
+                        } Unit Usaha</Typography>
+                    
                         <form onSubmit={handleSubmit(onSubmit)}>
                             {
                                 error != '' ?
@@ -301,6 +305,13 @@ export default function admin({data}){
                             <FormControl sx={{width:'100%', marginY:'0.5em'}}>
                                 <RHFTextField hiddenLabel={false} label={'Deskripsi Unit Usaha'} name={"usahaDesc"} control={control}></RHFTextField>
                             </FormControl>
+                            {
+                                editMode == true ? (
+                                    <FormControl sx={{width:'100%', marginY:'0.5em'}}>
+                                        <RHFTextField type={'number'} hiddenLabel={false} label={'Urutan'} name={"orders"} control={control}></RHFTextField>
+                                    </FormControl>
+                                ): ''
+                            }
                             <FormControl sx={{width:'100%', marginY:'0.5em'}}>
                                 <RHFDnd control={control} name={'usahaImage'} files={process.env.NEXT_PUBLIC_BACKEND_URL+'/storage/unitUsaha/'+getValues('usahaImage')}>            
                                 </RHFDnd>
@@ -346,7 +357,7 @@ export default function admin({data}){
                             <Typography>Hehe</Typography>
                         </MenuItem>
                     </Select> */}
-                    <Button onClick={handleOpenAddForm} color="success" variant="contained" startIcon="">
+                    <Button onClick={handleOpenAddForm} color="success" variant="contained" startIcon="" sx={{marginY:'1em'}}>
                         Tambah Unit Usaha
                     </Button>
                 </Box>

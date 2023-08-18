@@ -8,6 +8,7 @@ import { Poppins } from 'next/font/google'
 import axios from "../../utils/axios";
 import { setCookie, getCookie } from "cookies-next";
 import  RatingModal  from "../../components/Rating/rating_modal";
+import  RatingLabel  from "../../components/Rating/rating_label";
 import {useState} from "react";
 
 const poppins = Poppins({
@@ -18,7 +19,6 @@ const poppins = Poppins({
 
 export async function getServerSideProps({query}){
     let product = await axios.get(process.env.NEXT_PUBLIC_BACKEND_URL+'/api/produk/'+query.productId);
-    console.log(product.data)
     return{
         props:{
             data:product.data
@@ -47,7 +47,6 @@ const detailProduct = ({data}) => {
                 cookieDatas.push({productId: data.id, item: 1, productData: data});
                 setCookie('barakh-cart-cookie',cookieDatas);
             }
-            console.log(cookieDatas);
         }
     }
 
@@ -73,9 +72,10 @@ const detailProduct = ({data}) => {
                             </div>
                             <div className={style.fieldDetailProduct}>
                                 <p className={style.titleProduct}>{data.productName}</p>
-                                <p className={style.stockProduct}>Stock : <span className={style.stockAmount}>{data.productStock} Pcs</span></p>
-                                <p className={style.priceProduct}>Harga : <span className={style.priceAmount}>{formatCurrency(Number(data.productPrice))}</span></p>
-                                <p className={style.unitUsaha}>Unit Usaha : <span className={style.nameUnitUsaha}>{data.unit_usaha.usahaName}</span></p>
+                                 <RatingLabel value={data.rating} />
+                                <p className={style.stockProduct}>Stock: <span className={style.stockAmount}>{data.productStock} Pcs</span></p>
+                                <p className={style.priceProduct}>Harga: <span className={style.priceAmount}>{formatCurrency(Number(data.productPrice))}</span></p>
+                                <p className={style.unitUsaha}>Unit Usaha: <span className={style.nameUnitUsaha}>{data.unit_usaha.usahaName}</span></p>
                                 {/* <p className={style.weightProduct}>Berat : <span className={style.weightAmount}>0.1 Kg</span></p> */}
                                 <p className={style.descriptionProduct}>Deskripsi : <span className={style.description}><br />{data.productDesc}</span></p>
                                 <div className={style.buttonContainer}>    

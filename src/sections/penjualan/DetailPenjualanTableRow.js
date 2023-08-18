@@ -4,6 +4,7 @@ import Details from "@mui/icons-material/Details";
 import {Button, IconButton, TableCell, TableRow} from "@mui/material"
 import { useState } from "react";
 import { ConfirmDialog } from "../../components/dialog/ConfirmDialog";
+import { formatCurrency } from "../../helper/currency";
 
 export default function DetailPenjualanTableRow({row, num, onShowImage, onDelete, onEdit, onDetail}){
     let {productPrice, product, productCount} = row;
@@ -38,13 +39,13 @@ export default function DetailPenjualanTableRow({row, num, onShowImage, onDelete
                     {product.productName}
                 </TableCell>
                 <TableCell>
-                    {productPrice}
+                    Rp.{formatCurrency(productPrice)}
                 </TableCell>
                 <TableCell>
                     {productCount}
                 </TableCell>
                 <TableCell>
-                    {Number(productCount) * Number(productPrice)}
+                    Rp.{formatCurrency(Number(productCount) * Number(productPrice))}
                 </TableCell>
                 <TableCell align="center">
                     <IconButton onClick={onEdit} sx={{marginX:'0.5em'}} variant="contained" color="warning" >

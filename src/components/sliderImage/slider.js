@@ -8,7 +8,7 @@ import style from "./slider.module.css"
 import Image from "next/image";
 import ProductImage from "../../../public/assets/images/Free_Toiletry.png";
 
-const SliderImages = () => {
+const SliderImages = ({produk}) => {
     const settings = {
         arrows: false,
         dots: true,
@@ -25,15 +25,16 @@ const SliderImages = () => {
     return (
         <div className="slider_image">
             <Slider {...settings}>
-                <div className={style.wrap}>
-                <Image className={style.imageProduct} src={ProductImage} alt="ProductImage"/>
-                </div>
-                <div className={style.wrap}> 
-                <Image className={style.imageProduct} src={ProductImage} alt="ProductImage"/>
-                </div>
-                <div className={style.wrap}>
-                <Image className={style.imageProduct} src={ProductImage} alt="ProductImage"/>
-                </div>
+                {
+                    produk.map((data)=>{
+                        console.log(data.product_images)
+                        return (
+                            <div key={data.id} className={style.wrap}>
+                                <img className={style.imageProduct} src={process.env.NEXT_PUBLIC_BACKEND_URL+"/storage/product/"+data.product_images[0].path} alt="ProductImage"/>
+                            </div>
+                        )
+                    })
+                }
             </Slider>
         </div>
     );
