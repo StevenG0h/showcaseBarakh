@@ -33,7 +33,7 @@
     font-size: 2.2em;
     margin: 0px;
     margin-bottom:60px ;
-    letter-spacing: 0.1rem;
+    letter-spacing: 0.02rem;
 }
 
 .wrapDescSekilas{
@@ -52,6 +52,7 @@
     font-size: 1.1em;
     line-height: 180%;
     margin: 0px;
+    text-align: justify;
 }
 
 .fieldProfileUmkm{
@@ -265,6 +266,7 @@
         margin: 0 0 5em 0;
     }
 
+
     .titleInfo{
         font-size: 1.3em;
     }
@@ -318,7 +320,6 @@
     .containerProfile{
         width: 90%;
         margin: 2em 0;
-        
     }
 
     .fieldSekilas{
@@ -333,7 +334,8 @@
 
     .sekilas{
         font-size: 1.6em;
-        margin: 1em 0px;
+        margin: 0 0 1em 0;
+        /* letter-spacing: 0.02em; */
     }
 
     .wrapDescSekilas{
@@ -345,12 +347,12 @@
     }
 
     .descriptions{
-        font-size: 0.8em;
+        font-size: 0.9em;
         padding: 0.8em;
     }
 
     .fieldProfileUmkm{
-        margin: 1em 0 ;
+        margin: 0 0 1em 0 ;
     }
 
     .profileUmkm{
@@ -359,9 +361,15 @@
         margin-top: 0px;
     }
 
+    .titleUnit{
+        font-size: 0.8em;
+        letter-spacing: 0.02em;
+        line-height: 1.6em;
+    }
+
     .underline{
         width: 100%;
-        border: 3px solid #94B60F;
+        border: 2px solid #94B60F;
     }
 
     .containerInformation{
@@ -369,7 +377,7 @@
     }
 
     .wrapInformation{
-        margin: 30px 0px;
+        margin-top: 1.5em;
     }
 
     .field1{
@@ -391,7 +399,7 @@
     }
 
     .titleInfo{
-        font-size: 1.2em;
+        font-size: 1em;
     }
 
     .description{
@@ -415,10 +423,10 @@
     }
 
     .descriptionVisi{
-        font-size: 0.8em;
+        font-size: 0.9em;
     }
 
     .list{
-        font-size: 0.8em;
+        font-size: 0.9em;
     }
 }

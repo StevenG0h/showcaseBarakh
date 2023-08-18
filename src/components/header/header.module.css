@@ -114,8 +114,9 @@
     position: relative;
     text-decoration: none;
     color: #fff;
-    font-weight: 400;
+    font-weight: 500;
     font-size: 15px;
+    letter-spacing: 0.01em;
 }
 
 /* .navitem::before{
@@ -460,20 +461,25 @@
     }
 }
 
-
-
-
-
 @media screen and (max-width: 480px) {
     .header {
-        padding: 1em 0;
+        padding: 0;
     }
 
     .container {
         width: 90%;
+        height: auto;
     }
 
     .navigasiButton {
         display: block;
+    }
+
+    .navbarbrand{
+        padding: 15px;
+    }
+
+    .barakhlogo { 
+        width: 6em;
     }
 }

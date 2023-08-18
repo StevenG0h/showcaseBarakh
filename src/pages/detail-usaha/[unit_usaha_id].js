@@ -1,6 +1,6 @@
 import dynamic from "next/dynamic"
 import FlipBook from "../../components/flipbook"
-
+import style from "./detailUsaha.module.css"
 import Header from "../../components/header/header";
 import Footer from "../../components/footer/footer";
 import { Container, ImageList, ImageListItem, ImageListItemBar, Typography } from "@mui/material";
@@ -29,8 +29,9 @@ export default function detailUsaha({data}){
       <main className={poppinsFont.className} style={{backgroundColor:'white'}}>
         <Header>
         </Header>
-          <Container maxWidth={'md'} sx={{paddingY:'5em'}}>   
-            <Typography variant="h4" fontWeight="600" sx={{textAlign:'left',marginBottom:'1em'}}>Unit Usaha: {
+        <Container className={style.container}>
+          <div className={style.containerDetailUsaha}>   
+            <Typography className={style.namaUsaha} fontWeight="600" sx={{textAlign:'left'}} >Unit Usaha: {
               (
                 <span style={{color:'#94B60F'}}>{data.unit_usaha.usahaName}</span>
               )
@@ -44,7 +45,7 @@ export default function detailUsaha({data}){
               }
             </FlipBook>
 
-            <Typography sx={{marginY:'1em'}} >
+            <Typography sx={{marginY:'1em'}} className={style.profilUsaha} >
               
                 {data.profil_usaha_desc}
               
@@ -55,12 +56,12 @@ export default function detailUsaha({data}){
                   console.log(product)
                   return (
                     <>
-                    <Typography sx={{marginY:'1em'}} fontWeight="600">
+                    <Typography className={style.namaProduk} fontWeight="600">
             
                     {++index}.{product.productName}
             
                     </Typography>
-                    <img style={{width:'100%', aspectRatio:'16/9', objectFit:'cover', borderRadius:'1em'}} src={process.env.NEXT_PUBLIC_BACKEND_URL+'/storage/product/'+product.product_images[0].path}></img>
+                    <img className={style.imageProduk} src={process.env.NEXT_PUBLIC_BACKEND_URL+'/storage/product/'+product.product_images[0].path}></img>
                     </>
 
                   )
@@ -80,6 +81,7 @@ export default function detailUsaha({data}){
                 })
               }
             </ImageList> */}
+          </div>
           </Container>
         <Footer></Footer>
       </main>

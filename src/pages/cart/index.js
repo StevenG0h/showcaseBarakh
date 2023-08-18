@@ -340,8 +340,8 @@ const Cart = ({ cookie, option, totalPayment, products }) => {
                         </div>
                     ) :
                     <Container>
-                        <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-                            <img style={{ width: '45%', margin: 'auto', marginTop: '-8em' }} src={'http://localhost:3000/assets/image/Business, Startup, workflow, error _ exhaustion, exhausted, work, laptop, computer, support 1.png'}></img>
+                        <Box sx={{ display: 'flex', flexDirection: 'column', marginBottom: '2em' }}>
+                            <img className={style.imageProdukKosong} src={'http://localhost:3000/assets/image/Business, Startup, workflow, error _ exhaustion, exhausted, work, laptop, computer, support 1.png'}></img>
                             <Typography textAlign={'center'}>
                                 Yuk isi dengan produk produk unggulan!
                             </Typography>
