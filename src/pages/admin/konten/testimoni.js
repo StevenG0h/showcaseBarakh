@@ -97,18 +97,19 @@ export default function testimoni({data}){
       })
     
       const onSubmit = async (data) => {
-        
+        setLoading(true);
         console.log(data)
         if(editMode == false){
             await axios.get('/sanctum/csrf-cookie',{
                 headers: { Authorization: `Bearer `+token},
                 withCredentials: true
             }).then(async (r)=>{
-                await axios.post('/api/admin/testimoni/',data,{
+                await axios.post('/api/admin/testimoni',data,{
                     headers: { Authorization: `Bearer `+token, "Content-Type":'multipart/form-data'},
                     withCredentials: true,
                 }).then((r)=>{
                     console.log(r.data)
+                    
                     router.replace(router.asPath);
                     handleCloseAddForm()
                 }).catch((e)=>{
@@ -137,6 +138,8 @@ export default function testimoni({data}){
             })
             
         }
+        router.replace(router.asPath);
+        setLoading(false)
       }
       
       //states
@@ -226,12 +229,9 @@ export default function testimoni({data}){
         <>
             <ConfirmDialog open={deleteId != ''} onCancel={()=>{setDelete('')}} onConfirm={()=>{handleDelete(deleteId)}} msg={'Anda yakin ingin menghapus?'}></ConfirmDialog>
             <AdminLayout handleLoading={loading}>
-                <Dialog open={showImage != ''} onClose={handleCloseShowImage} fullWidth maxWidth={'md'}>
-                        <img height={"100%"} style={{objectFit:'contain'}} src={showImage}></img>
-                </Dialog>
                 <Dialog open={AddForm} sx={{overflow:'hidden'}} onClose={handleCloseAddForm} fullWidth maxWidth='xs'>
                     <DialogContent>
-                        <Typography variant="h5" sx={{marginBottom:'1em'}} fontWeight={600}>Tambah Profil</Typography>
+                        <Typography variant="h5" sx={{marginBottom:'1em'}} fontWeight={600}>{editMode? 'Edit Testimoni' : 'Tambah Testimoni'}</Typography>
                         <form onSubmit={handleSubmit(onSubmit)}>
                             <FormControl sx={{width:'100%', marginY:'0.5em'}}>
                                 <RHFTextField  hiddenLabel={false} label={'Nama Pelanggan'} name={"clientName"} control={control}></RHFTextField>

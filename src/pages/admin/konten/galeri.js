@@ -24,8 +24,8 @@ export async function getServerSideProps({req,res}){
     if(token == undefined){
         return {
             redirect: {
-              permanent: false,
-              destination: "/auth",
+                permanent: false,
+                destination: "/auth",
             },
             props:{},
           };
@@ -103,10 +103,12 @@ export default function galeri({data}){
                 headers: { Authorization: `Bearer `+token},
                 withCredentials: true
             }).then(async (r)=>{
-                await axios.post('/api/admin/galeri/',data,{
+                console.log(data)
+                await axios.post('/api/admin/galeri',data,{
                     headers: { Authorization: `Bearer `+token, "Content-Type":'multipart/form-data'},
                     withCredentials: true,
                 }).then((r)=>{
+                    handleCloseAddForm();
                     console.log(r.data)
                 }).catch((e)=>{
                     console.log(e);
@@ -119,10 +121,11 @@ export default function galeri({data}){
                 headers: { Authorization: `Bearer `+token},
                 withCredentials: true
             }).then(async (r)=>{
-                await await axios.post('/api/admin/galeri/edit/'+data.id,data,{
+                await axios.post('/api/admin/galeri/edit/'+data.id,data,{
                     headers: { Authorization: `Bearer `+token, "Content-Type":'multipart/form-data'},
                     withCredentials: true,
                 }).then((r)=>{
+                handleCloseAddForm();
                     console.log(r.data)
                 }).catch((e)=>{
                     console.log(e);
@@ -231,7 +234,7 @@ export default function galeri({data}){
                 </Dialog>
                 <Dialog open={AddForm} sx={{overflow:'hidden'}} onClose={handleCloseAddForm} fullWidth maxWidth='xs'>
                     <DialogContent>
-                        <Typography variant="h5" sx={{marginBottom:'1em'}} fontWeight={600}>Tambah Profil</Typography>
+                        <Typography variant="h5" sx={{marginBottom:'1em'}} fontWeight={600}>{editMode? 'Edit Galeri' : 'Tambah Galeri'}</Typography>
                         <form onSubmit={handleSubmit(onSubmit)}>
                             <FormControl sx={{width:'100%', marginY:'0.5em'}}>
                                 <RHFTextField hiddenLabel={false} label={'Judul'} name={"galeriTitle"} control={control}></RHFTextField>
@@ -244,7 +247,7 @@ export default function galeri({data}){
                                     <RHFDnd name="path" files={process.env.NEXT_PUBLIC_BACKEND_URL+'/storage/galeri/'+getValues('path')} control={control}></RHFDnd>
                                 </Box>
                             </FormControl>
-                            <Button variant="contained" color="success" sx={{width:'100%'}} type="submit">{editMode ? 'Simpan Perubahan' : 'Tambah Unit Usaha'}</Button>
+                            <Button variant="contained" color="success" sx={{width:'100%'}} type="submit">{editMode ? 'Simpan Perubahan' : 'Tambah Galeri'}</Button>
                         </form>
                     </DialogContent>
                 </Dialog>

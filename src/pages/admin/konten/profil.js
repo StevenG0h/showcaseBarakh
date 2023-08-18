@@ -137,6 +137,7 @@ export default function profil({unitUsaha,option}){
     
       const onSubmit = async (data) => {
         let token = getCookie('token');
+        setLoading(true);
         data.deletedImage = deletedImage;
         if(data.id == ''){
             data.profilUsahaImageFiltered = data.profilUsahaImages.map((image)=>{
@@ -151,7 +152,7 @@ export default function profil({unitUsaha,option}){
                 withCredentials: true
             }).then(async (r)=>{
                 console.log(data);
-                await axios.post('/api/admin/profil/',data,{
+                await axios.post('/api/admin/profil',data,{
                     headers: { Authorization: `Bearer `+token, "Content-Type":'multipart/form-data'},
                     withCredentials: true,
                 }).then((r)=>{
@@ -186,7 +187,8 @@ export default function profil({unitUsaha,option}){
             
         }
         handleCloseAddForm()
-        // router.reload();
+        router.replace(router.asPath)
+        setLoading(false)
       }
       
       //states

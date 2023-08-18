@@ -118,8 +118,8 @@ export default function product({produk, options}){
         }
         router.replace(router.asPath);
         setLoading(false)
-      }
-      
+        }
+        
       //states
     const [AddForm, setAddForm] = useState(false);
     const [editMode, setEditMode] = useState(false);

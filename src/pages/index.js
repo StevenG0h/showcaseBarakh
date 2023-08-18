@@ -50,12 +50,11 @@ export default function Home({data}) {
         <div className={style.hero}>
           <div className={style.content}>
             <p className={style.titleHero}>Ciptakan Produk Lokal <br /><span style={{ color: '#94B60F' }}>Ramah Lingkungan</span></p>
-            <p className={style.description}>Al-Mubarok merupakan unit usaha yang dimiliki oleh pesantren Ibnu Al-Mubarkh, yang berdiri sejak 2020. Awal mula terbentuknya Unit Usaha ini adalah...</p>
             <Button onClick={
               ()=>{
                 router.push('/katalog')
               }
-            } sx={{width: '30%', padding: '0.8em', backgroundColor: '#94B60F', color: '#fff'}} className={style.button} >Selengkapnya</Button>
+            } sx={{width: 'fit-content', padding: '0.8em', marginTop:'5em',marginLeft:'auto',marginRight:'0', backgroundColor: '#94B60F', color: '#fff'}} className={style.button} >Belanja Sekarang!</Button>
           </div>
           <div className={style.contentImage}>
             <SliderImages produk={produk} />
