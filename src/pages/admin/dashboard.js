@@ -18,14 +18,14 @@ function formatDashboardData(dashboard){
             label: 'Penjualan',
             data:[],
             backgroundColor:[
-                'rgba(75, 255, 75, 0.5)',
+                'rgba(148,182,15)',
             ]
         },
             {
             label: 'Pengeluaran',
             data:[],
             backgroundColor:[
-                'rgba(75, 100, 255, 0.5)',
+                'rgba(9,27,28)',
             ]
         }
         ]
@@ -37,7 +37,7 @@ function formatDashboardData(dashboard){
                 label: 'Penjualan',
                 data:[],
                 backgroundColor:[
-                    'rgba(99, 255, 200, 0.5)',
+                    'rgba(148,182,15)',
                 ]
             }
         ]
@@ -50,7 +50,7 @@ function formatDashboardData(dashboard){
                 label: 'Terlaris',
                 data:[],
                 backgroundColor:[
-                    'rgba(200, 99, 255, 0.5)',
+                    'rgba(9,27,28)',
                 ]
             }
         ]
