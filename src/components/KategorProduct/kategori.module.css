@@ -128,7 +128,7 @@
 
 @media screen and (max-width: 480px) {
     .container{
-        border-radius: 4em 4em 0  0;
+        border-radius: 3.5em 3.5em 0  0;
         padding: 0 0 2.3em 0;
     }
 
@@ -159,11 +159,12 @@
     
     .katalogWrapper{
         width: 100%;
+        border-radius: 2em;
     }
 
     .imageKatalog{
-        border-top-left-radius: 40px;
-        border-top-right-radius: 40px;
+        border-top-left-radius: 2em;
+        border-top-right-radius: 2em;
         margin-bottom: 13px;
         width:100%
     }
@@ -178,6 +179,6 @@
         margin: 0;
         text-align: center;
         margin: 0px 35px 15px 35px;
-        line-height: 20px;
+        line-height: 2em;
     }
 }
