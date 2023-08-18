@@ -19,17 +19,17 @@ const Footer = () => {
                     <div className={style.columns}>
                         <div className={style.column}>
                             <div className={style.columnLogo}>
+                                {/* <p className={style.title}>Didukung Oleh</p> */}
                                 <div className={style.rowsLogo}>
                                     <Image className={style.logoBrand} src={Pertamnina} alt='LogoAlbarakh' />
                                     <Image className={style.logoBrand} src={PCR} alt='LogoAlbarakh' />
                                     <Image className={style.logoBrand} src={Yayasan} alt='LogoAlbarakh' />
                                 </div>
-                            <p className={style.copyright}>Copyright @2023 Al-Mubarok | Politeknik Caltex Riau</p>
                             </div>
                         </div>
                         <div className={style.column}>
                             <div className={style.sosmed}>
-                                <p className={style.title}>Ikuti Kami:</p>
+                                <p className={style.title}>Ikuti Kami</p>
                                 <div className={style.sosmedIcon}>
                                     <Link href="" className={style.facebook_icon}><FontAwesomeIcon icon={faFacebookF} className={style.icon} /></Link>
                                     <Link href="" className={style.instagram_icon}><FontAwesomeIcon icon={faInstagram} className={style.icon} /></Link>
@@ -39,6 +39,9 @@ const Footer = () => {
                         </div>
                     </div>
                 </div>
+                    <div className={style.copyrightContainer}>
+                        <p className={style.copyright}> © Al-Mubarok 2023 | Politeknik Caltex Riau</p>
+                    </div>
             </footer>
         </>
     )

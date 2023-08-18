@@ -32,7 +32,7 @@ const headerMobile = ({ variant, anchor, ...props }) => {
                     sx={{ 
                         "& .MuiPaper-root": {
                             height:'100',
-                            width: '55%', 
+                            width: '65%', 
                             backgroundColor: '#081B1C', 
                             boxShadow: '4px 0px 18px 4px rgba(53, 53, 53, 0.14)'
                         }

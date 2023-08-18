@@ -43,23 +43,12 @@ const Header = () => {
     return (
         <div className={style.header}>
             <div className={style.container}>
-                {/* <IconButton onClick={handleDrawerOpen} onClose={handleDrawerClose}>
-                    <MenuIcon sx={{color: 'white', fontSize: '1.3em'}}/>
-                </IconButton> */}
                 <div className={style.iconBar}>
                     <HeaderMobile anchor='left' className={style.headerMobile}/>
                 </div>
-                {/* <button className={style.navigasiButton}>
-                    <FontAwesomeIcon icon={faBars} className={style.buttonBars} />
-                </button> */}
-                <div className={style.navbarbrand}>
+                <Link className={style.navbarbrand} href="/"> 
                     <Image className={style.barakhlogo} src={ImageBrand} alt="BarakhLogo" />
-                </div>
-                {/* <div onClick={() => setActive(!active)}>
-                    <div
-                        className={active ? style.activeHamburger : style.hamburger}
-                        />
-                </div> */}
+                </Link>
                 <div className={style.navbarList}>
                     <ul className={style.ul}>
                         <li className={style.li}>

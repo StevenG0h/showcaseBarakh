@@ -97,7 +97,7 @@ export default function KatalogCard({ row, isCart=false }) {
                     productDesc
                 }</p>
                 <div className={style.directButton}>
-                    <button onClick={() => { productDetail(id) }} className={style.detil}>Selengkapnya</button>
+                    <button onClick={() => { productDetail(id) }} className={style.detil} >Selengkapnya</button>
                     <button onClick={() => handleChangeStatus(row)} className={style.cart}><FontAwesomeIcon icon={faCartShopping} /></button>
                 </div>
             </div>

@@ -14,7 +14,7 @@ const RatingLabel = ({value}) => {
         <Box sx={{
             '& > legend': { mt: 2 }, display: 'flex', flexDirection: 'row', gap: '0.5em'}}>
                 <Typography style={{fontSize: '0.8em', color: '#94B60F', fontWeight:'600'}} underline="always">{isNaN(res) ? 0 : res}</Typography>
-                <Rating name="read-only" value={res} size="small" precision={0.5} readOnly />
+                <Rating name="read-only" value={res} sx={{fontSize: '1rem'}} precision={0.5} readOnly />
         </Box>
     )
 }
