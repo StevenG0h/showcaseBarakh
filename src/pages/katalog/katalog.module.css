@@ -16,6 +16,7 @@
     width: 75%;
     flex-direction: column;
     margin: 3.2em 0;
+    gap: 1em;
 }
 
 .banner{
@@ -30,7 +31,6 @@
     display: flex;
     justify-content: flex-end;
     align-items: center;
-    margin-bottom: 3em;
 }
 
 .span{
@@ -175,7 +175,6 @@
 
     .banner{
         border-radius: 1em;
-        margin-bottom: 0;
         aspect-ratio: 2/1;
     }
 

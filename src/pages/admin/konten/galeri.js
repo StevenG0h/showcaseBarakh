@@ -137,8 +137,9 @@ export default function galeri({data}){
             })
             
         }
+
         router.replace(router.asPath);
-        setLoading(false)
+        handleCloseAddForm()
       }
       
       //states

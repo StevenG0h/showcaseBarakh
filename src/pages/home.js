@@ -11,7 +11,6 @@ import axios from '../utils/axios'
 import { Button } from '@mui/material'
 import WhatsApp from '../components/Whatsapp/WhatsApp'
 import { setVisitor } from '../helper/dataOptions'
-import Link from 'next/link'
 import { useRouter } from 'next/router'
 
 const poppins = Poppins({
@@ -26,15 +25,7 @@ export async function getServerSideProps(){
   let unitUsaha = await axios.get('/api/unit-usaha');
   let testimoni = await axios.get('/api/testimoni');
   let produk = await axios.get('/api/produk/home');
-  if(process.env.IS_DEVELOPMENT == 'true'){
-    return {
-      redirect: {
-        permanent: false,
-        destination: "/coming-soon",
-      },
-      props:{},
-    };
-  }
+  console.log(testimoni.data.data.data)
   setVisitor()
   return {
     props:{
@@ -77,3 +68,4 @@ export default function Home({data}) {
     </main>
   )
 }
+

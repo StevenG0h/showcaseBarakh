@@ -14,6 +14,7 @@ import {getCookie} from 'cookies-next';
 import  ChevronRight  from "@mui/icons-material/ChevronRight";
 import  ChevronLeft  from "@mui/icons-material/ChevronLeft";
 import { useEffect } from "react";
+import { ConfirmDialog } from "../../../components/dialog/ConfirmDialog";
 
 export async function getServerSideProps({req,res}){
     let token = getCookie('token',{req,res});
@@ -74,6 +75,7 @@ export default function admin({data}){
     //Next router
     const router = useRouter();
     const [editMode, setEditMode] = useState(false);
+    const [deleteUnitUsaha, setDeleteUnitUsaha] = useState('');
 
     //React hook form and YUP validator
     const schema = yup.object().shape({
@@ -81,6 +83,17 @@ export default function admin({data}){
         usahaDesc: yup.string().required('Deskripsi unit usaha tidak boleh kosong'),
         usahaImage: yup.mixed()
         .test("filesize", "Gambar tidak boleh kosong", (value) => {
+            if(editMode == false){
+                if(value.name === undefined){
+                    return false;
+                }
+                return true;
+            }else{
+                return true;
+            }
+          }),
+        unitUsahaLogo: yup.mixed()
+        .test("filesize", "Logo tidak boleh kosong", (value) => {
             if(editMode == false){
                 if(value.name === undefined){
                     return false;
@@ -137,7 +150,6 @@ export default function admin({data}){
         let token = getCookie('token');
         setLoading(true)
         
-        console.log(data)
         if(!editMode){
             await axios.get('/sanctum/csrf-cookie',{
                 headers: { Authorization: `Bearer `+token},
@@ -203,8 +215,8 @@ export default function admin({data}){
                 headers: { Authorization: `Bearer `+token},
                 withCredentials: true
             }).then((r)=>{
-                console.log(r.data)
                 router.replace(router.asPath)
+                setDeleteUnitUsaha('')
             }).catch((e)=>{
                 console.log(e);
             })
@@ -239,6 +251,8 @@ export default function admin({data}){
         setValue('usahaName',data.usahaName);
         setValue('usahaDesc',data.usahaDesc);
         setValue('usahaImage',data.usahaImage)
+        setValue('unitUsahaLogo',data.unitUsahaLogo)
+        setValue('orders',data.orders)
         setUsahaId(data.id);
         setAddForm(true)
     }
@@ -279,6 +293,7 @@ export default function admin({data}){
     return (
         <>
             <AdminLayout handleLoading={loading}>
+                <ConfirmDialog onCancel={()=>setDeleteUnitUsaha('')} msg={'Anda yakin ingin menghapus unit usaha '+deleteUnitUsaha.usahaName+" ?"} title={"Hapus Unit Usaha"} open={deleteUnitUsaha != ''} onConfirm={()=>handleDelete(deleteUnitUsaha.id)}></ConfirmDialog>
                 <Dialog open={showImage != ''} onClose={handleCloseShowImage} fullWidth maxWidth={'md'}>
                         <img height={"100%"} style={{objectFit:'contain'}} src={showImage}></img>
                 </Dialog>
@@ -312,7 +327,17 @@ export default function admin({data}){
                                     </FormControl>
                                 ): ''
                             }
-                            <FormControl sx={{width:'100%', marginY:'0.5em'}}>
+                            <Typography sx={{}}>
+                                Logo Unit Usaha
+                            </Typography>
+                            <FormControl sx={{width:'100%', marginBottom:'0.5em'}}>
+                                <RHFDnd control={control} name={'unitUsahaLogo'} files={process.env.NEXT_PUBLIC_BACKEND_URL+'/storage/unitUsaha/logo/'+getValues('unitUsahaLogo')}>            
+                                </RHFDnd>
+                            </FormControl>
+                            <Typography sx={{ }}>
+                                Gambar Unit Usaha
+                            </Typography>
+                            <FormControl sx={{width:'100%', marginBottom:'0.5em'}}>
                                 <RHFDnd control={control} name={'usahaImage'} files={process.env.NEXT_PUBLIC_BACKEND_URL+'/storage/unitUsaha/'+getValues('usahaImage')}>            
                                 </RHFDnd>
                             </FormControl>
@@ -371,7 +396,7 @@ export default function admin({data}){
                                     unitUsaha?.map((map)=>{
                                         return (
                                             <UsahaTableRow key={map.id} 
-                                            onDelete={() => handleDelete(map.id)} 
+                                            onDelete={() => setDeleteUnitUsaha(map)} 
                                             onEdit={() => handleOpenEditForm(map)} 
                                             onShowImage={()=> handleShowImage(map.usahaImage)}
                                             num={++num} row={map}

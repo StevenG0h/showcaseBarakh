@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import style from './header.module.css';
 import Image from 'next/image';
-import ImageBrand from '../../../public/assets/images/White.svg';
+import ImageBrand from '../../../public/assets/image/logo.png';
 import Link from 'next/link';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -43,12 +43,23 @@ const Header = () => {
     return (
         <div className={style.header}>
             <div className={style.container}>
+                {/* <IconButton onClick={handleDrawerOpen} onClose={handleDrawerClose}>
+                    <MenuIcon sx={{color: 'white', fontSize: '1.3em'}}/>
+                </IconButton> */}
                 <div className={style.iconBar}>
                     <HeaderMobile anchor='left' className={style.headerMobile}/>
                 </div>
-                <Link className={style.navbarbrand} href="/"> 
+                {/* <button className={style.navigasiButton}>
+                    <FontAwesomeIcon icon={faBars} className={style.buttonBars} />
+                </button> */}
+                <div className={style.navbarbrand}>
                     <Image className={style.barakhlogo} src={ImageBrand} alt="BarakhLogo" />
-                </Link>
+                </div>
+                {/* <div onClick={() => setActive(!active)}>
+                    <div
+                        className={active ? style.activeHamburger : style.hamburger}
+                        />
+                </div> */}
                 <div className={style.navbarList}>
                     <ul className={style.ul}>
                         <li className={style.li}>
@@ -58,9 +69,8 @@ const Header = () => {
                             <div className={style.dropdown}>
                                 <Link className={style.navitem} style={{color: router.pathname.includes('/profil') ? '#94B60F' : ''}} href="">Profil</Link>
                                 <div className={style.dropdownContent}>
-                                    <Link className={style.dropdownItem} href="/profil">Unit Usaha</Link>
-                                    <Link className={style.dropdownItem} href="/profil/yayasan">Yayasan</Link>
-                                    <Link className={style.dropdownItem} href="/profil/pesantren">Pesantren</Link>
+                                    <Link className={style.dropdownItem} href="/profil">Tentang</Link>
+                                    <Link className={style.dropdownItem} href={"https://ibnualmubarok.site123.me/"} target="_blank">Lembaga Pendidikan</Link>
                                     <Link className={style.dropdownItem} href="/galeri">Galeri</Link>
                                 </div>
                             </div>

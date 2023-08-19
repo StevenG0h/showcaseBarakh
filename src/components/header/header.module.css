@@ -114,9 +114,8 @@
     position: relative;
     text-decoration: none;
     color: #fff;
-    font-weight: 500;
+    font-weight: 400;
     font-size: 15px;
-    letter-spacing: 0.01em;
 }
 
 /* .navitem::before{
@@ -242,9 +241,9 @@
 .dropdownContent {
     display: none;
     position: absolute;
-    left: -60px;
+    left: -90px;
     background-color: #f1f1f1;
-    min-width: 160px;
+    min-width: 220px;
     box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
     z-index: 1;
     font-weight: 400;
@@ -258,7 +257,7 @@
     height: 20px;
     width: 20px;
     background: #f1f1f1;
-    right: 70px;
+    right: 100px;
     top: -10px;
     transform: rotate(45deg);
     z-index: -1;
@@ -461,25 +460,20 @@
     }
 }
 
+
+
+
+
 @media screen and (max-width: 480px) {
     .header {
-        padding: 0;
+        padding: 1em 0;
     }
 
     .container {
         width: 90%;
-        height: auto;
     }
 
     .navigasiButton {
         display: block;
-    }
-
-    .navbarbrand{
-        padding: 15px;
-    }
-
-    .barakhlogo { 
-        width: 6em;
     }
 }

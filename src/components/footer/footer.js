@@ -1,7 +1,7 @@
 "use client"
 import style from "./footer.module.css";
 import Image from 'next/image';
-// import ImageNavBrand from "../../public/assets/images/White.svg";
+// import ImageNavBrand from "../../public/assets/images/LogoBarakhFix_1.png";
 import Pertamnina from "../../../public/assets/images/PERTAMINA 1.png"
 import Yayasan from "../../../public/assets/images/YAYSAN 1.png";
 import PCR from "../../../public/assets/images/my-image 1.png"
