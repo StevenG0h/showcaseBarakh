@@ -9,7 +9,6 @@ const RatingLabel = ({value}) => {
     value.map((data)=>{
         rating += data.rating
     })
-    console.log(rating);
     const res =rating / value.length;
     return (
         <Box sx={{

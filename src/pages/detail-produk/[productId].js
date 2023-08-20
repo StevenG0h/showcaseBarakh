@@ -10,7 +10,9 @@ import { setCookie, getCookie } from "cookies-next";
 import  RatingModal  from "../../components/Rating/rating_modal";
 import  RatingLabel  from "../../components/Rating/rating_label";
 import {useState} from "react";
-
+import { ConfirmDialog } from "../../components/dialog/ConfirmDialog";
+import { useRouter } from "next/router";
+import Head from "next/head";
 const poppins = Poppins({
     weight: '500',
     subsets: ['latin'],
@@ -27,7 +29,7 @@ export async function getServerSideProps({query}){
 }
 
 const detailProduct = ({data}) => {
-
+    const router = useRouter();
     let handleCart = ()=>{
         let cookie = getCookie('barakh-cart-cookie');
         if(cookie === undefined){
@@ -48,10 +50,11 @@ const detailProduct = ({data}) => {
                 setCookie('barakh-cart-cookie',cookieDatas);
             }
         }
+        setOpenTransaction(true);
     }
 
     const [open, setOpen] = useState(false)
-
+    const [openTransaction, setOpenTransaction] = useState(false);
     const handleClickOpen = () => {
         setOpen(true);
     };
@@ -62,8 +65,12 @@ const detailProduct = ({data}) => {
 
     return (
         <>
+            <Head>
+                <title>Albarakh | Detail Produk</title>
+            </Head>
             <main className={poppins.className}>
             <Header/>
+                <ConfirmDialog onConfirm={() => { router.replace('/cart') }} onCancel={() => { setOpenTransaction(false) }} msg={'Produk berhasil ditambahkan ke keranjang, anda ingin mengakses keranjang?'} open={openTransaction}></ConfirmDialog>
                     <div className={style.container}>
                         <RatingModal id={data.id} open={open} onClose={handleClose}></RatingModal>
                         <div className={style.containerDetailProduct}>

@@ -5,6 +5,7 @@ import { TextField } from "@mui/material";
 import { Poppins } from 'next/font/google';
 import { getAdminNumber } from "../../helper/dataOptions";
 import {useState} from "react";
+import Head from "next/head";
 const poppins = Poppins({
     weight: '500',
     subsets: ['latin'],
@@ -42,6 +43,9 @@ const Bantuan = ({adminNum})=> {
     return(
         <main className={poppins.className}>
             <Header/>
+            <Head>
+                <title>Albarakh | Bantuan</title>
+            </Head>
                 <div className={style.container}>
                     <div className={style.containerBeranda}>
                         <div className={style.wrapForm}>
