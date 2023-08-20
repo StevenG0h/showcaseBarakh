@@ -23,6 +23,7 @@ import RHFAutocomplete from '../../components/form/RHFAutocomplete';
 import { getAllKecamatanById, getAllKelurahanById, getAllKotaById, getAllProvinsi } from '../../helper/dataOptions';
 import KatalogCard from "../../components/card/KatalogCard/KatalogCard";
 import { Router, useRouter } from "next/router";
+import Head from "next/head";
 // import {Checkbox} from "@mui/material";
 // import WhatsApp from "../../components/Whatsapp/WhatsApp"
 
@@ -261,6 +262,9 @@ const Cart = ({ cookie, option, totalPayment, products }) => {
 
     return (
         <main className={poppins.className} style={{ backgroundColor: '#fff' }}>
+            <Head>
+                <title>Albarakh | Keranjang</title>
+            </Head>
             <Header />
             {
                 showCheckout === true ?
