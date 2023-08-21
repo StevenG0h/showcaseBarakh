@@ -31,12 +31,7 @@
     margin: 0 0 1em 0;
 }
 
-.containerCard{
-    grid-column:1/3;
-    display:flex;
-    height: auto;
-    gap: 1em;
-}
+
 
 .cardUsaha{
     background-color: #fff;
@@ -85,6 +80,28 @@
     -webkit-box-orient: vertical;
 }
 
+/* NEE DESIGN CSS */
+
+.containerCard{
+    grid-column:1/3;
+    display:flex;
+    height: auto;
+    gap: 1em;
+}
+
+.nameUsaha{
+    font-size: 2em;
+}
+
+.productImage{
+    width:100%;
+    aspect-ratio: 16/7;
+    object-fit: cover;
+    border-radius: 0.8em;
+}
+
+
+
 @media screen and (max-width: 768px){
     .containerUsaha{
         width: 90%;
@@ -121,6 +138,13 @@
         display: -webkit-box;
         -webkit-box-orient: vertical;
     }
+
+    /* NEW DESIGN CSS */    
+    .nameUsaha{
+        font-size: 1.8em;
+
+    }
+
 }
 
 @media screen and (max-width: 480px){
@@ -162,5 +186,23 @@
         overflow: hidden;
         display: -webkit-box;
         -webkit-box-orient: vertical;
+    }
+
+    /* NEW DESIGN CSS */    
+
+    .containerCard{
+        border-radius: 1em;
+    }
+
+    .nameUsaha{
+        font-size: 1.6em;
+    }
+
+    .productImage{
+        border-radius: 0.5em;
+    }
+
+    .descUSaha{
+        font-size: 0.9em;
     }
 }

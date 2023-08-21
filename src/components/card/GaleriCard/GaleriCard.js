@@ -10,8 +10,8 @@ import Masjid from '../../../../public/assets/images/MasjidAlBarakh.png'
 
 const GaleriCard = ({data}) => {
     return (
-            <CardActionArea className={style.CardArea} >
-                <Image src={Masjid} alt="Gambar" className={style.image} />
+            <CardActionArea className={style.CardArea}>
+                <img src={process.env.NEXT_PUBLIC_BACKEND_URL + '/storage/galeri/' + data.path} alt="Gambar" className={style.image}/>
                 {/* <CardMedia
                     component="img"
                     image="../../../../public/assets/images/MasjidAlBarakh.png"

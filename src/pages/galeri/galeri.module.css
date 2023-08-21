@@ -17,7 +17,7 @@
     width: 75%;
     align-items: center;
     flex-direction: column;
-    margin: 4em 0;
+    padding: 4em 0;
 }
 
 .textGaleri{
@@ -98,7 +98,7 @@
     gap: 1em;
 }
 
-@media screen and (max-width: 1010px){
+@media screen and (max-width: 768px){
     .containerBase{
         width: 90%;
     }
@@ -113,5 +113,28 @@
     .description{
         font-size: 0.9em ;
         /* padding: 0 8em; */
+    }
+}
+
+@media screen and (max-width: 480px){
+    .containerBase{
+        width: 90%;
+        padding: 2em 0;
+    }
+
+    .textGaleri{
+        width: 100%;
+        margin-bottom: 2.5em;
+    }
+
+    .title{
+        font-size: 1.8em;
+        
+    }
+
+    .description{
+        font-size: 0.9em ;
+        
+        padding: 0 2em;
     }
 }

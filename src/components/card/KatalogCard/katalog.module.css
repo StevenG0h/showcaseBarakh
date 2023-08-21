@@ -2,15 +2,17 @@
     /* margin:1em; */
     width: 100%;
     background: #FFFFFF;
-    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.05);
+    box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.10);
     border-radius: 1.25em;
     display: flex;
     height: 100%;
     flex-direction: column; 
     overflow: hidden;
 }
+
 .imageCarousel{
     height: auto;
+    width: auto;
 }
 
 .image{
@@ -29,14 +31,30 @@
     height: auto;
 }
 
+.boxNameKategori{
+    display: flex;
+    justify-content: flex-start ;
+    background-color: #94B60F ;
+    padding: 0.5em 1.6em;
+    border-bottom-right-radius: 10em;
+    margin-right: 0.8em;
+    height: 0.7em;
+    align-items: center;
+}
+
 .kategoriProduct{
-    font-size: 0.6em;
+    font-size: 0.45em;
     font-weight: 500;
-    color: #999999;
+    color: #ffffff;
     letter-spacing: 0.25em;
     margin: 0px;
-    line-height: 20px;
-}
+    line-height: 1.6em;
+    -webkit-line-clamp: 1;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+}   
+
 
 .titleCard{
     color: #94B60F;
@@ -99,6 +117,7 @@
 @media screen and (max-width: 768px){
     .titleCard{
         font-size: 0.7em;
+        padding-top: 0.6em;
     }
     
     .caption{
@@ -121,6 +140,33 @@
         display: -webkit-box;
         -webkit-box-orient: vertical;
     }
+
+    /* NEW DESIGN CSS */
+
+
+    .boxNameKategori{
+        display: flex;
+        justify-content: flex-start ;
+        background-color: #94B60F ;
+        padding: 0.5em 0.8em;
+        border-bottom-right-radius: 10em;
+        margin-right: 0.8em;
+        height: 0.7em;
+        align-items: center;
+    }
+    
+    .kategoriProduct{
+        font-size: 0.45em;
+        font-weight: 500;
+        color: #ffffff;
+        letter-spacing: 0.25em;
+        margin: 0px;
+        line-height: 1.6em;
+        -webkit-line-clamp: 1;
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+    }
 }
 
 @media screen and (max-width: 480px){
@@ -130,9 +176,40 @@
 
     .titleCard{
         font-size: 0.8em;
+        padding-top: 0.6em;
     }
 
     .descriptionCard {
         line-height: 1.6em;
+    }
+
+    /* NEW DESIGN CSS */
+
+    .titleKatalog{
+        font-size: 1.8em;
+    }
+
+    .boxNameKategori{
+        display: flex;
+        justify-content: flex-start ;
+        background-color: #94B60F ;
+        padding: 0.5em 0.8em;
+        border-bottom-right-radius: 10em;
+        margin-right: 0.8em;
+        height: 0.7em;
+        align-items: center;
+    }
+    
+    .kategoriProduct{
+        font-size: 0.45em;
+        font-weight: 500;
+        color: #ffffff;
+        letter-spacing: 0.25em;
+        margin: 0px;
+        line-height: 1.6em;
+        -webkit-line-clamp: 1;
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
     }
 }

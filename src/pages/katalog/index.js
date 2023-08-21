@@ -8,7 +8,8 @@ import style from "./katalog.module.css";
 import { Poppins } from 'next/font/google'
 import axios from "../../utils/axios";
 import { Accordion, AccordionDetails, AccordionSummary, Box, Button, Card, Collapse, FormControl, Grid, IconButton, InputBase, List, ListItem, ListItemButton, ListItemIcon, ListItemText, SvgIcon, TextField, ThemeProvider, Typography, createTheme } from "@mui/material";
-import WhatsApp from "../../components/Whatsapp/WhatsApp"
+import WhatsApp from "../../components/Whatsapp/WhatsApp";
+import Breadcrumb from "../../components/Breadcrumb/Breadcrumb"
 
 import {useState} from "react";
 
@@ -60,20 +61,22 @@ const Katalog = ({products, unitUsaha}) => {
             <main className={poppins.className}>
         <Header/>
             <div className={style.container}>
+                <Breadcrumb/>
+
                 <div className={style.containerBase}>
                     <div className={style.banner}>
                     </div>
-                    <Box sx={{display:'flex', gap:'1em', alignItems:'start', justifyContent:'space-between',flexDirection:{
+                    <Box sx={{display:'flex', gap:'0.5em', alignItems:'start', justifyContent:'space-between',flexDirection:{
                         lg:'row',
                         xs:'column'
                     }}}>
-                        <Typography variant="h4" sx={{color:'#94B60F'}} fontWeight={600} noWrap>
+                        {/* <Typography sx={{color:'#94B60F'}} fontWeight={600} noWrap className={style.titleKatalog}>
                             Katalog Produk
-                        </Typography>
+                        </Typography> */}
                         <Card sx={{width:{
                                 lg:'30%',
                                 xs:'100%'
-                            },borderRadius:'5em',display:'flex',flexDirection:'row',justifyContent:'stretch'}}>
+                            },borderRadius:'2em',display:'flex',flexDirection:'row',justifyContent:'stretch'}}>
                             <FormControl sx={{backgroundColor:'white',width:'100%'}}>
                                 <InputBase placeholder="ketik untuk mencari produk" defaultValue={search.keyword} onChange={(e)=>{
                                     let data = search;
@@ -98,11 +101,11 @@ const Katalog = ({products, unitUsaha}) => {
                         </Button> */}
                     </Box>
                     <Button onClick={()=>{setCollapse(!collapse)}} color="success" variant="contained" sx={{width:'fit-content', borderRadius:'5em',display:{
-                        lg:'none'
+                        lg:'none', 
                     }}} startIcon={<Filter></Filter>}>
                         Filter
                     </Button>
-                    <Box sx={{display:'flex',justifyContent:'space-between',flexDirection:{
+                    <Box sx={{display:'flex',flexDirection:{
                         lg:'row',
                         xs:'column'
                     },  gap:'1em'}}>
@@ -191,8 +194,6 @@ const Katalog = ({products, unitUsaha}) => {
                             </ListItem>
                             {
                                 unitUsaha.map((map)=>{
-                                    
-                                        
                                         
                                         return (
                                             <ListItem >
@@ -217,19 +218,23 @@ const Katalog = ({products, unitUsaha}) => {
                             }
                             
                         </List>
-                        <Box container sx={{ justifyContent:'start',gap:'1em', display:'flex', flexWrap:'wrap'}}>
+                        <Box container sx={{ justifyContent:'start',gap:'1em', display:'flex', flexWrap:'wrap', maxWidth: {lg:'75%'}}}>
                             {
                                 product.length != 0 ? product.map((product)=>{
                                     return (
                                         <Box item key={product.id} sx={{
                                             flexGrow:{
-                                                xs:'1',
+                                                xs:'2',
                                                 lg:'0'
                                             },
                                             width:{
-                                                lg:'31.5%',
-                                                xs:'48%'
-                                            }
+                                                lg:'31%',
+                                                xs:'35%'
+                                            },
+                                        //     maxWidth:{
+                                        //     lg:'100%'
+                                        //    }
+                                        
                                         }} >
                                             <KatalogCard style={style} row={product}></KatalogCard>
                                         </Box>

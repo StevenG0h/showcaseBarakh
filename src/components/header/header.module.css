@@ -466,14 +466,23 @@
 
 @media screen and (max-width: 480px) {
     .header {
-        padding: 1em 0;
+        padding: 0;
     }
 
     .container {
         width: 90%;
+        height: auto;
     }
 
     .navigasiButton {
         display: block;
+    }
+
+    .navbarbrand{
+        padding: 15px;
+    }
+
+    .barakhlogo { 
+        width: 6em;
     }
 }

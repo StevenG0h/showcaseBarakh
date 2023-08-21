@@ -25,7 +25,7 @@ export default function KatalogCard({ row, isCart=false }) {
         speed: 500,
         slidesToShow: 1,
         slidesToScroll: 1,
-        autoplay: true,
+        autoplay: false,
         autoplaySpeed: 4000,
         pauseOnHover: true,
         verticalSwiping: false,
@@ -88,8 +88,10 @@ export default function KatalogCard({ row, isCart=false }) {
                     </Slider>
                 </div>
             </div>
-            <div className={style.caption}>
+            <div className={style.boxNameKategori}>
                 <p className={style.kategoriProduct}>{unit_usaha.usahaName}</p>
+            </div>
+            <div className={style.caption}>
                 <p className={style.titleCard}>{productName}</p>
                 <RatingLabel value={row.rating} />
                 <p className={style.price}>Harga : <span className={style.nominal}>{formatCurrency(productPrice)}</span></p>

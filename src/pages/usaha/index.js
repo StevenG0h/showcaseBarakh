@@ -96,17 +96,17 @@ const UnitUsaha = ({data})=> {
                               xs:'none'
                             }}}  flexItem></Divider>
                             <Box sx={{width:'100%'}}>
-                              <Box sx={{margin:'1em'}}>
+                              <Box sx={{margin: {lg : '1em 2em 1em 1em', xs: '1em' }}}>
                               {
                                 profil == '' ? '' : (
                                   <>
                                 
-                                    <Typography fontWeight="600" sx={{textAlign:'left'}} variant="h4" >{
+                                    <Typography fontWeight="600" sx={{textAlign:'left'}} className={style.nameUsaha}>{
                                       (
                                         <span style={{color:'#94B60F'}}>{profil.unit_usaha.usahaName}</span>
                                       )
                                     }</Typography>
-                                    <Typography sx={{marginY:'1em'}}>
+                                    <Typography sx={{marginY:'1em'}} className={style.descUSaha} >
               
                                         {profil.profil_usaha_desc}
                                       
@@ -116,12 +116,12 @@ const UnitUsaha = ({data})=> {
                                         profil.unit_usaha.products.map((product,index)=>{
                                           return (
                                             <>
-                                            <Typography  fontWeight="600">
+                                            <Typography  fontWeight="600" sx={{margin: '1em 0 0.5em 0'}}>
                                     
                                             {++index}.{product.productName}
                                     
                                             </Typography>
-                                            <img src={process.env.NEXT_PUBLIC_BACKEND_URL+'/storage/product/'+product.product_images[0].path}></img>
+                                            <img className={style.productImage} src={process.env.NEXT_PUBLIC_BACKEND_URL+'/storage/product/'+product.product_images[0].path}></img>
                                             </>
 
                                           )
