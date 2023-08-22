@@ -1,4 +1,4 @@
-import { Autocomplete, Box, Button, Card, Container, Dialog, DialogContent, DialogTitle, FormControl, Grid, TextField, Typography } from "@mui/material";
+import { Autocomplete, Box, Button, Card, Container, Dialog, DialogContent, DialogTitle, FormControl, Grid, Table, TableCell, TableHead, TableRow, TextField, Typography } from "@mui/material";
 import CustomBarChart from "../../components/chart/CustomBarChart";
 import AdminLayout from "../../layouts/adminLayout/AdminLayout";
 import CustomLineChart from "../../components/chart/CustomLineChart";
@@ -9,6 +9,7 @@ import { useState } from "react";
 import { getAllKecamatanById, getAllKelurahanById, getAllKotaById, getAllProvinsi, getAllUnitUsaha } from "../../helper/dataOptions";
 import  FilterAlt  from "@mui/icons-material/FilterAlt";
 import {RHFAutocomplete} from "../../components/form/RHFAutocomplete";
+import CustomTableHead from "../../components/table/CustomTableHead";
 
 function formatDashboardData(dashboard){
     let penjualan = {
@@ -72,6 +73,132 @@ function formatDashboardData(dashboard){
         produkTerlaris.datasets[0].data.push(data.total);
         produkTerlaris.labels.push(data.product.productName);
     })
+    let latest = -1;
+    let pelangganDetail = [];
+    let scope = dashboard.data.pelangganDetail.scope;
+    dashboard.data.pelangganDetail.detail.map((data,index)=>{
+        if(scope == 'global'){
+            if(pelangganDetail[latest]?.provinsiId == data.IDProvinsi){
+                pelangganDetail[latest].total = pelangganDetail[latest].total + Number(data.Total);
+                pelangganDetail[latest].totalTransaksi = pelangganDetail[latest].totalTransaksi + Number(data.TotalTransaksi)
+                pelangganDetail[latest].unitUsaha.push({
+                    label: data.UnitUsaha,
+                    id: data.UnitUsahaId
+                })
+            }else{
+                pelangganDetail.push({
+                    scope: 'root',
+                    totalTransaksi: Number(data.TotalTransaksi),
+                    total: Number(data.Total),
+                    provinsi:data.Provinsi,
+                    provinsiId: data.IDProvinsi,
+                    unitUsaha:[
+                        {
+                            label: data.UnitUsaha,
+                            id: data.UnitUsahaId
+                        }
+                    ]
+                })
+                latest = latest+1;
+            }
+        }else if(scope == 'provinsi'){
+            if(pelangganDetail[latest]?.kotaId == data.IDKota){
+                pelangganDetail[latest].total = pelangganDetail[latest].total + Number(data.Total);
+                pelangganDetail[latest].totalTransaksi = pelangganDetail[latest].totalTransaksi + Number(data.TotalTransaksi)
+                pelangganDetail[latest].unitUsaha.push({
+                    label: data.UnitUsaha,
+                    id: data.UnitUsahaId
+                })
+            }else{
+                pelangganDetail.push({
+                    scope: 'root',
+                    totalTransaksi: Number(data.TotalTransaksi),
+                    total: Number(data.Total),
+                    kota:data.Kota,
+                    kotaId: data.IDKota,
+                    unitUsaha:[
+                        {
+                            label: data.UnitUsaha,
+                            id: data.UnitUsahaId
+                        }
+                    ]
+                })
+                latest = latest+1;
+            }
+        }else if(scope == 'kota'){
+            if(pelangganDetail[latest]?.kecamatanId == data.IDKecamatan){
+                pelangganDetail[latest].total = pelangganDetail[latest].total + Number(data.Total);
+                pelangganDetail[latest].totalTransaksi = pelangganDetail[latest].totalTransaksi + Number(data.TotalTransaksi)
+                pelangganDetail[latest].unitUsaha.push({
+                    label: data.UnitUsaha,
+                    id: data.UnitUsahaId
+                })
+            }else{
+                pelangganDetail.push({
+                    scope: 'root',
+                    totalTransaksi: Number(data.TotalTransaksi),
+                    total: Number(data.Total),
+                    kecamatan:data.Kecamatan,
+                    kecamatanId: data.IDKecamatan,
+                    unitUsaha:[
+                        {
+                            label: data.UnitUsaha,
+                            id: data.UnitUsahaId
+                        }
+                    ]
+                })
+                latest = latest+1;
+            }
+        }else if(scope == 'kecamatan'){
+            if(pelangganDetail[latest]?.kelurahanId == data.IDKelurahan){
+                pelangganDetail[latest].total = pelangganDetail[latest].total + Number(data.Total);
+                pelangganDetail[latest].totalTransaksi = pelangganDetail[latest].totalTransaksi + Number(data.TotalTransaksi)
+                pelangganDetail[latest].unitUsaha.push({
+                    label: data.UnitUsaha,
+                    id: data.UnitUsahaId
+                })
+            }else{
+                pelangganDetail.push({
+                    scope: 'root',
+                    totalTransaksi: Number(data.TotalTransaksi),
+                    total: Number(data.Total),
+                    kelurahan:data.Kelurahan,
+                    kelurahanId: data.IDKelurahan,
+                    unitUsaha:[
+                        {
+                            label: data.UnitUsaha,
+                            id: data.UnitUsahaId
+                        }
+                    ]
+                })
+                latest = latest+1;
+            }
+        }else if(scope == 'kelurahan'){
+            if(pelangganDetail[latest]?.nama == data.IDKelurahan){
+                pelangganDetail[latest].total = pelangganDetail[latest].total + data.Total;
+                pelangganDetail[latest].totalTransaksi = pelangganDetail[latest].totalTransaksi + data.TotalTransaksi
+                pelangganDetail[latest].unitUsaha.push({
+                    label: data.UnitUsaha,
+                    id: data.UnitUsahaId
+                })
+            }else{
+                pelangganDetail.push({
+                    scope: 'root',
+                    totalTransaksi: Number(data.TotalTransaksi),
+                    nama:data.Nama,
+                    total: data.Total,
+                    unitUsaha:[
+                        {
+                            label: data.UnitUsaha,
+                            id: data.UnitUsahaId
+                        }
+                    ]
+                })
+                latest = latest+1;
+            }
+        }
+
+    })
     return {
         penjualan: penjualan,
         total: total,
@@ -80,7 +207,9 @@ function formatDashboardData(dashboard){
         pengeluaran: dashboard.data.pelangganStat,
         totalStok: dashboard.data.totalStok,
         totalProdukTerjual: totalProdukTerjual,
-        pelangganStat: dashboard.data.pelangganStat
+        pelangganStat: dashboard.data.pelangganStat,
+        pelangganDetail: pelangganDetail,
+        scope: scope
     }
 }
 
@@ -135,6 +264,7 @@ export async function getServerSideProps({req,res}){
 
 export default function Dashboard({data, options}){
     let [loading, setLoading] = useState(false)
+
     let [dashboardData, setData] = useState(data)
     let [filterData, setFilter] = useState({
         from: '',
@@ -149,16 +279,29 @@ export default function Dashboard({data, options}){
     let handleChange = async ()=>{
         console.log(filterData);
         let dashboard = await axios.post('/api/dashboard',filterData);
+        console.log(dashboard)
         setData(formatDashboardData(dashboard))
-        setFilter({"from":"2018-01-01",
-        "to":"2025-01-01",
-        "kelurahan":'',
-        "unitUsaha":'',
-        "kecamatan":'',
-        "kota":'',
-        "provinsi":''})
     }
     const [openFilter, setOpenFilter] = useState(false);
+
+    let TABLEHEAD = [
+        {value: 'No',align: 'left'},
+        {value: 'Lokasi',align: 'left'},
+        {value: 'Jumlah Transaksi',align: 'left'},
+        {value: 'Total Transaksi',align: 'left'},
+        {value: 'Unit Usaha',align: 'left'},
+    ]
+
+    let SECONDTABLEHEAD = [
+        {value: 'No',align: 'left'},
+        {value: 'Nama',align: 'left'},
+        {value: 'Jumlah Transaksi',align: 'left'},
+        {value: 'Total Transaksi',align: 'left'},
+        {value: 'Unit Usaha',align: 'left'},
+    ]
+
+    let [tableHead, setTableHead] = useState(TABLEHEAD);
+
     return (
         <>
             <Dialog  open={openFilter} maxWidth="sm" fullWidth onClose={()=>{setOpenFilter(false)}}>
@@ -204,7 +347,6 @@ export default function Dashboard({data, options}){
                         onChange={(e, unitUsahaData) => {
                             let filter = filterData;
                             filter.unitUsaha = unitUsahaData.id
-                            console.log(unitUsahaData)
                             setFilter(filter);
                             return unitUsahaData
                         }}
@@ -223,7 +365,6 @@ export default function Dashboard({data, options}){
                         onChange={async(e, unitUsahaData) => {
                             let filter = filterData;
                             filter.provinsi = unitUsahaData.id
-                            console.log(unitUsahaData)
                             setFilter(filter);
                             setKota(await getAllKotaById(unitUsahaData.id))
                             return unitUsahaData
@@ -353,8 +494,84 @@ export default function Dashboard({data, options}){
                                     <CustomBarChart chartTitle={'Unit usaha dengan produk terlaris'} dataset={dashboardData?.produkTerlaris} color={['#049ffb','#58B63B']}></CustomBarChart>
                                 </Card>
                             </Grid>  
-    
+                            <Grid item xs={'12'} sx={{paddingX:'1em',marginBottom:'3em'}}>
+                                <Card sx={{padding:'1em'}}>
+                                    <Button onClick={()=>{
+                                        setFilter({"from":"2018-01-01",
+                                        "to":"2025-01-01",
+                                        "kelurahan":'',
+                                        "unitUsaha":'',
+                                        "kecamatan":'',
+                                        "kota":'',
+                                        "provinsi":''});
+                                        setTableHead(TABLEHEAD)
+                                        handleChange()
+                                    }} variant="contained" color="success">
+                                        Reset Filter
+                                    </Button>
+                                    <Table>
+                                        <CustomTableHead tableHead={tableHead}>
+
+                                        </CustomTableHead>
+                                        {
+                                            dashboardData?.pelangganDetail?.map((data,index)=>{
+                                                return (
+                                                    <TableRow>
+                                                        <TableCell>
+                                                                {index+1}
+                                                        </TableCell>
+                                                        <TableCell>
+                                                            <Button onClick={()=>{
+                                                                let filter = filterData;
+                                                                if(dashboardData.scope == 'global'){
+                                                                    filter.provinsi = data.provinsiId
+                                                                }
+                                                                if(dashboardData.scope == 'provinsi'){
+                                                                    filter.kota = data.kotaId
+                                                                }
+                                                                if(dashboardData.scope == 'kota'){
+                                                                    filter.kecamatan = data.kecamatanId
+                                                                }
+                                                                if(dashboardData.scope == 'kecamatan'){
+                                                                    filter.kelurahan = data.kelurahanId
+                                                                    setTableHead(SECONDTABLEHEAD)
+                                                                }
+                                                                setFilter(filter);
+                                                                handleChange()
+                                                            }} color="success">
+                                                                {dashboardData.scope == 'global' ? data.provinsi : dashboardData.scope == 'provinsi' ? data.kota : dashboardData.scope == 'kota' ? data.kecamatan : dashboardData.scope == 'kecamatan' ? data.kelurahan : dashboardData.scope == 'kelurahan' ? data.nama : ''}
+                                                            </Button>
+                                                        </TableCell>
+                                                        <TableCell>
+                                                            {data.total}
+                                                        </TableCell>
+                                                        <TableCell>
+                                                            {data.totalTransaksi}
+                                                        </TableCell>
+                                                        <TableCell>
+                                                            {data?.unitUsaha.map((unit)=>{
+                                                               
+                                                                return (
+                                                                    <Button onClick={()=>{
+                                                                        let filter = filterData;
+                                                                        filter.unitUsaha = unit.id
+                                                                        setFilter(filter);
+                                                                        handleChange()
+                                                                    }} color="success">
+                                                                        {unit.label}
+                                                                    </Button>
+                                                                )
+                                                            })}
+                                                        </TableCell>
+                                                    </TableRow>
+                                                )
+                                            })
+                                        }
+                                    </Table>
+                                </Card>
+                            </Grid>
                         </Grid>
+                        
                     </Container>
                 </AdminLayout>
         </>

@@ -6,6 +6,7 @@ import axios from "../../../utils/axios";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import RHFTextField from "../../../components/form/RHFTextField";
+import RHFTextArea from "../../../components/form/RHFTextArea";
 import RHFDnd from "../../../components/form/RHFDnd";
 import * as yup from "yup";
 import {yupResolver} from "@hookform/resolvers/yup";
@@ -318,7 +319,7 @@ export default function admin({data}){
                                 <RHFTextField hiddenLabel={false} label={'Nama Unit Usaha'} name={"usahaName"} control={control}></RHFTextField>
                             </FormControl>
                             <FormControl sx={{width:'100%', marginY:'0.5em'}}>
-                                <RHFTextField hiddenLabel={false} label={'Deskripsi Unit Usaha'} name={"usahaDesc"} control={control}></RHFTextField>
+                                <RHFTextArea hiddenLabel={false} label={'Deskripsi Unit Usaha'} name={"usahaDesc"} control={control}></RHFTextArea>
                             </FormControl>
                             {
                                 editMode == true ? (

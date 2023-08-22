@@ -229,7 +229,8 @@ const Katalog = ({products, unitUsaha}) => {
                                             width:{
                                                 lg:'31.5%',
                                                 xs:'48%'
-                                            }
+                                            },
+                                            maxWidth:'50em'
                                         }} >
                                             <KatalogCard style={style} row={product}></KatalogCard>
                                         </Box>

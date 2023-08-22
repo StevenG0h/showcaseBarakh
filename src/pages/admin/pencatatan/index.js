@@ -5,7 +5,7 @@ import * as yup from "yup";
 import {yupResolver} from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 import AdminLayout from "../../../layouts/adminLayout/AdminLayout";
-import { Button, Card, Dialog, DialogTitle, DialogContent, FormControl, Grid, IconButton, ImageList, ImageListItem, ImageListItemBar, Input, MenuItem, Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Box, TextField } from "@mui/material";
+import { Button, Card, Dialog, DialogTitle, DialogContent, FormControl, Grid, IconButton, ImageList, ImageListItem, ImageListItemBar, Input, MenuItem, Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Box } from "@mui/material";
 import RHFTextField from "../../../components/form/RHFTextField";
 import RHFAutocomplete from "../../../components/form/RHFAutocomplete";
 import CustomTableHead from "../../../components/table/CustomTableHead";
@@ -17,7 +17,6 @@ import  ChevronRight  from "@mui/icons-material/ChevronRight";
 import  ChevronLeft  from "@mui/icons-material/ChevronLeft";
 import { formatCurrency } from "../../../helper/currency";
 import { useEffect } from "react";
-import TotalTableRow from "../../../sections/keuangan/totalTableRow";
 
 export async function getServerSideProps({req,res}){
     let token = getCookie('token',{req,res});
@@ -45,7 +44,13 @@ export async function getServerSideProps({req,res}){
           };
     })
     try{
-        let produk = await axios.post('/api/admin/transaksi/keuangan',{
+        let produk = await axios.get('/api/admin/transaksi',{
+            headers:{
+                Authorization: 'Bearer '+token,
+            },
+            withCredentials:true
+        });
+        let stat = await axios.post('/api/admin/transaksi/pencatatan',{        
             "from":"2018-01-01",
             "to":"2025-01-01",
             "kelurahan":'',
@@ -59,29 +64,11 @@ export async function getServerSideProps({req,res}){
             },
             withCredentials:true
         });
-        let penjualan = produk.data.penjualan;
-        let pengeluaran = produk.data.pengeluaran;
-        let transaksi = '';
-        if(penjualan.length >= pengeluaran.length){
-            transaksi=(penjualan.map(
-                data => Object.assign({}, data, {
-                  pengeluaran: pengeluaran
-                    .filter(pengeluaran => pengeluaran.month === data.month && pengeluaran.year === data.year)[0].pengeluaran
-                })
-              ))
-        }else{
-            transaksi=(pengeluaran.map(
-                data => Object.assign({}, data, {
-                  penjualan: penjualan
-                    .filter(penjualan => penjualan.month === data.month && penjualan.year === data.year)[0].penjualan
-                })
-              ))
-        }
         let unitUsaha = await getAllUnitUsaha();
         return {
             props:{
-                produk: transaksi,
-                // stat:stat.data,
+                produk: produk.data.data,
+                stat:stat.data,
                 options:{
                     unitUsaha: unitUsaha
                 }
@@ -99,12 +86,17 @@ export async function getServerSideProps({req,res}){
     }
 }
 
-export default function keuangan({produk, options}){
+export default function keuangan({produk, stat, options}){
     let [loading, setLoading] = useState(false)
     const router = useRouter();
     let token = getCookie('token');
     let title = 'Stock';
-    let [products, setProducts] = useState(produk);
+    let [products, setProducts] = useState(produk.data);
+    let [productsLink, setProductsLink] = useState(produk.links);
+    let [transaction, setTransaction] = useState([]);
+    let [formTitle, setFormTitle] = useState([]);
+    let [addDetailTransactionForm, setAddDetailTransactionForm] = useState('');
+    let [productOption, setProductOptions] = useState([]);
     //Next router
     
       const schemaAddSpendingTransaction = yup.object().shape({
@@ -114,11 +106,38 @@ export default function keuangan({produk, options}){
         SpendingValue: yup.string().required('Jumlah pengeluaran tidak boleh kosong'),
     })
 
-    let [filterData, setFilter] = useState({
-        from: '',
-        to:''
-    });
-    let [openFilter, setOpenFilter] = useState(false);
+    const { control, handleSubmit, setValue ,formState:{errors}} = useForm({
+        defaultValues: {
+          transactionType:'PENGELUARAN',
+          unit_usaha_id:'',
+          SpendingName:'',
+          SpendingDescription:'',
+          SpendingValue:0
+        },
+        resolver: yupResolver(schemaAddSpendingTransaction)
+      })
+    
+      const onSubmit = async (data) => {
+        setLoading(true)
+        await axios.get('/sanctum/csrf-cookie',{
+            headers: { Authorization: `Bearer `+token},
+            withCredentials: true
+        }).then(async (r)=>{
+            handleCloseAddForm();
+            await axios.post('/api/admin/transaksi',data,{
+                headers: { Authorization: `Bearer `+token},
+                withCredentials: true
+            }).then((r)=>{
+                console.log(r.data)
+            }).catch((e)=>{
+                console.log(e);
+            })
+        }).catch((e)=>{
+            console.log(e)
+        })
+        router.replace(router.asPath);
+        setLoading(false)
+      }
       
       //states
     const [AddForm, setAddForm] = useState(false);
@@ -162,122 +181,49 @@ export default function keuangan({produk, options}){
 
     let TABLEHEAD = [
         {value: 'No',align: 'left'},
-        {value: 'Pemasukan',align: 'left'},
-        {value: 'Pengeluaran',align: 'left'},
-        {value: 'Bulan',align: 'left'},
+        {value: 'Nama',align: 'left'},
+        {value: 'Tanggal',align: 'left'},
+        {value: 'Tipe Transaksi',align: 'left'},
         {value: 'Total',align: 'left'},
     ]
-
-    let handleChange = async ()=>{
-        setLoading(true);
-        let dashboard = await axios.post('/api/admin/transaksi/keuangan',filterData,{
-            headers:{
-                Authorization: 'Bearer '+token,
-            },
-            withCredentials:true
-        });
-        let penjualan = dashboard.data.penjualan;
-        let pengeluaran = dashboard.data.pengeluaran;
-        let transaksi = '';
-        if(penjualan.length >= pengeluaran.length){
-            transaksi=(penjualan.map(
-                data => Object.assign({}, data, {
-                  pengeluaran: pengeluaran
-                    .filter(pengeluaran => pengeluaran.month === data.month && pengeluaran.year === data.year)[0].pengeluaran
-                })
-              ))
-        }else{
-            transaksi=(pengeluaran.map(
-                data => Object.assign({}, data, {
-                  penjualan: penjualan
-                    .filter(penjualan => penjualan.month === data.month && penjualan.year === data.year)[0].penjualan
-                })
-              ))
-        }
-        setProducts(transaksi)
-        setLoading(false);
-        setOpenFilter(false);
-    }
     
     let num = 0;
     let detailNum = 0;
 
-    let totalPengeluaran = 0 ;
-    products.map((data)=> {
-        totalPengeluaran += data.pengeluaran
-    });
-    let totalPenjualan = 0;
-    products.map((data)=> {
-        totalPenjualan += Number(data.penjualan)
-    });
+    useEffect(() => {
+        setProducts(produk.data)
+        setProductsLink(produk.links)
+      }, [produk]);
 
     return (
         <>
-        
             <AdminLayout handleLoading={loading}>
-            <Dialog  open={openFilter} maxWidth="xs" fullWidth onClose={()=>{setOpenFilter(false)}}>
-                <DialogTitle fontWeight={600}>
-                    Filter
-                </DialogTitle>
-                <DialogContent  sx={{display:'flex',flexDirection:'column',gap:'1em'}}>
-                    <FormControl sx={{display:'flex',flexDirection:'Column',gap:'1em'}}>
-                        <FormControl sx={{width:'100%'}}>
-                            <label>
-                                <Typography>
-                                    Dari
-                                </Typography>
-                            </label>
-                            <TextField type="date" defaultValue={filterData.from} onChange={(e)=>{
-                                let filter = filterData;
-                                filter.from = e.target.value
-                                setFilter(filter);
-                            }}></TextField>
-                        </FormControl>
-                        <FormControl sx={{width:'100%'}}>
-                            <label>
-                                <Typography>
-                                    Hingga
-                                </Typography>
-                            </label>
-                            <TextField type="date" defaultValue={filterData.to} onChange={(e)=>{
-                                let filter = filterData;
-                                filter.to = e.target.value
-                                setFilter(filter);
-                            }}></TextField>
-                        </FormControl>
-                    </FormControl>
-                    <Button color="success" sx={{marginTop:'1em'}} variant="contained" onClick={()=>{handleChange()}}>Terapkan Filter</Button>
-                </DialogContent>
-            </Dialog>
-            <Typography variant="h3" color={'#94B60F'} fontWeight={400} sx={{textDecoration:'underline'}}>Keuangan</Typography>
+            <Typography variant="h3" color={'#94B60F'} fontWeight={400} sx={{textDecoration:'underline'}}>Pencatatan</Typography>
             
-            <Button sx={{marginTop:'1em'}} onClick={()=>{
-                setOpenFilter(true)
-            }} variant="contained" color="success">
-                Filter
-            </Button>
-
             <Box sx={{justifyContent:'space-between', flexDirection:'row', display:'flex', marginY:'1em', gap:'1em'}}>
                 <Card sx={{width:'100%',padding:'1em'}}>
                     <Typography variant="h6">
                         Pemasukan
                     </Typography>
-                    Rp.{formatCurrency(Number(totalPenjualan))}
+                    Rp.{formatCurrency(Number(stat.penjualan.total))}
                 </Card>
                 <Card sx={{width:'100%',padding:'1em'}}>
                     <Typography variant="h6">
                         Pengeluaran
                     </Typography>
-                    Rp.{ formatCurrency(Number(totalPengeluaran))}
+                    Rp.{ formatCurrency(Number(stat.pengeluaran.total))}
                 </Card>
                 <Card sx={{width:'100%',padding:'1em'}}>
                     <Typography variant="h6">
                         Total
                     </Typography>
-                    Rp.{ formatCurrency(Number(totalPenjualan) - Number(totalPengeluaran) )}
+                    Rp.{ formatCurrency( Number(stat.penjualan.total) - Number(stat.pengeluaran.total) )}
                 </Card>
             </Box>
-
+            
+            <Button color="success" sx={{marginY:'1em'}} variant="contained" onClick={()=>{openSpendingForm()}}>
+                Tambah Pengeluaran
+            </Button>
                 {/* <Typography variant="h3" fontWeight={400}>{title}</Typography>
                 <Select defaultValue={'*'}
                 onChange={(e)=>handleChangeFilter(e.target.value)}
@@ -291,34 +237,89 @@ export default function keuangan({produk, options}){
                         })
                     }
                 </Select> */}
+                <Dialog onClose={handleCloseAddForm} open={AddForm} fullWidth maxWidth="xs">
+                    <DialogTitle>
+                        Tambah Pengeluaran
+                    </DialogTitle>
+                    <DialogContent>
+                        <form onSubmit={handleSubmit(onSubmit)}>
+                            <FormControl sx={{width:'100%'}}>
+                                <RHFAutocomplete sx={{width:'100%'}}
+                                    name={'unit_usaha_id'}
+                                    options={options.unitUsaha}
+                                    control= {control}
+                                    disable={false}
+                                    handleChange={(data)=>{
+                                        setValue('unit_usaha_id', data)
+                                        return data
+                                    }}
+                                />
+                                <RHFTextField sx={{width:'100%'}} label={'Nama Pengeluaran'} control={control} name={'SpendingName'}></RHFTextField>
+                                <RHFTextField sx={{width:'100%'}} label={'Deskripsi Pengeluaran'} control={control} name={'SpendingDescription'}></RHFTextField>
+                                <RHFTextField sx={{width:'100%'}} label={'Jumlah Pengeluaran'} control={control} name={'SpendingValue'}></RHFTextField>
+                                {/* <Select defaultValue={1}>
+                                    {
+                                    options?.unitUsaha.map(({id, label})=>{
+                                            return (
+                                                <MenuItem value={id}>{label}</MenuItem>
+                                            )
+                                        })
+                                    }
+                                </Select> */}
+                                <Button sx={{marginTop:'1em'}} variant="contained" color="success" type="submit">Tambah Pengeluaran</Button>
+                            </FormControl>
+                        </form>
+                    </DialogContent>
+                </Dialog>
                 <Card sx={{marginY:'1em'}}>
                     <TableContainer>
                         <Table>
                             <CustomTableHead tableHead={TABLEHEAD}></CustomTableHead>
                             <TableBody>
                                 {
-                                     
                                     products === [] || products==='' || products === undefined ? (
                                         <TableRow>
                                             <TableCell>Data kosong</TableCell>
                                         </TableRow>
                                     ) :
                                     products?.map((map)=>{
+                                        if(map.sales.length != 0){
                                             return ( <>
-                                                <TotalTableRow 
+                                                <KeuanganTableRow 
                                                 key={detailNum} 
                                                 onDetail={()=>{handleTransactionDetails(map)}}
                                                 onEdit={() => handleOpenEditForm(map)} 
                                                 num={++detailNum} row={map}>
-                                                </TotalTableRow>
+                                                </KeuanganTableRow>
                                             </>
                                             )
-                                        
+                                        }else if(map.spending != undefined){
+                                            return ( <>
+                                                <SpendingTableRow 
+                                                key={detailNum} 
+                                                onDetail={()=>{handleTransactionDetails(map)}}
+                                                onEdit={() => handleOpenEditForm(map)} 
+                                                num={++detailNum} row={map}>
+                                                </SpendingTableRow>
+                                            </>
+                                            )
+                                        }
                                     })
                                 }
                             </TableBody>
                         </Table>
                     </TableContainer>
+                    <Box sx={{display:'flex', flexDirection:'row', justifyContent:'center'}}>
+                    {
+                        productsLink.map((link)=>{
+                            return (
+                                <Button fullWidth size="sm" sx={{margin:'0.5em',paddingY:'1em', paddingX:'0', width:0, height:0}} key={link.label} variant={link.active ? 'contained' : 'outlined'} color={'success'} onClick={()=> handleChangePage(link.url)}>{
+                                    link.label == '&laquo; Previous'? <ChevronLeft ></ChevronLeft> : link.label == 'Next &raquo;' ? <ChevronRight></ChevronRight> : link.label
+                                }</Button>
+                            )
+                        })
+                    }
+                    </Box>
                 </Card>
             </AdminLayout>
         </>

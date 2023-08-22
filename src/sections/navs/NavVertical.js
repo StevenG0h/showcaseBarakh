@@ -15,6 +15,7 @@ import { useRouter } from "next/router";
 import {ConfirmDialog} from '../../components/dialog/ConfirmDialog';
 import {getCookie, setCookie, deleteCookie} from 'cookies-next';
 import axios from "../../utils/axios";
+import  Paid  from "@mui/icons-material/Paid";
 
 export default function NavVertical({data}){
     let router = useRouter();
@@ -78,12 +79,20 @@ export default function NavVertical({data}){
                             Penjualan
                         </ListItemText>
                     </ListItemButton>
-                    <ListItemButton onClick={()=>{handleChangePage('/admin/keuangan')}} sx={{paddingRight:"5em",paddingLeft:'0'}}>
+                    <ListItemButton onClick={()=>{handleChangePage('/admin/pencatatan')}} sx={{paddingRight:"5em",paddingLeft:'0'}}>
                         <ListItemIcon>
                             <Wallet sx={{m:'auto',color:'white'}}></Wallet>
                         </ListItemIcon>
                         <ListItemText>
                             Pencatatan
+                        </ListItemText>
+                    </ListItemButton>
+                    <ListItemButton onClick={()=>{handleChangePage('/admin/keuangan')}} sx={{paddingRight:"5em",paddingLeft:'0'}}>
+                        <ListItemIcon>
+                            <Paid sx={{m:'auto',color:'white'}}></Paid>
+                        </ListItemIcon>
+                        <ListItemText>
+                            Keuangan
                         </ListItemText>
                     </ListItemButton>
                     <ListItemButton onClick={()=>{handleChangePage('/admin/unit-usaha')}} sx={{paddingRight:"5em",paddingLeft:'0'}}>

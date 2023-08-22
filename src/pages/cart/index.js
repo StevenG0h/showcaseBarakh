@@ -139,14 +139,17 @@ const Cart = ({ cookie, option, totalPayment, products }) => {
         data.transactionType = "PENJUALAN"
         data.product = cartList;
         data.transactionAddress = data.clientAddress;
-        data.kelurahan_id = data.clientKelurahan;
+        data.provinsi_id = location.provinsi;
+        data.kota_id = location.kota;
+        data.kecamatan_id = location.kecamatan;
         data.client_id = createproduk.data.id;
+        data.kelurahan_id = data.clientKelurahan;
+        console.log(data)
         const createTransaction = await axios.post('/api/transaksi', data, {
             Headers: {
                 'Content-Type': 'multipart/form-data'
             }
         })
-        console.log(data)
         let msg = 'Alamat: '+data.clientAddress +'%0a'+
                 'Nama: '+data.clientName + '%0a'+
                 'Email: '+data.clientNum + '%0a'+

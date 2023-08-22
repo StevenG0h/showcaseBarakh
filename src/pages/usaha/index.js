@@ -106,11 +106,9 @@ const UnitUsaha = ({data})=> {
                                         <span style={{color:'#94B60F'}}>{profil.unit_usaha.usahaName}</span>
                                       )
                                     }</Typography>
-                                    <Typography sx={{marginY:'1em'}}>
-              
-                                        {profil.profil_usaha_desc}
-                                      
-                                    </Typography>
+                                    <Box sx={{marginY:'1em'}}>
+                                        <div dangerouslySetInnerHTML={{__html: profil.profil_usaha_desc}}></div>                    
+                                    </Box>
 
                                       {
                                         profil.unit_usaha.products.map((product,index)=>{

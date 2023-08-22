@@ -1,6 +1,6 @@
 import axios from "../../../utils/axios";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import * as yup from "yup";
 import {yupResolver} from "@hookform/resolvers/yup";
 import { Controller, useForm } from "react-hook-form";
@@ -17,6 +17,8 @@ import {getCookie} from 'cookies-next';
 import  ChevronRight  from "@mui/icons-material/ChevronRight";
 import  ChevronLeft  from "@mui/icons-material/ChevronLeft";
 import { useEffect } from "react";
+import dynamic from "next/dynamic";
+import 'react-quill/dist/quill.snow.css';
 
 export async function getServerSideProps({req,res}){
     let token = getCookie('token',{req,res});
@@ -75,78 +77,48 @@ export default function profil({unitUsaha,option}){
     let [imageData, setImage] = useState([]);
     let [deletedImage, setDeletedImage] = useState([]);
     let [imageBackup, setImageBackup] = useState([]);
+    let [profileDesc, setProfileDesc] = useState("");
+    const ReactQuill = useMemo(() => dynamic(() => import('react-quill'), { ssr: false }),[]);
     //Next router
     const router = useRouter();
 
     //React hook form and YUP validator
-    const schema = yup.object().shape({
-        unit_usaha_id: yup.number(),
-        profil_usaha_desc: yup.string().required('Deskripsi unit usaha tidak boleh kosong'),
-        profilUsahaImages: yup.mixed().test("filesize", "Gambar tidak boleh kosong", (value) => {
-            if(editMode == false){
-                if(value[0] === undefined){
-                    return false;
-                }
-                return true;
-            }else{
-                return true;
-            }
-          }),
-    })
+    // const schema = yup.object().shape({
+    //     unit_usaha_id: yup.number(),
+    //     profil_usaha_desc: yup.string().required('Deskripsi unit usaha tidak boleh kosong'),
+    //     profilUsahaImages: yup.mixed().test("filesize", "Gambar tidak boleh kosong", (value) => {
+    //         if(editMode == false){
+    //             if(value[0] === undefined){
+    //                 return false;
+    //             }
+    //             return true;
+    //         }else{
+    //             return true;
+    //         }
+    //       }),
+    // })
 
     const { control, handleSubmit, getValues, setValue, reset, register , formState:{errors}} = useForm({
         defaultValues: {
             id: ''  ,
           unit_usaha_id:'',
-          profil_usaha_desc: "",
-          profilUsahaImages: [
-            {
-                isFile:false
-            },
-            {
-                isFile:false
-            },
-            {
-                isFile:false
-            },
-            {
-                isFile:false
-            },
-            {
-                isFile:false
-            },
-            {
-                isFile:false
-            },
-            {
-                isFile:false
-            },
-            {
-                isFile:false
-            },
-            {
-                isFile:false
-            },
-            {
-                isFile:false
-            },
-          ],
-        },
-        resolver: yupResolver(schema)
+          profil_usaha_desc: ""
+        }
       })
     
       const onSubmit = async (data) => {
         let token = getCookie('token');
+        console.log(profileDesc);
         setLoading(true);
-        data.deletedImage = deletedImage;
+        data.profil_usaha_desc = profileDesc
         if(data.id == ''){
-            data.profilUsahaImageFiltered = data.profilUsahaImages.map((image)=>{
-                if(image?.isFile != false){
-                    return image
-                }else{
-                    return undefined
-                }
-            })
+            // data.profilUsahaImageFiltered = data.profilUsahaImages.map((image)=>{
+            //     if(image?.isFile != false){
+            //         return image
+            //     }else{
+            //         return undefined
+            //     }
+            // })
             await axios.get('/sanctum/csrf-cookie',{
                 headers: { Authorization: `Bearer `+token},
                 withCredentials: true
@@ -165,9 +137,9 @@ export default function profil({unitUsaha,option}){
                 console.log(e)
             })
         }else{
-            if(data.profilUsahaImages == ''){
-                delete data.profilUsahaImages;
-            }
+            // if(data.profilUsahaImages == ''){
+            //     delete data.profilUsahaImages;
+            // }
             await axios.get('/sanctum/csrf-cookie',{
                 headers: { Authorization: `Bearer `+token},
                 withCredentials: true   
@@ -217,13 +189,14 @@ export default function profil({unitUsaha,option}){
         setValue('profil_usaha_desc','');
         setImage([]);
         setDeletedImage([])
+        setProfileDesc("")
     }
     
     let handleOpenEditForm = (data)=>{
         setEditMode(true);
         if(data.profil != null){
             setValue('id',data?.profil?.id);
-            setValue('profil_usaha_desc',data.profil?.profil_usaha_desc);
+            setProfileDesc(data.profil?.profil_usaha_desc);
         }
         setValue('unit_usaha_id',data?.id);
         let images = [];
@@ -291,17 +264,32 @@ export default function profil({unitUsaha,option}){
         setprofilUsahasLink(unitUsaha.links)
       }, [unitUsaha]);
 
+      var myToolbar= [
+        ['bold', 'italic', 'underline', 'strike'],       
+        ['blockquote', 'code-block'],
+    
+        [{ 'color': [] }, { 'background': [] }],         
+        [{ 'font': [] }],
+        [{ 'align': [] }],
+    
+        ['clean'],                                        
+        ['image'] //add image here
+    ];
+
     return (
         <>
             <AdminLayout handleLoading={loading}>
-                <Dialog open={AddForm} sx={{overflow:'hidden'}} onClose={handleCloseAddForm} fullWidth maxWidth='xs'>
+                <Dialog open={AddForm} sx={{overflow:'hidden'}} onClose={handleCloseAddForm} fullWidth maxWidth='md'>
                     <DialogContent>
                         <Typography variant="h5" sx={{marginBottom:'1em'}} fontWeight={600}>Edit Profil</Typography>
                         <form onSubmit={handleSubmit(onSubmit)}>
                             <FormControl sx={{width:'100%', marginY:'0.5em'}}>
-                                <RHFTextField hiddenLabel={false} label={'Deskripsi profil'} name={"profil_usaha_desc"} control={control}></RHFTextField>
+                                <ReactQuill  style={{height:'500px'}} theme="snow" value={profileDesc} onChange={setProfileDesc} ></ReactQuill>
                             </FormControl>
-                            <FormControl sx={{marginY:'0.5em',display:'flex', flexDirection:'row', flexWrap:'wrap', width:'99%',overflow:'hidden'}}>
+                            {/* <FormControl sx={{width:'100%', marginY:'0.5em'}}>
+                                <RHFTextField hiddenLabel={false} label={'Deskripsi profil'} name={"profil_usaha_desc"} control={control}></RHFTextField>
+                            </FormControl> */}
+                            {/* <FormControl sx={{marginY:'0.5em',display:'flex', flexDirection:'row', flexWrap:'wrap', width:'99%',overflow:'hidden'}}>
                                 <Box sx={{width:'49%'}}>
                                     <RHFDnd name="profilUsahaImages[0]" onDelete={()=>{handleDeletePreview(imageData[0]?.id)}} files={imageData[0] == undefined || imageData[0] == null ? '' : process.env.NEXT_PUBLIC_BACKEND_URL+'/storage/profil/'+imageData[0]?.path} control={control}></RHFDnd>
                                 </Box>
@@ -332,7 +320,7 @@ export default function profil({unitUsaha,option}){
                                 <Box sx={{width:'49%'}}>
                                     <RHFDnd name="profilUsahaImages[9]" onDelete={()=>{handleDeletePreview(imageData[4]?.id)}} files={imageData[4] == undefined || imageData[4] == null ? '' : process.env.NEXT_PUBLIC_BACKEND_URL+'/storage/profil/'+imageData[4]?.path} control={control}></RHFDnd>
                                 </Box>
-                            </FormControl>
+                            </FormControl> */}
                             <Button variant="contained" color="success" sx={{width:'100%'}} type="submit">{editMode ? 'Simpan Perubahan' : 'Simpan Perubahan'}</Button>
                         </form>
                     </DialogContent>
