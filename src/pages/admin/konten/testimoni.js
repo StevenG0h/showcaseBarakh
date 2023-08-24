@@ -100,7 +100,6 @@ export default function testimoni({data}){
         setLoading(true);
         console.log(data)
         if(editMode == false){
-            handleCloseAddForm();
             await axios.get('/sanctum/csrf-cookie',{
                 headers: { Authorization: `Bearer `+token},
                 withCredentials: true
@@ -110,6 +109,7 @@ export default function testimoni({data}){
                     withCredentials: true,
                 }).then((r)=>{
                     console.log(r.data)
+                
                     
                     router.replace(router.asPath);
                     handleCloseAddForm()
@@ -120,7 +120,6 @@ export default function testimoni({data}){
                 console.log(e)
             })
         }else{
-            handleCloseAddForm();
             await axios.get('/sanctum/csrf-cookie',{
                 headers: { Authorization: `Bearer `+token},
                 withCredentials: true
@@ -130,6 +129,7 @@ export default function testimoni({data}){
                     withCredentials: true,
                 }).then((r)=>{
                     console.log(r.data)
+                
                     router.replace(router.asPath);
                     handleCloseAddForm()
                 }).catch((e)=>{

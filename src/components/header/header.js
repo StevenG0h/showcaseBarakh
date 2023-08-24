@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import style from './header.module.css';
 import Image from 'next/image';
-import ImageBrand from '../../../public/assets/image/logo.png';
+import ImageBrand from '../../../public/assets/images/LogoBarakhFix_1.png';
 import Link from 'next/link';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {

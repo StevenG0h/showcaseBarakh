@@ -13,6 +13,7 @@ import {useState} from "react";
 import { ConfirmDialog } from "../../components/dialog/ConfirmDialog";
 import { useRouter } from "next/router";
 import Head from "next/head";
+import { Box, Breadcrumbs, Link, Typography } from "@mui/material";
 const poppins = Poppins({
     weight: '500',
     subsets: ['latin'],
@@ -71,9 +72,19 @@ const detailProduct = ({data}) => {
             <main className={poppins.className}>
             <Header/>
                 <ConfirmDialog onConfirm={() => { router.replace('/cart') }} onCancel={() => { setOpenTransaction(false) }} msg={'Produk berhasil ditambahkan ke keranjang, anda ingin mengakses keranjang?'} open={openTransaction}></ConfirmDialog>
+                    
                     <div className={style.container}>
+                    <Box sx={{color:'#ffffff',marginBottom:'1em'}}>
+                            <Breadcrumbs sx={{color:'#ffffff'}} aria-label="breadcrumb">
+                                <Link sx={{color:'#ffffff'}} underline="hover" color="inherit" href="/katalog">
+                                    Katalog Produk
+                                </Link>
+                                <Typography sx={{color:'#D5F06B'}}>{data.productName}</Typography>
+                            </Breadcrumbs>
+                        </Box>
                         <RatingModal id={data.id} open={open} onClose={handleClose}></RatingModal>
                         <div className={style.containerDetailProduct}>
+                            
                             <div className={style.fieldImage}>
                                 <img src={process.env.NEXT_PUBLIC_BACKEND_URL+"/storage/product/"+data.product_images[0].path} alt="Gambar" className={style.imageDetail} />
                             </div>

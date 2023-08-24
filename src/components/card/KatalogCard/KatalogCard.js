@@ -52,11 +52,29 @@ export default function KatalogCard({ row, isCart=false }) {
                     isInCart = true;
                 }
             })
+            console.log(isInCart);
             if (isInCart == false) {
-                cookieDatas.push({ productId: data.id, item: 1, productData: data });
-                setCookie('barakh-cart-cookie', cookieDatas);
+                let images = data.product_images.map(data=>{
+                    return {
+                        path: data.path
+                    }
+                })
+                cookieDatas.push({ productId: data.id, item: 1, productData: {
+                    id: data.id,
+                    productName: data.productName,
+                    productPrice: data.productPrice,
+                    productStock: data.productStock,
+                    product_images: [{path: images[0].path}],
+                    unit_usaha_id: data.unit_usaha_id
+                } });
+                try{
+                    setCookie('barakh-cart-cookie', cookieDatas);
+                }catch(e){
+                    console.log(e)
+                }
             }
         }
+        console.log(JSON.parse(getCookie('barakh-cart-cookie')))
     }
 
     let [newTransactionStatus, setNewTransactionStatus] = useState(false);
@@ -92,7 +110,7 @@ export default function KatalogCard({ row, isCart=false }) {
                 <p className={style.kategoriProduct}>{unit_usaha.usahaName}</p>
                 <p className={style.titleCard}>{productName}</p>
                 <RatingLabel value={row.rating} />
-                <p className={style.price}>Harga : <span className={style.nominal}>{formatCurrency(productPrice)}</span></p>
+                <p className={style.price}>Harga : <span className={style.nominal}>Rp.{formatCurrency(productPrice)}</span></p>
                 <p className={style.descriptionCard}>{
                     productDesc
                 }</p>

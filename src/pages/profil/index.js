@@ -23,7 +23,7 @@ const Profile = () => {
                         <div className={style.fieldSekilasEx}>
                             <p className={style.sekilas} >Sekilas Tentang</p>
                             <div className={style.wrapDescSekilas} >
-                                <p className={style.descriptions}>Al-Mubarok merupakan unit usaha yang dimiliki oleh pesantren Ibnu Al-Mubarkh, yang berdiri sejak 2020. Awal mula terbentuknya Unit Usaha ini adalah karena ide dari orang tua siswa dan pemilik yayasan. Al-Mubarakh bergerak di bidang agama dan produk yang dimiliki merupakan produk lokal yang ramah lingkungan.</p>
+                                <p className={style.descriptions}>Al-Mubarok merupakan unit usaha yang dimiliki oleh Lembaga Pendidikan Ibnu Al-Mubarkh, yang berdiri sejak 2020. Awal mula terbentuknya Unit Usaha ini adalah karena ide dari orang tua siswa dan pemilik yayasan. Al-Mubarakh bergerak di bidang agama dan produk yang dimiliki merupakan produk lokal yang ramah lingkungan.</p>
                             </div>
                         </div>
                     </div>
@@ -61,13 +61,14 @@ const Profile = () => {
                                 <div className={style.columInfo}>
                                     <p className={style.titleInfo}>Bidang Usaha</p>
                                     <ul className={style.ul}>
-                                        <li className={style.li}><Link href="" className={style.listUnitUsaha}>Rumah Jahit</Link></li>
-                                        <li className={style.li}><Link href="" className={style.listUnitUsaha}>Pendidikan</Link></li>
-                                        <li className={style.li}><Link href="" className={style.listUnitUsaha}>Pertanian</Link></li>
-                                        <li className={style.li}><Link href="" className={style.listUnitUsaha}>Perternakan</Link></li>
-                                        <li className={style.li}><Link href="" className={style.listUnitUsaha}>Perikanan</Link></li>
-                                        <li className={style.li}><Link href="" className={style.listUnitUsaha}>Dapur UTI</Link></li>
-                                        <li className={style.li}><Link href="" className={style.listUnitUsaha}>Bank Sampah</Link></li>
+                                        <li className={style.li}>Bank Sampah Agrowisata Ibnu Al-Mubarok</li>
+                                        <li className={style.li}>Peternakan & Perikanan</li>
+                                        <li className={style.li}>Pertanian</li>
+                                        <li className={style.li}>Briket Arang</li>
+                                        <li className={style.li}>Clean & Wash</li>
+                                        <li className={style.li}>Barakh Fashion & Craft</li>
+                                        <li className={style.li}>Kuliner</li>
+                                        <li className={style.li}>Lembaga Pelatihan & Konsultasi</li>
                                     </ul>
                                 </div>
                                 <div className={style.columInfo}>

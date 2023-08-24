@@ -3,8 +3,8 @@ import Edit from "@mui/icons-material/Edit";
 import {Button, IconButton, TableCell, TableRow} from "@mui/material"
 import { useRouter } from "next/router";
 
-export default function UsahaTableRow({row, num, onShowImage, onDelete, onEdit}){
-    let {usahaName, usahaImage, usahaDesc, products, created_at} = row;
+export default function UsahaTableRow({row, num, onShowImage, onDelete, onEdit, onShowLogo}){
+    let {usahaName, usahaImage, usahaDesc, products, created_at, unitUsahaLogo} = row;
     const router = useRouter()
     return (
         <>
@@ -26,6 +26,11 @@ export default function UsahaTableRow({row, num, onShowImage, onDelete, onEdit})
                 </TableCell>
                 <TableCell>
                     {products.length}
+                </TableCell>
+                <TableCell>
+                    <Button sx={{textAlign:'left'}} color="success" onClick={onShowLogo}>
+                        {unitUsahaLogo}
+                    </Button>
                 </TableCell>
                 <TableCell>
                     <Button sx={{textAlign:'left'}} color="success" onClick={onShowImage}>

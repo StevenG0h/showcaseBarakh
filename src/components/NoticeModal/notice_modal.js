@@ -18,7 +18,7 @@ const Message = ({ isVisible, CloseClick, handleNext, total }) => {
                 <div className={style.description}>Kami hanya menyediakan pembayaran VIA Aplikasi Whatsapp</div>
                 <div className={style.fieldTotal}>
                     <div className={style.textTotal}>Total Belanja Anda</div>
-                    <div className={style.Total}>{formatCurrency(total)}</div>
+                    <div className={style.Total}>Rp.{formatCurrency(total)}</div>
                 </div>
                 <button onClick={()=>handleNext()} className={style.button}>Lanjutkan Pembayaran</button>
             </div>

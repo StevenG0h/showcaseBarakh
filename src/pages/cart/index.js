@@ -17,13 +17,14 @@ import { Box, Button, Checkbox, Container, Dialog, DialogContent, DialogTitle, F
 import {useEffect} from 'react'
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faMinus, faPlus, faShoppingCart } from "@fortawesome/free-solid-svg-icons";
+import { faMinus, faPlus, faShoppingCart, faCheck } from "@fortawesome/free-solid-svg-icons";
 import RHFTextField from '../../components/form/RHFTextField';
 import RHFAutocomplete from '../../components/form/RHFAutocomplete';
 import { getAllKecamatanById, getAllKelurahanById, getAllKotaById, getAllProvinsi } from '../../helper/dataOptions';
 import KatalogCard from "../../components/card/KatalogCard/KatalogCard";
 import { Router, useRouter } from "next/router";
 import Head from "next/head";
+import { ConfirmDialog } from "../../components/dialog/ConfirmDialog";
 // import {Checkbox} from "@mui/material";
 // import WhatsApp from "../../components/Whatsapp/WhatsApp"
 
@@ -63,6 +64,7 @@ const Cart = ({ cookie, option, totalPayment, products }) => {
     let [cartList, setCart] = useState(cookie);
     let [product, setProduct] = useState(products);
     let [showCheckout, setShowCheckout] = useState(cookie.length != 0)
+    let [showAlert, setShowAlert] = useState(false);
     let [total, setTotal] = useState(totalPayment);
     const router = useRouter()
     let [checked, setChecked] = useState([]);
@@ -82,7 +84,7 @@ const Cart = ({ cookie, option, totalPayment, products }) => {
     const handleChangeItem = (id, change) => {
         let newCartList = cartList.map((cart) => {
             if (cart.productData.id === id) {
-                if (cart.item + change < cart.productData.productStock) {
+                if (cart.item + change <= cart.productData.productStock) {
                     cart.item += change
                     if (cart.item > 0 == false) {
                         cart.item = 1;
@@ -128,44 +130,65 @@ const Cart = ({ cookie, option, totalPayment, products }) => {
     })
 
     const onSubmit = async (data) => {
-        cartList.map((product) => {
-
-        })
-        const createproduk = await axios.post('/api/client/', data, {
+        
+        const createproduk = await axios.post('/api/client', data, {
             headers: {
                 'Content-Type': 'multipart/form-data'
             }
         });
+        let unitUsahas = [];
+        let cart = cartList.filter((cartData)=>{
+            if(unitUsahas.includes(cartData.productData.unit_usaha_id) == false){
+                unitUsahas.push(cartData.productData.unit_usaha_id)
+            }
+            if(checked.includes(cartData.productData.id)== true){
+                return true;
+            }
+        })
         data.transactionType = "PENJUALAN"
-        data.product = cartList;
         data.transactionAddress = data.clientAddress;
         data.provinsi_id = location.provinsi;
         data.kota_id = location.kota;
         data.kecamatan_id = location.kecamatan;
         data.client_id = createproduk.data.id;
         data.kelurahan_id = data.clientKelurahan;
-        console.log(data)
-        const createTransaction = await axios.post('/api/transaksi', data, {
-            Headers: {
-                'Content-Type': 'multipart/form-data'
+        await unitUsahas.map(async(unitUsaha)=>{
+            console.log('unitUsaha',unitUsaha)
+            let unitUsahaProduct = cartList.filter((cartData)=>{
+                if(cartData.productData.unit_usaha_id == unitUsaha){
+                    return true;
+                }
+            })
+            data.product = unitUsahaProduct;
+            const createTransaction = await axios.post('/api/transaksi', data, {
+                Headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            })
+            let msg = 'Halo, '+data.clientName+', berikut ini data diri dan belanjaan kamu'+'%0a'+
+            'Alamat: '+data.clientAddress +'%0a'+
+            'Nama: '+data.clientName + '%0a'+
+            'Email: '+data.clientNum + '%0a'+
+            'Keranjang: '+'\n';
+            let total = 0;
+            console.log('filtered product', unitUsahaProduct);
+            let product = unitUsahaProduct.map((produk)=>{
+                let cart = '- '+data.product.productData.productName + ' ' + produk.item + 'x '+produk.productData.productPrice+'%0a'
+                total += produk.productData.productPrice * produk.item
+                return msg+= cart
+            })
+            msg = msg+'%0a'+ 'total: Rp.' + total
+        
+            window.open('https://api.whatsapp.com/send/?phone='+createTransaction.data.adminNumber.unit_usaha.admin.adminNum+"&text="+msg);
+            
+        })
+        let newCart = cartList.filter((cartData)=>{
+            if(checked.includes(cartData.productData.id)!=true){
+                return cartData;
             }
         })
-        let msg = 'Alamat: '+data.clientAddress +'%0a'+
-                'Nama: '+data.clientName + '%0a'+
-                'Email: '+data.clientNum + '%0a'+
-                'Keranjang: '+'\n';
-        let total = 0;
-        let product = data.product.map((produk)=>{
-            let cart = '- '+produk.productData.productName + ' ' + produk.item + 'x '+produk.productData.productPrice+'%0a'
-            total += produk.productData.productPrice * produk.item
-            return msg+= cart
-        })
-        msg += msg+'%0a'+ 'total: Rp.' + total
-    
-        window.open('https://api.whatsapp.com/send/?phone='+createTransaction.data.adminNumber.unit_usaha.admin.adminNum+"&text="+msg);
-
-        setCookie('barakh-cart-cookie', []);
-        setCart([]);
+        setCookie('barakh-cart-cookie', newCart);
+        setCart(newCart);
         handleCloseCheckoutDialog()
         // router.replace(router.asPath);
     }
@@ -263,8 +286,22 @@ const Cart = ({ cookie, option, totalPayment, products }) => {
         setProduct(product)
       }, [cookie, option, totalPayment, product]);
 
+      function handleCheckAll(){
+            console.log(cartList.length);
+          if(checked.length < cartList.length){
+            let check = [];
+            cartList.map((cart)=>{
+                check.push(cart.productId)
+            })
+            console.log(check)
+            setChecked(check)
+        }
+        console.log(checked)
+      }
+
     return (
         <main className={poppins.className} style={{ backgroundColor: '#fff' }}>
+            <ConfirmDialog open={showAlert} onCancel={()=>setShowAlert(false)} onConfirm={()=>setShowAlert(false)} msg={"Anda harus memilih salah satu produk untuk melanjutkan checkout"}></ConfirmDialog>
             <Head>
                 <title>Albarakh | Keranjang</title>
             </Head>
@@ -277,8 +314,9 @@ const Cart = ({ cookie, option, totalPayment, products }) => {
                                 <p className={style.title}>Keranjang</p>
                                 <div className={style.topCart}>
                                     <div className={style.pilih}>
-                                        <input className={style.input} type="checkbox" />
-                                        <p className={style.textPilih}>Pilih Semua</p>
+                                        <Button color="success" variant="contained" startIcon={<FontAwesomeIcon icon={faCheck}></FontAwesomeIcon>} onClick={()=>handleCheckAll()}>
+                                            Pilih Semua
+                                        </Button>
                                     </div>
                                     <button onClick={() => { handleDeleteCart() }} className={style.buttonHapus}>Hapus</button>
                                 </div>
@@ -286,16 +324,18 @@ const Cart = ({ cookie, option, totalPayment, products }) => {
                                 <div className={style.mainCart}>
                                     <div className={style.fieldList}>
                                         {
-                                            cartList.map(({ item, productData }) => {
+                                            cartList.map(({ item, productData, productId }) => {
                                                 return (
                                                     <div key={productData.id} onChange={(e) => handleChangeItem(e.target.value)} className={style.fieldListProduct}>
                                                         <input onChange={(e) => {
                                                             if (e.target.checked === true) {
-                                                                handleCartChecked(e.target.value)
+                                                                handleCartChecked(Number(e.target.value))
+                                                                console.log(checked)
                                                             } else {
-                                                                handleCartUnchecked(e.target.value)
+                                                                handleCartUnchecked(Number(e.target.value))
+                                                                console.log(checked)
                                                             }
-                                                        }} className={style.inputt} type="checkbox" value={productData.id} />
+                                                        }} className={style.inputt} checked={checked.includes(Number(productId))} type="checkbox" value={productData.id} />
                                                         <div className={style.list}>
                                                             <div className={style.image}>
                                                                 <img style={{ aspectRatio: '2/2', objectFit: 'cover', margin: 'auto', borderRadius: '0.6em', width: '100%', height: '100%' }} src={process.env.NEXT_PUBLIC_BACKEND_URL + "/storage/product/" + productData.product_images[0].path} alt="Gambar" className={style.imageCart} />
@@ -338,7 +378,13 @@ const Cart = ({ cookie, option, totalPayment, products }) => {
                                                 <div className={style.total}>Rp.{formatCurrency(total)}</div>
                                             </div>
                                         </div>
-                                        <Button onClick={() => setShowNotice(true)} sx={{ py: '1em' }} className={style.buttonBuy} variant="contained" startIcon={<FontAwesomeIcon icon={faShoppingCart}></FontAwesomeIcon>}>
+                                        <Button onClick={() => {
+                                            if(checked.length > 0){
+                                                setShowNotice(true)
+                                            }else{
+                                                setShowAlert(true)
+                                            }
+                                        }} sx={{ py: '1em' }} className={style.buttonBuy} variant="contained" startIcon={<FontAwesomeIcon icon={faShoppingCart}></FontAwesomeIcon>}>
                                             Lanjutkan Pembayaran
                                         </Button>
                                     </div>
@@ -348,7 +394,7 @@ const Cart = ({ cookie, option, totalPayment, products }) => {
                     ) :
                     <Container>
                         <Box sx={{ display: 'flex', flexDirection: 'column', marginBottom: '2em' }}>
-                            <img className={style.imageProdukKosong} src={'http://localhost:3000/assets/image/Business, Startup, workflow, error _ exhaustion, exhausted, work, laptop, computer, support 1.png'}></img>
+                            <img className={style.imageProdukKosong} src={'http://albarakh.com/assets/image/Business, Startup, workflow, error _ exhaustion, exhausted, work, laptop, computer, support 1.png'}></img>
                             <Typography textAlign={'center'}>
                                 Yuk isi dengan produk produk unggulan!
                             </Typography>

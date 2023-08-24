@@ -5,8 +5,7 @@ import {Button, IconButton, TableCell, TableRow} from "@mui/material"
 
 export default function UserTableRow({row, num, onShowImage, onDelete, onEdit}){
     let {email, admins} = row;
-    console.log(row);
-    let {adminName, adminNum, adminLevel} =  admins
+    let {adminName, adminNum, adminLevel,role} =  admins;
     return (
         <>
         
@@ -24,7 +23,7 @@ export default function UserTableRow({row, num, onShowImage, onDelete, onEdit}){
                     {adminNum}
                 </TableCell>
                 <TableCell>
-                    {adminLevel == 1 ?'admin':'pegawai'}
+                    {role?.roleName}
                 </TableCell>
                 <TableCell align="center">
                     <IconButton onClick={onEdit} sx={{marginX:'0.5em'}} variant="contained" color="warning" >

@@ -2,7 +2,7 @@ import Delete from "@mui/icons-material/Delete";
 import Edit from "@mui/icons-material/Edit";
 import Details from "@mui/icons-material/Details";
 import {Button, IconButton, TableCell, TableRow} from "@mui/material"
-import { formatDate } from "../../helper/data";
+import { fDate } from "../../helper/date";
 
 export default function TestimoniTableRow({row, num, onShowImage, onDelete, onEdit}){
     let {clientName, testimonyDesc, created_at, updated_at} = row;
@@ -20,10 +20,10 @@ export default function TestimoniTableRow({row, num, onShowImage, onDelete, onEd
                     {testimonyDesc}
                 </TableCell>
                 <TableCell>
-                    {formatDate(created_at)}
+                    {fDate(created_at)}
                 </TableCell>
                 <TableCell>
-                    {formatDate(updated_at)}
+                    {fDate(updated_at)}
                 </TableCell>
                 <TableCell align="center" >
                     <IconButton onClick={onEdit} sx={{marginX:'0.5em'}} variant="contained" color="warning" >

@@ -280,6 +280,7 @@ export default function admin({data}){
         {value: 'Nama unit usaha',align: 'left'},
         {value: 'Deskripsi',align: 'left'},
         {value: 'Jumlah Produk',align: 'left'},
+        {value: 'Logo',align: 'left'},
         {value: 'Gambar',align: 'left'},
         {value: 'Action',align: 'center'}
     ]
@@ -342,31 +343,6 @@ export default function admin({data}){
                                 <RHFDnd control={control} name={'usahaImage'} files={process.env.NEXT_PUBLIC_BACKEND_URL+'/storage/unitUsaha/'+getValues('usahaImage')}>            
                                 </RHFDnd>
                             </FormControl>
-                            {
-                                editMode == false ? (
-                                    <>
-                                        <Typography variant="h6" sx={{borderBottom:'1px solid black', paddingBottom:'0.5em',marginTop:'1em'}}>
-                                            Data Admin
-                                        </Typography>
-
-                                        <FormControl sx={{width:'100%', marginY:'0.5em'}}>
-                                            <RHFTextField hiddenLabel={false} label={'Nama'} name={"adminName"} control={control}></RHFTextField>
-                                        </FormControl>
-                                        <FormControl sx={{width:'100%', marginY:'0.5em'}}>
-                                            <RHFTextField hiddenLabel={false} label={'Nomor Whatsapp'} name={"adminNum"} control={control}></RHFTextField>
-                                        </FormControl>
-                                        <FormControl sx={{width:'100%', marginY:'0.5em'}}>
-                                            <RHFTextField hiddenLabel={false} label={'Email'} name={"email"} control={control}></RHFTextField>
-                                        </FormControl>
-                                        <FormControl sx={{width:'100%', marginY:'0.5em'}}>
-                                            <RHFTextField type={'password'} hiddenLabel={false} label={'Password'} name={"password"} control={control}></RHFTextField>
-                                        </FormControl>
-                                        <FormControl sx={{width:'100%', marginY:'0.5em'}}>
-                                            <RHFTextField type={'password'} hiddenLabel={false} label={'Ketik Ulang Password'} name={"password_confirmation"} control={control}></RHFTextField>
-                                        </FormControl>
-                                    </>
-                                ) : ''
-                            }
                             
                             <Button variant="contained" color="success" sx={{width:'100%'}} type="submit">{editMode ? 'Simpan Perubahan' : 'Tambah Unit Usaha'}</Button>
                         </form>
@@ -400,6 +376,7 @@ export default function admin({data}){
                                             onDelete={() => setDeleteUnitUsaha(map)} 
                                             onEdit={() => handleOpenEditForm(map)} 
                                             onShowImage={()=> handleShowImage(map.usahaImage)}
+                                            onShowLogo={()=> handleShowImage('/logo/'+map.unitUsahaLogo)}
                                             num={++num} row={map}
                                             >
                                             </UsahaTableRow>

@@ -9,7 +9,7 @@ import ShoppingCart from "@mui/icons-material/ShoppingCart";
 import Circle from "@mui/icons-material/Circle"; 
 import Exit from "@mui/icons-material/ExitToApp"; 
 import Image from "next/image";
-import logo from "../../../public/assets/image/logo.png"
+import logo from "../../../public/assets/images/LogoBarakhFix_1.png"
 import { useState } from "react";
 import { useRouter } from "next/router";
 import {ConfirmDialog} from '../../components/dialog/ConfirmDialog';
@@ -21,7 +21,7 @@ export default function NavVertical({data}){
     let router = useRouter();
     let [openList,setOpenList] = useState(false);
     let handleChangePage = (url)=>{
-        router.push('http://localhost:3000'+url)
+        router.push('http://albarakh.com'+url)
     }
     let [openLogout, setOpenLogout]= useState(false);
     let handleOpenLogout = ()=>{

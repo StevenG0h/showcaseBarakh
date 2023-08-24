@@ -68,6 +68,11 @@
     margin-bottom: 8px;
 }
 
+.product_usaha{
+    width: 60%;
+    margin:auto;
+}
+
 .cardDescription{
     font-style: normal;
     font-weight: 400;

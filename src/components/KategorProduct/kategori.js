@@ -15,7 +15,7 @@ const ProductCategory = ({unitUsaha}) => {
                 {
                     unitUsaha.map((data)=>{
                         return (
-                <Link href="/detailKategori" className={style.link}>
+                <Link href="usaha" className={style.link}>
                     <div className={style.katalogWrapper}>
                         <img className={style.imageKatalog} src={process.env.NEXT_PUBLIC_BACKEND_URL+"/storage/unitUsaha/"+data.usahaImage} alt='Gambar' />
                         <p className={style.titleKatalog}>{data.usahaName}</p>

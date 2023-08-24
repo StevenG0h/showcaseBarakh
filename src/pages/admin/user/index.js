@@ -5,8 +5,9 @@ import * as yup from "yup";
 import {yupResolver} from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 import AdminLayout from "../../../layouts/adminLayout/AdminLayout";
-import { Alert, Box, Button, Card, Dialog, DialogContent, FormControl, MenuItem, Select, Table, TableBody, TableCell, TableContainer, TableRow, Typography } from "@mui/material";
+import { Alert, Box, Button, Card, Dialog, DialogContent, FormControl, InputLabel, MenuItem, Select, Table, TableBody, TableCell, TableContainer, TableRow, Typography } from "@mui/material";
 import RHFTextField from "../../../components/form/RHFTextField";
+import RHFAutocomplete from "../../../components/form/RHFAutocomplete";
 import CustomTableHead from "../../../components/table/CustomTableHead";
 import UserTableRow from "../../../sections/user/UserTableRow";
 import {getCookie} from 'cookies-next';
@@ -14,6 +15,7 @@ import {getCookie} from 'cookies-next';
 import  ChevronRight  from "@mui/icons-material/ChevronRight";
 import  ChevronLeft  from "@mui/icons-material/ChevronLeft";
 import { useEffect } from "react";
+import { getAllRole, getAllUnitUsaha } from "../../../helper/dataOptions";
 
 export async function getServerSideProps({req,res}){
     let token = getCookie('token',{req,res});
@@ -26,7 +28,7 @@ export async function getServerSideProps({req,res}){
             props:{},
           };
     }
-    await axios.get('/user',{
+    let user = await axios.get('/api/admin/user',{
         headers:{
             Authorization: 'Bearer '+token,
         },
@@ -47,9 +49,16 @@ export async function getServerSideProps({req,res}){
             },
             withCredentials:true
         });
+        console.log(user.data)
+        let role = await getAllRole();
+        let unitusaha = await getAllUnitUsaha();
         return {
             props:{
                 user: user.data,
+                options:{
+                    unitUsaha: unitusaha,
+                    role:role
+                }
             }
         }
     }catch(e){
@@ -64,14 +73,16 @@ export async function getServerSideProps({req,res}){
     }
 }
 
-export default function product({user}){
+export default function product({user,options}){
     let [loading, setLoading] = useState(false)
     let token = getCookie('token');
-    let title = 'User';
+    let title = 'Pegawai';
     let [products, setProducts] = useState(user.data);
     let [productsLink, setProductsLink] = useState(user.links);
     let [formTitle, setFormTitle] = useState('');
     let [error, setError] = useState('');
+    let [unitUsahaData, setUnitUsaha] = useState('');
+    let [role, setRole] = useState('');
     //Next router
     const router = useRouter();
 
@@ -82,26 +93,35 @@ export default function product({user}){
         adminNum: yup.string().required('Nomor WhatsApp tidak boleh kosong'),
         email: yup.string().email().required('Email tidak boleh kosong'),
         password: yup.string(),
+        unit_usaha_id: yup.string(),
+        role_id: yup.string(),
         password_confirmation : yup.string().oneOf([yup.ref('password')], 'Password Anda tidak cocok')
     })
 
-    const { control, handleSubmit, setValue, reset, register , formState:{errors}} = useForm({
+    const { control, handleSubmit, setValue, getValues, reset, register , formState:{errors}} = useForm({
         defaultValues: {
           id:'',
           productStock:0,
-          productPrice:0,
+          productPrice:0
         },
         resolver: yupResolver(schema)
       })
     
       const onSubmit = async (data) => {
+        let finalData = data;
+        finalData.role_id = role;
+        finalData.unit_usaha_id = unitUsahaData;
+        console.log(finalData)
+        console.log(role)
+        console.log(unitUsahaData)
         setLoading(true)
         if(editMode == false){
+            console.log(finalData)
             await axios.get('/sanctum/csrf-cookie',{
                 headers: { Authorization: `Bearer `+token},
                 withCredentials: true
             }).then(async (r)=>{
-                await axios.post('/api/admin/register',data,{
+                await axios.post('/api/admin/register',finalData,{
                     headers: { Authorization: `Bearer `+token,
                     'Content-Type': 'multipart/form-data'
                     },
@@ -119,11 +139,12 @@ export default function product({user}){
                 console.log(e)
             })
         }else{
+            console.log(finalData)
             await axios.get('/sanctum/csrf-cookie',{
                 headers: { Authorization: `Bearer `+token},
                 withCredentials: true
             }).then(async (r)=>{
-                await axios.put('/api/admin/admin/'+data.id,data,{
+                await axios.put('/api/admin/admin/'+data.id,finalData,{
                     headers: { Authorization: `Bearer `+token
                     },
                     withCredentials: true
@@ -169,6 +190,9 @@ export default function product({user}){
         setValue('adminName',data.admins.adminName);
         setValue('adminNum',data.admins.adminNum);
         setValue('email',data.email);
+        setValue('unit_usaha_id',data.unit_usaha_id)
+        setUnitUsaha(data.unit_usaha_id)
+        setRole(data.role_id)
         setFormTitle(data.productName);
         setAddForm(true)
     }
@@ -213,7 +237,7 @@ export default function product({user}){
         {value: 'Nama',align: 'left'},
         {value: 'Email',align: 'left'},
         {value: 'Nomor Whatsapp',align: 'left'},
-        {value: 'Level',align: 'left'},
+        {value: 'Jabatan',align: 'left'},
         {value: 'Action',align: 'center'}
     ]
     
@@ -229,7 +253,7 @@ export default function product({user}){
             <AdminLayout handleLoading={loading}>
                 <Dialog open={AddForm} onClose={handleCloseAddForm} fullWidth maxWidth='xs'>
                     <DialogContent>
-                        <Typography variant="h5" sx={{marginBottom:'1em'}} fontWeight={600}>Edit Pegawai</Typography>
+                        <Typography variant="h5" sx={{marginBottom:'1em'}} fontWeight={600}>{editMode == true ? 'Edit' : 'Tambah'} Pegawai</Typography>
                         <form onSubmit={handleSubmit(onSubmit)}>
                             {
                                 error != '' ?
@@ -248,16 +272,27 @@ export default function product({user}){
                                 <RHFTextField hiddenLabel={false} label={'Email'} name={"email"} control={control}></RHFTextField>
                             </FormControl>
                             <FormControl sx={{width:'100%', marginY:'0.5em'}}>
+                            <RHFAutocomplete defaultValue={getValues('unit_usaha_id')} name={'unit_usaha_id'} label={'Unit Usaha'} handleChange={(id) => { setUnitUsaha(id) }} options={options.unitUsaha} control={control} disable={false} hiddenLabel={false}></RHFAutocomplete>
+
+                            </FormControl>
+                            <FormControl sx={{width:'100%', marginY:'0.5em'}}>
+                            <RHFAutocomplete defaultValue={getValues('role_id')} name={'role_id'} label={'Role'} handleChange={(id) => { setRole(id) }} options={options.role} control={control} disable={false} hiddenLabel={false}></RHFAutocomplete>
+
+                            </FormControl>
+                            <FormControl sx={{width:'100%', marginY:'0.5em'}}>
                                 <RHFTextField type={'password'} hiddenLabel={false} label={'Password'} name={"password"} control={control}></RHFTextField>
                             </FormControl>
                             <FormControl sx={{width:'100%', marginY:'0.5em'}}>
                                 <RHFTextField type={'password'} hiddenLabel={false} label={'Ketik Ulang Password'} name={"password_confirmation"} control={control}></RHFTextField>
                             </FormControl>
-                            <Button variant="contained" color="success" sx={{width:'100%'}} type="submit">{editMode ? 'Simpan Perubahan' : 'Tambah Unit Usaha'}</Button>
+                            <Button variant="contained" color="success" sx={{width:'100%'}} type="submit">{editMode ? 'Simpan Perubahan' : 'Tambah Pegawai'}</Button>
                         </form>
                     </DialogContent>
                 </Dialog>
                 <Typography variant="h3" color={'#94B60F'} sx={{textDecoration:'underline'}} fontWeight={400}>{title}</Typography>
+                
+                <Button sx={{marginTop:'1em'}} variant="contained" color="success" onClick={()=>handleOpenAddForm()}>Tambah Pegawai</Button>
+                
                 <Card sx={{marginY:'1em'}}>
                     <TableContainer>
                         <Table>

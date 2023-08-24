@@ -33,9 +33,9 @@ export default function ProductTableRow({row, num, onShowImage, onDelete, onEdit
                     <IconButton onClick={onEdit} sx={{marginX:'0.5em'}} variant="contained" color="warning" >
                         <Edit></Edit>
                     </IconButton>
-                    {/* <IconButton onClick={onDelete} sx={{marginX:'0.5em'}} variant="contained" color="error" >
+                    <IconButton onClick={onDelete} sx={{marginX:'0.5em'}} variant="contained" color="error" >
                         <Delete></Delete>
-                    </IconButton> */}
+                    </IconButton>
                 </TableCell>
             </TableRow>
         </>

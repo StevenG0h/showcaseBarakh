@@ -32,9 +32,9 @@ const UnitUsaha = ({data})=> {
     let [selected, setSelected] = useState(data.unitUsaha.data[0].id);
     let [profil, setProfil] = useState(data.profil);
     let unitUsaha = data.unitUsaha.data;
-    console.log(profil);
     let handleChange = async (data)=>{
       let unitUsaha = await axios.get('/api/profil/'+data);
+      console.log(unitUsaha);
       setProfil(unitUsaha?.data)
     }
 
@@ -68,6 +68,7 @@ const UnitUsaha = ({data})=> {
                                     
                                         <ListItem sx={{padding:0}}>
                                             <ListItemButton onClick={()=>{
+                                              console.log(map)
                                             handleChange(map.id)
                                           }}>
                                                 <Box sx={{width:'2.5em',aspectRatio:'1/1',marginRight:'0.5em',padding:0, borderRadius:'100%',overflow:'hidden',display:'flex',justifyContent:"center",alignItems:"center",backgroundColor:'#ffffff'}}>
@@ -119,7 +120,7 @@ const UnitUsaha = ({data})=> {
                                             {++index}.{product.productName}
                                     
                                             </Typography>
-                                            <img src={process.env.NEXT_PUBLIC_BACKEND_URL+'/storage/product/'+product.product_images[0].path}></img>
+                                            <img className={style.product_usaha} src={process.env.NEXT_PUBLIC_BACKEND_URL+'/storage/product/'+product.product_images[0]?.path}></img>
                                             </>
 
                                           )

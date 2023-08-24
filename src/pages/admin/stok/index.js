@@ -134,8 +134,9 @@ export default function product({produk, options}){
                 },
                 withCredentials:true
             });
+            console.log(unitUsaha);
             setProducts(unitUsaha?.data?.data)
-            setProductsLink(unitUsaha?.data.data.links)
+            setProductsLink(unitUsaha?.data.links)
         }else{
             let unitUsaha = await axios.get('/api/admin/produk/', {
                 headers:{
@@ -219,7 +220,7 @@ export default function product({produk, options}){
                     </DialogContent>
                 </Dialog>
                 <Typography variant="h3" color={'#94B60F'} fontWeight={400} sx={{textDecoration:'underline'}}>{title}</Typography>
-                <Box sx={{display:'flex', gap:'1em', marginY:'1em', flexDirection:'row'}}>
+                <Box sx={{display:'flex', gap:'1em', marginY:'1em', flexDirection:'row',flexWrap:'wrap'}}>
                     <Typography variant="h6" sx={{margin:0}}>
                         Unit Usaha:
                     </Typography>

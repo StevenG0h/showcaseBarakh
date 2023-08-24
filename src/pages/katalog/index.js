@@ -217,7 +217,7 @@ const Katalog = ({products, unitUsaha}) => {
                             }
                             
                         </List>
-                        <Box container sx={{ justifyContent:'start',gap:'1em', display:'flex', flexWrap:'wrap'}}>
+                        <Box container sx={{width:'100%',height:'fit-content', justifyContent:'start',gap:'1em', display:'flex', flexWrap:'wrap'}}>
                             {
                                 product.length != 0 ? product.map((product)=>{
                                     return (
@@ -240,10 +240,7 @@ const Katalog = ({products, unitUsaha}) => {
                                 <Typography sx={{color:'white'}} marginBottom={'-12%'} variant="h4" fontWeight={600} textAlign={'center'}>
                                     Produk Tidak Ditemukan
                                 </Typography>
-                                <img style={{width:{
-                                    lg:'60%',
-                                    xs:'100%'
-                                },margin:'auto'}} src={'http://localhost:3000/assets/image/Business, Startup, workflow, error _ exhaustion, exhausted, work, laptop, computer, support 1.png'}></img>
+                                <img style={{width:'60%',margin:'auto'}} src={'http://localhost:3000/assets/image/Business, Startup, workflow, error _ exhaustion, exhausted, work, laptop, computer, support 1.png'}></img>
                                 </Box>
                             }
                         </Box>

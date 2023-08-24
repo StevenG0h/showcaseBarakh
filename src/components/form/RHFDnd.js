@@ -13,7 +13,13 @@ function RHFDnd({name,control, files='', onDelete, required = false}) {
     let url = URL.createObjectURL(file)
     setFile(url);
   };
-  return (
+  const [dndError, setDndError] = useState('');
+  return (<>
+    {
+        dndError != '' ? (
+            <Typography sx={{color:'red'}}>{dndError}</Typography>
+        ) : ''
+    }
     <Controller 
     control={control}
     name={name}
@@ -39,18 +45,22 @@ function RHFDnd({name,control, files='', onDelete, required = false}) {
                     </>
                 }
                 
-                <FileUploader value="true" required={disableRequire} dropMessageStyle={
+                <FileUploader maxSize={1} onSizeError={(file)=>{
+                    setDndError(file)
+                    setFile('')
+                }} value="true" required={disableRequire} dropMessageStyle={
                     {display:'none'}
                 } handleChange={
                 (event)=>{
+                    setDndError('')
                     onChange(event)
                     handleChange(event)
                     setRequired(false)
                 }
                 } types={fileTypes} {...field}>
-                <Box sx={{width:'100%', cursor:'pointer',border:'0.1em solid #cccccc', overflow:'hidden', position:'relative', borderRadius:'0.3em'}}>
+                <Box sx={{width:'100%', cursor:'pointer',border:'0.1em solid #cccccc', aspectRatio:'4/3', overflow:'hidden', position:'relative', borderRadius:'0.3em'}}>
                     {
-                        file == '' ? <Typography sx={{margin:'auto', textAlign:'center', paddingY:'5em'}}>Upload</Typography> : 
+                        file == ''? <Typography sx={{margin:'auto', textAlign:'center', paddingY:'5em'}}>Upload</Typography> : 
                         <>
                                 <img style={{width:'100%',objectFit:'cover',aspectRatio:'1/1'}} src={file}></img>
                                 
@@ -65,6 +75,9 @@ function RHFDnd({name,control, files='', onDelete, required = false}) {
     }
     >
     </Controller>
+    
+  </>
+    
   );
 }
 

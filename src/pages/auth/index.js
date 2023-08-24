@@ -76,7 +76,9 @@ export default function auth(){
         <Box sx={{display:'flex',justifyContent:'center', alignItems:'center', marginTop:'5em'}}>
             <Card sx={{padding:'1em',flexDirection:'column',gap:'1em'}}>
                 <Typography variant="h5">Login</Typography>
-                    <form onSubmit={handleSubmit(onSubmit)} style={{display:'flex',flexDirection:'column',gap:'1em'}}>
+                    <form onSubmit={handleSubmit(onSubmit,(e)=>{
+                        console.log(e)
+                    })} style={{display:'flex',flexDirection:'column',gap:'1em'}}>
                         <FormControl>
                         {
                             error != '' ?

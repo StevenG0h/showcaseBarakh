@@ -11,6 +11,17 @@ export async function getAllUnitUsaha(){
     return unitUsahas;
 }
 
+export async function getAllRole(){
+    let unitUsahas = await axios.get(process.env.NEXT_PUBLIC_BACKEND_URL+'/api/role/options');
+    unitUsahas = unitUsahas?.data.map((unitUsaha)=>{
+        return {
+            id: unitUsaha.id,
+            label: unitUsaha.roleName
+        }
+    })
+    return unitUsahas;
+}
+
 export async function getAllUnitUsahaProduct(id){
     let unitUsahas = await axios.get(process.env.NEXT_PUBLIC_BACKEND_URL+'/api/unit-usaha/product-option/'+id);
     unitUsahas = unitUsahas?.data.map((product)=>{
