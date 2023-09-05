@@ -9,13 +9,14 @@ import { Button, Card, Dialog, DialogTitle, DialogContent, FormControl, Grid, Ic
 import RHFTextField from "../../../components/form/RHFTextField";
 import RHFAutocomplete from "../../../components/form/RHFAutocomplete";
 import CustomTableHead from "../../../components/table/CustomTableHead";
-import { getAllUnitUsaha, getAllUnitUsahaProduct } from "../../../helper/dataOptions";
+import { getAllUnitUsaha, getAllUnitUsahaAdmin, getAllUnitUsahaProduct } from "../../../helper/dataOptions";
 import PenjualanTableRow from "../../../sections/penjualan/PenjualanTableRow";
 import DetailPenjualanTableRow from "../../../sections/penjualan/DetailPenjualanTableRow";
 import {getCookie} from 'cookies-next';
 import  ChevronRight  from "@mui/icons-material/ChevronRight";
 import  ChevronLeft  from "@mui/icons-material/ChevronLeft";
 import { useEffect } from "react";
+import { checkPrivilege } from "../../../helper/admin";
 
 export async function getServerSideProps({req,res}){
     let token = getCookie('token',{req,res});
@@ -28,20 +29,22 @@ export async function getServerSideProps({req,res}){
             props:{},
           };
     }
-    await axios.get('/user',{
-        headers:{
-            Authorization: 'Bearer '+token,
-        },
-        withCredentials:true
+    let admin = '';
+await checkPrivilege(token).then((r)=>{
+        admin = r;
+        console.log('admin',admin)
     }).catch((e)=>{
+        console.log(e)
         return {
             redirect: {
-              permanent: false,
-              destination: "/auth",
+                permanent: false,
+                destination: "/auth",
             },
-            props:{},
-          };
-    })
+            props:{
+            isSuper: admin.adminLevel == '1' ? true : false,
+            admin: admin,},
+        };
+    });
    
     try{
         let produk = await axios.get('/api/admin/transaksi/penjualan',{
@@ -49,12 +52,19 @@ export async function getServerSideProps({req,res}){
                 Authorization: 'Bearer '+token,
             },
             withCredentials:true
-        });
-        let unitusaha = await getAllUnitUsaha();
-        console.log(produk.data)
+        })
+        console.log(produk)
+        let unitusaha = await getAllUnitUsahaAdmin(token);
+        if(admin.adminLevel != '1'){
+            produk = produk.data.data
+        }else{
+            produk = produk.data
+        }
         return {
             props:{
-                produk: produk.data,
+                isSuper: admin.adminLevel == '1' ? true : false,
+                admin: admin,
+                produk: produk,
                 options:{
                     unitUsaha: unitusaha
                 }
@@ -72,7 +82,7 @@ export async function getServerSideProps({req,res}){
     }
 }
 
-export default function product({produk, options}){
+export default function product({isSuper,admin,produk, options}){
     let [loading, setLoading] = useState(false)
     let token = getCookie('token');
     let title = 'Stock';
@@ -291,18 +301,18 @@ export default function product({produk, options}){
 
     return (
         <>
-            <AdminLayout handleLoading={loading}>
+            <AdminLayout isSuper={isSuper} admin={admin} handleLoading={loading}>
             <Typography variant="h3" color={'#94B60F'} sx={{textDecoration:'underline'}} fontWeight={400}>Penjualan</Typography>
-            <Box sx={{display:'flex', gap:'1em', marginY:'1em', flexDirection:'row'}}>
-        <Typography variant="h6" sx={{margin:0}}>
-            Unit Usaha:
-        </Typography>
-        <Button color="success" variant={activeLink === '*' ? 'contained' : 'outlined'} sx={{borderRadius:'5em'}} onClick={()=>{handleChangeFilter('*')}}>Semua</Button>
-        <Button color={"error"} variant={activeLink === 'BELUMTERVERIFIKASI' ? 'contained' : 'outlined'} sx={{borderRadius:'5em'}} onClick={()=>{handleChangeFilter('BELUMTERVERIFIKASI')}}>Belum Terverifikasi</Button>
-        <Button color="info" variant={activeLink === 'TERVERIFIKASI' ? 'contained' : 'outlined'} sx={{borderRadius:'5em'}} onClick={()=>{handleChangeFilter('TERVERIFIKASI')}}>Terverifikasi</Button>
-        <Button color="warning" variant={activeLink === 'PENGIRIMAN' ? 'contained' : 'outlined'} sx={{borderRadius:'5em'}} onClick={()=>{handleChangeFilter('PENGIRIMAN')}}>Pengiriman</Button>
-        <Button color="success" variant={activeLink === 'SELESAI' ? 'contained' : 'outlined'} sx={{borderRadius:'5em'}} onClick={()=>{handleChangeFilter('SELESAI')}}>Selesai</Button>
-    </Box>
+            <Box sx={{display:'flex', gap:'1em', marginY:'1em', flexDirection:'row', flexWrap:'wrap'}}>
+            <Typography variant="h6" sx={{margin:0}}>
+                Unit Usaha:
+            </Typography>
+                <Button color="success" variant={activeLink === '*' ? 'contained' : 'outlined'} sx={{borderRadius:'5em'}} onClick={()=>{handleChangeFilter('*')}}>Semua</Button>
+                <Button color={"error"} variant={activeLink === 'BELUMTERVERIFIKASI' ? 'contained' : 'outlined'} sx={{borderRadius:'5em'}} onClick={()=>{handleChangeFilter('BELUMTERVERIFIKASI')}}>Belum Terverifikasi</Button>
+                <Button color="info" variant={activeLink === 'TERVERIFIKASI' ? 'contained' : 'outlined'} sx={{borderRadius:'5em'}} onClick={()=>{handleChangeFilter('TERVERIFIKASI')}}>Terverifikasi</Button>
+                <Button color="warning" variant={activeLink === 'PENGIRIMAN' ? 'contained' : 'outlined'} sx={{borderRadius:'5em'}} onClick={()=>{handleChangeFilter('PENGIRIMAN')}}>Pengiriman</Button>
+                <Button color="success" variant={activeLink === 'SELESAI' ? 'contained' : 'outlined'} sx={{borderRadius:'5em'}} onClick={()=>{handleChangeFilter('SELESAI')}}>Selesai</Button>
+            </Box>
                 {/* <Typography variant="h3" fontWeight={400}>{title}</Typography>
                 <Select defaultValue={'*'}
                 onChange={(e)=>handleChangeFilter(e.target.value)}

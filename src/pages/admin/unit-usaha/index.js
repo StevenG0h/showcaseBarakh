@@ -16,9 +16,11 @@ import  ChevronRight  from "@mui/icons-material/ChevronRight";
 import  ChevronLeft  from "@mui/icons-material/ChevronLeft";
 import { useEffect } from "react";
 import { ConfirmDialog } from "../../../components/dialog/ConfirmDialog";
+import { checkPrivilege } from "../../../helper/admin";
 
 export async function getServerSideProps({req,res}){
     let token = getCookie('token',{req,res});
+    let admin = '';
     if(token == undefined){
         return {
             redirect: {
@@ -28,20 +30,18 @@ export async function getServerSideProps({req,res}){
             props:{},
           };
     }
-    await axios.get('/user',{
-        headers:{
-            Authorization: 'Bearer '+token,
-        },
-        withCredentials:true
+    await checkPrivilege(token).then((r)=>{
+        admin = r;
     }).catch((e)=>{
+        console.log(e)
         return {
             redirect: {
-              permanent: false,
-              destination: "/auth",
+                permanent: false,
+                destination: "/auth",
             },
             props:{},
-          };
-    })
+        };
+    });
     try{
         let UnitUsaha = await axios.get('/api/admin/unit-usaha',{
             headers:{
@@ -52,6 +52,8 @@ export async function getServerSideProps({req,res}){
         console.log(UnitUsaha.data.data);
         return {
             props: {
+                isSuper: admin.adminLevel == '1' ? true : false,
+                admin: admin,
                 data: UnitUsaha?.data?.data
             }
         }
@@ -68,7 +70,7 @@ export async function getServerSideProps({req,res}){
     
 }
 
-export default function admin({data}){
+export default function admin({isSuper,admin,data}){
     let [loading, setLoading] = useState(false)
     let [unitUsaha, setUnitUsaha] = useState(data.data);
     let [unitUsahaLink, setUnitUsahaLink] = useState(data.links);
@@ -294,7 +296,7 @@ export default function admin({data}){
 
     return (
         <>
-            <AdminLayout handleLoading={loading}>
+            <AdminLayout isSuper={isSuper} admin={admin} handleLoading={loading}>
                 <ConfirmDialog onCancel={()=>setDeleteUnitUsaha('')} msg={'Anda yakin ingin menghapus unit usaha '+deleteUnitUsaha.usahaName+" ?"} title={"Hapus Unit Usaha"} open={deleteUnitUsaha != ''} onConfirm={()=>handleDelete(deleteUnitUsaha.id)}></ConfirmDialog>
                 <Dialog open={showImage != ''} onClose={handleCloseShowImage} fullWidth maxWidth={'md'}>
                         <img height={"100%"} style={{objectFit:'contain'}} src={showImage}></img>
@@ -330,14 +332,14 @@ export default function admin({data}){
                                 ): ''
                             }
                             <Typography sx={{}}>
-                                Logo Unit Usaha
+                                Logo Unit Usaha(max 1MB)
                             </Typography>
                             <FormControl sx={{width:'100%', marginBottom:'0.5em'}}>
                                 <RHFDnd control={control} name={'unitUsahaLogo'} files={process.env.NEXT_PUBLIC_BACKEND_URL+'/storage/unitUsaha/logo/'+getValues('unitUsahaLogo')}>            
                                 </RHFDnd>
                             </FormControl>
                             <Typography sx={{ }}>
-                                Gambar Unit Usaha
+                                Gambar Unit Usaha(max 1MB)
                             </Typography>
                             <FormControl sx={{width:'100%', marginBottom:'0.5em'}}>
                                 <RHFDnd control={control} name={'usahaImage'} files={process.env.NEXT_PUBLIC_BACKEND_URL+'/storage/unitUsaha/'+getValues('usahaImage')}>            
@@ -359,9 +361,13 @@ export default function admin({data}){
                             <Typography>Hehe</Typography>
                         </MenuItem>
                     </Select> */}
-                    <Button onClick={handleOpenAddForm} color="success" variant="contained" startIcon="" sx={{marginY:'1em'}}>
-                        Tambah Unit Usaha
-                    </Button>
+                    {
+                        isSuper == true ?(
+                            <Button onClick={handleOpenAddForm} color="success" variant="contained" startIcon="" sx={{marginY:'1em'}}>
+                                Tambah Unit Usaha
+                            </Button>
+                        ) :''
+                    }
                 </Box>
                 <Card sx={{marginY:'1em'}}>
                     <TableContainer>

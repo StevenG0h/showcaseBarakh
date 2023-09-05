@@ -8,6 +8,7 @@ import { Poppins } from 'next/font/google';
 import ImageVisiMisi from "../../../public/assets/images/Imagevisimisi.png";
 import Link from "next/link";
 import WhatsApp from "../../components/Whatsapp/WhatsApp"
+import Head from "next/head";
 const poppins = Poppins({
     weight: '500',
     subsets: ['latin'],
@@ -17,13 +18,34 @@ const Profile = () => {
     return (
         <main className={poppins.className}>
             <Header />
+            <Head>
+                <title>Albarakh | Tentang</title>
+            </Head>
             <div className={style.container}>
                 <div className={style.containerProfile}>
                     <div className={style.fieldSekilas}>
                         <div className={style.fieldSekilasEx}>
                             <p className={style.sekilas} >Sekilas Tentang</p>
                             <div className={style.wrapDescSekilas} >
-                                <p className={style.descriptions}>Al-Mubarok merupakan unit usaha yang dimiliki oleh Lembaga Pendidikan Ibnu Al-Mubarkh, yang berdiri sejak 2020. Awal mula terbentuknya Unit Usaha ini adalah karena ide dari orang tua siswa dan pemilik yayasan. Al-Mubarakh bergerak di bidang agama dan produk yang dimiliki merupakan produk lokal yang ramah lingkungan.</p>
+                                <p className={style.descriptions}>
+Bank Sampah Agrowisata (BSA) Ibnu Al Mubarok berdiri sejak tahun 2021 
+sebagai salah satu program Yayasan yaitu Enterpreneur dan Lifeskill. 
+Kemudian pada tahun yang sama di bulan Desember 2021 menjadi binaan 
+PT Pertamina Hulu Rokan (PT PHR) yang berkolaborasi dengan Bank Sampah Unilak. 
+Dalam pengelolaannya Bank Sampah Agrowisata Ibnu Al Mubarok melibatkan masyarakat 
+sekitar dan juga yayasan Ibnu disabilitas. <br></br>
+<br></br>
+
+Dalam perkembangannya Bank Sampah Agrowisata Ibnu Al Mubarok berkembang pesat dan memiliki beberapa unit usaha yang menghasilkan produk ramah lingkungan untuk mendukung kelestarian lingkungan.
+<br></br>
+<br></br>
+Unit Usaha yang dikelola oleh Bank Sampah Agrowisata Ibnu Al-Mubarok antara lain membuka  Diklat Kewirausahaan , budidaya maggot, ternak ayam kampung ,pupuk kompos, kasgot, pupuk cair Lindi , lele bioflok . Selain itu unit usaha yang terbaru pengembangan dari unit usaha BSA adalah  Produksi Briket Arang, Produksi Sabun Ramah Lingkungan di bawah Binaan PT PHR dan Politeknik Caltex Riau.  Fashion & Craft menjadi salah satu produk UMKM yang saat ini mulai berkembang. Produk unit usaha BSA diberi merek "Barakh" yang artinya Anugerah.
+<br></br>
+<br></br>
+
+Dari semua kegiatan tersebut sudah terjadi sirkulasi aktivitas ekonomi dari pengelolaan sampah.
+
+</p>
                             </div>
                         </div>
                     </div>
@@ -34,20 +56,20 @@ const Profile = () => {
                         </div>
                     </div>
                     <div className={style.containerInformation}>
-                        <Image src={profileImg} alt="Gambar" className={style.profileImage} />
+                        {/* <Image src={profileImg} alt="Gambar" className={style.profileImage} /> */}
                         <div className={style.wrapInformation}>
                             <div className={style.field1}>
                                 <div className={style.columInfo}>
                                     <p className={style.titleInfo}>Nama UMKM</p>
-                                    <p className={style.description}>Barakh Sentra Usaha A.S.I.K.</p>
+                                    <p className={style.description}>Al-Barakh</p>
                                 </div>
                                 <div className={style.columInfo}>
-                                    <p className={style.titleInfo}>Tanggal Pendirian</p>
-                                    <p className={style.description}>Sejak 2002</p>
+                                    <p className={style.titleInfo}>Tahun Pendirian</p>
+                                    <p className={style.description}>Sejak 2022</p>
                                 </div>
                                 <div className={style.columInfo}>
                                     <p className={style.titleInfo}>Email</p>
-                                    <p className={style.description}>Mubarakh@gmail.com</p>
+                                    <p className={style.description}>albarakhpku@gmail.com</p>
                                 </div>
                                 <div className={style.columInfo}>
                                     <p className={style.titleInfo}>Alamat</p>
@@ -61,19 +83,19 @@ const Profile = () => {
                                 <div className={style.columInfo}>
                                     <p className={style.titleInfo}>Bidang Usaha</p>
                                     <ul className={style.ul}>
-                                        <li className={style.li}>Bank Sampah Agrowisata Ibnu Al-Mubarok</li>
-                                        <li className={style.li}>Peternakan & Perikanan</li>
-                                        <li className={style.li}>Pertanian</li>
-                                        <li className={style.li}>Briket Arang</li>
-                                        <li className={style.li}>Clean & Wash</li>
-                                        <li className={style.li}>Barakh Fashion & Craft</li>
-                                        <li className={style.li}>Kuliner</li>
-                                        <li className={style.li}>Lembaga Pelatihan & Konsultasi</li>
+                                        <li className={style.li}><Link href="" className={style.listUnitUsaha}>Bank Sampah Agrowisata Ibnu Al-Mubarok</Link></li>
+                                        <li className={style.li}><Link href="" className={style.listUnitUsaha}>Perternakan & Perikanan</Link></li>
+                                        <li className={style.li}><Link href="" className={style.listUnitUsaha}>Pertanian</Link></li>
+                                        <li className={style.li}><Link href="" className={style.listUnitUsaha}>Briket Arang</Link></li>
+                                        <li className={style.li}><Link href="" className={style.listUnitUsaha}>Clean & Wash</Link></li>
+                                        <li className={style.li}><Link href="" className={style.listUnitUsaha}>Fashion & Craft</Link></li>
+                                        <li className={style.li}><Link href="" className={style.listUnitUsaha}>Kuliner</Link></li>
+                                        <li className={style.li}><Link href="" className={style.listUnitUsaha}>Lembaga Pelatihan dan Konsultasi</Link></li>
                                     </ul>
                                 </div>
                                 <div className={style.columInfo}>
                                     <p className={style.titleInfo}>Instagram</p>
-                                    <p className={style.description}>@ibnualmubarok</p>
+                                    <p className={style.description}>@bsa_al_mubarok</p>
                                 </div>
                                 <div className={style.columInfo}>
                                     <p className={style.titleInfo}>Whatsapp</p>
@@ -82,7 +104,7 @@ const Profile = () => {
                             </div>
                         </div>
                     </div>
-                    <div className={style.containerVisiMisi}>
+                    {/* <div className={style.containerVisiMisi}>
                         <div className={style.fieldImage}>
                             <Image src={ImageVisiMisi} alt="Gambar" className={style.ImageVisiMisi} />
                         </div>
@@ -102,13 +124,13 @@ const Profile = () => {
                                 <div className={style.descriptionMisi}>
                                     <ol className={style.ol}>
                                         <li className={style.list}>Menghidupkan semangat Beragama 'Islam'</li>
-                                        <li className={style.list}>Menciptakan UMKM bersyarikat Islam dnegan Produk yang mengikuti tren terkini</li>
+                                        <li className={style.list}>Menciptakan UMKM bersyarikat Islam dengan Produk yang mengikuti tren terkini</li>
                                         <li className={style.list}>Membantu pengngguran mendapatkan pekerjaan melalui banyaknya unit usaha</li>
                                     </ol>
                                 </div>
                             </div>
                         </div>
-                    </div>                
+                    </div>                 */}
                 </div>
             </div>
             <Footer />

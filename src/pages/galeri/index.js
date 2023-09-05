@@ -18,6 +18,7 @@ import axios from "../../utils/axios";
 import { Button } from "@mui/material";
 import  ChevronRight  from "@mui/icons-material/ChevronRight";
 import  ChevronLeft  from "@mui/icons-material/ChevronLeft";
+import Head from "next/head";
 const poppins = Poppins({
     weight: '500',
     subsets: ['latin'],
@@ -99,6 +100,9 @@ const GaleriTestimoni = ({galeri}) => {
     return (
         <main className={poppins.className}>
             <Header />
+            <Head>
+                <title>Albarakh | Galeri</title>
+            </Head>
             <div className={style.container}>
                 <div className={style.containerBase}>
                     <div className={style.textGaleri}>

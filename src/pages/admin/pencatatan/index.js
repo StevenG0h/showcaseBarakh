@@ -9,7 +9,7 @@ import { Button, Card, Dialog, DialogTitle, DialogContent, FormControl, Grid, Ic
 import RHFTextField from "../../../components/form/RHFTextField";
 import RHFAutocomplete from "../../../components/form/RHFAutocomplete";
 import CustomTableHead from "../../../components/table/CustomTableHead";
-import { getAllUnitUsaha, getAllUnitUsahaProduct } from "../../../helper/dataOptions";
+import { getAllUnitUsaha, getAllUnitUsahaAdmin, getAllUnitUsahaProduct } from "../../../helper/dataOptions";
 import KeuanganTableRow from "../../../sections/keuangan/KeuanganTableRow";
 import SpendingTableRow from "../../../sections/keuangan/SpendingTableRow";
 import {getCookie} from 'cookies-next';
@@ -17,6 +17,7 @@ import  ChevronRight  from "@mui/icons-material/ChevronRight";
 import  ChevronLeft  from "@mui/icons-material/ChevronLeft";
 import { formatCurrency } from "../../../helper/currency";
 import { useEffect } from "react";
+import { checkPrivilege } from "../../../helper/admin";
 
 export async function getServerSideProps({req,res}){
     let token = getCookie('token',{req,res});
@@ -29,20 +30,20 @@ export async function getServerSideProps({req,res}){
             props:{},
           };
     }
-    await axios.get('/user',{
-        headers:{
-            Authorization: 'Bearer '+token,
-        },
-        withCredentials:true
+    let admin = '';
+await checkPrivilege(token).then((r)=>{
+        admin = r;
+        console.log('admin',admin)
     }).catch((e)=>{
+        console.log(e)
         return {
             redirect: {
-              permanent: false,
-              destination: "/auth",
+                permanent: false,
+                destination: "/auth",
             },
             props:{},
-          };
-    })
+        };
+    });
     try{
         let produk = await axios.get('/api/admin/transaksi',{
             headers:{
@@ -64,9 +65,11 @@ export async function getServerSideProps({req,res}){
             },
             withCredentials:true
         });
-        let unitUsaha = await getAllUnitUsaha();
+        let unitUsaha = await getAllUnitUsahaAdmin(token);
         return {
             props:{
+                isSuper: admin.adminLevel == '1' ? true : false,
+                admin: admin,
                 produk: produk.data.data,
                 stat:stat.data,
                 options:{
@@ -86,7 +89,7 @@ export async function getServerSideProps({req,res}){
     }
 }
 
-export default function keuangan({produk, stat, options}){
+export default function keuangan({isSuper,admin,produk, stat, options}){
     let [loading, setLoading] = useState(false)
     const router = useRouter();
     let token = getCookie('token');
@@ -197,7 +200,7 @@ export default function keuangan({produk, stat, options}){
 
     return (
         <>
-            <AdminLayout handleLoading={loading}>
+            <AdminLayout isSuper={isSuper} admin={admin} handleLoading={loading}>
             <Typography variant="h3" color={'#94B60F'} fontWeight={400} sx={{textDecoration:'underline'}}>Pencatatan</Typography>
             
             <Box sx={{justifyContent:'space-between', flexDirection:'row', display:'flex', marginY:'1em', gap:'1em'}}>

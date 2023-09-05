@@ -16,6 +16,7 @@ import HeaderMobile from "./HeaderMobile/HeaderMobile";
 import Badge from "@mui/material/Badge";
 import { setVisitor } from "../../helper/dataOptions";
 import { getCookie } from "cookies-next";
+import Head from "next/head";
 
 const Header = () => {
     let cart = getCookie('barakh-cart-cookie');
@@ -41,7 +42,11 @@ const Header = () => {
     // }
 
     return (
-        <div className={style.header}>
+        <>
+            <Head>
+            <link rel="icon" type="image/x-icon" href={'http://localhost:3000/assets/images/LogoSimple.png'}/>
+            </Head>
+            <div className={style.header}>
             <div className={style.container}>
                 {/* <IconButton onClick={handleDrawerOpen} onClose={handleDrawerClose}>
                     <MenuIcon sx={{color: 'white', fontSize: '1.3em'}}/>
@@ -103,6 +108,8 @@ const Header = () => {
                 </div>  */}
             </div>
         </div>
+        </>
+        
     )
 }
 

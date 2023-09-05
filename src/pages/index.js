@@ -13,6 +13,7 @@ import WhatsApp from '../components/Whatsapp/WhatsApp'
 import { setVisitor } from '../helper/dataOptions'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
+import Head from 'next/head'
 
 const poppins = Poppins({
   weight: '500',
@@ -32,8 +33,8 @@ export async function getServerSideProps(){
         permanent: false,
         destination: "/coming-soon",
       },
-      props:{},
-    };
+      props:{}
+   }
   }
   setVisitor()
   return {
@@ -55,6 +56,9 @@ export default function Home({data}) {
   return (
     <main className={poppins.className}>
       <Header/>
+      <Head>
+      <title>Albarakh | Beranda</title>
+      </Head>
       <div className={style.container}>
         <div className={style.hero}>
           <div className={style.content}>

@@ -5,7 +5,9 @@ import { useRouter } from "next/router";
 
 export default function UsahaTableRow({row, num, onShowImage, onDelete, onEdit, onShowLogo}){
     let {usahaName, usahaImage, usahaDesc, products, created_at, unitUsahaLogo} = row;
+    let productCount = products.filter(product=> product.isActive == 1);
     const router = useRouter()
+    
     return (
         <>
         
@@ -25,7 +27,7 @@ export default function UsahaTableRow({row, num, onShowImage, onDelete, onEdit, 
                     {usahaDesc}
                 </TableCell>
                 <TableCell>
-                    {products.length}
+                    {productCount.length}
                 </TableCell>
                 <TableCell>
                     <Button sx={{textAlign:'left'}} color="success" onClick={onShowLogo}>

@@ -6,19 +6,15 @@ import {yupResolver} from "@hookform/resolvers/yup";
 import { Controller, useForm } from "react-hook-form";
 import AdminLayout from "../../../layouts/adminLayout/AdminLayout";
 import { Box, Button, Card, Dialog, DialogContent, FormControl, Grid, IconButton, ImageList, ImageListItem, ImageListItemBar, Input, MenuItem, Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
-import RHFTextField from "../../../components/form/RHFTextField";
 import CustomTableHead from "../../../components/table/CustomTableHead";
 import ProfilUsahaTableRow from "../../../sections/profilUsaha/ProfilUsahaTableRow";
-import  Delete  from "@mui/icons-material/Delete";
-import  Star  from "@mui/icons-material/Star";
-import RHFDnd from "../../../components/form/RHFDnd";
-import { getAllUnitUsaha } from "../../../helper/dataOptions";
 import {getCookie} from 'cookies-next';
 import  ChevronRight  from "@mui/icons-material/ChevronRight";
 import  ChevronLeft  from "@mui/icons-material/ChevronLeft";
 import { useEffect } from "react";
 import dynamic from "next/dynamic";
 import 'react-quill/dist/quill.snow.css';
+import { checkPrivilege } from "../../../helper/admin";
 
 export async function getServerSideProps({req,res}){
     let token = getCookie('token',{req,res});
@@ -31,20 +27,20 @@ export async function getServerSideProps({req,res}){
             props:{},
           };
     }
-    await axios.get('/user',{
-        headers:{
-            Authorization: 'Bearer '+token,
-        },
-        withCredentials:true
+    let admin = '';
+await checkPrivilege(token).then((r)=>{
+        admin = r;
+        console.log('admin',admin)
     }).catch((e)=>{
+        console.log(e)
         return {
             redirect: {
-              permanent: false,
-              destination: "/auth",
+                permanent: false,
+                destination: "/auth",
             },
             props:{},
-          };
-    })
+        };
+    });
     try{
         let UnitUsaha = await axios.get('/api/admin/profil',{
             headers:{
@@ -55,6 +51,8 @@ export async function getServerSideProps({req,res}){
         console.log(UnitUsaha.data)
         return {
             props:{
+                isSuper: admin.adminLevel == '1' ? true : false,
+                admin: admin,
                 unitUsaha: UnitUsaha.data.data,
             }
         }
@@ -70,7 +68,7 @@ export async function getServerSideProps({req,res}){
     }
 }
 
-export default function profil({unitUsaha,option}){
+export default function profil({isSuper,admin,unitUsaha,option}){
     let [loading, setLoading] = useState(false)
     let [profilUsahas, setprofilUsahas] = useState(unitUsaha.data);
     let [profilUsahasLink, setprofilUsahasLink] = useState(unitUsaha.links);
@@ -278,7 +276,7 @@ export default function profil({unitUsaha,option}){
 
     return (
         <>
-            <AdminLayout handleLoading={loading}>
+            <AdminLayout isSuper={isSuper} admin={admin} handleLoading={loading}>
                 <Dialog open={AddForm} sx={{overflow:'hidden'}} onClose={handleCloseAddForm} fullWidth maxWidth='md'>
                     <DialogContent>
                         <Typography variant="h5" sx={{marginBottom:'1em'}} fontWeight={600}>Edit Profil</Typography>

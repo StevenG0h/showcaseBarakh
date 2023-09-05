@@ -13,7 +13,7 @@ import { Poppins } from 'next/font/google'
 import { getCookie, setCookie } from "cookies-next";
 import axios from "../../utils/axios";
 import { formatCurrency } from "../../helper/currency";
-import { Box, Button, Checkbox, Container, Dialog, DialogContent, DialogTitle, FormControl, Grid, IconButton, StepIcon, Typography } from "@mui/material";
+import { Box, Button, Checkbox, Container, Dialog, DialogContent, DialogTitle, FormControl, Grid, IconButton, StepIcon, ThemeProvider, Typography, createTheme } from "@mui/material";
 import {useEffect} from 'react'
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -36,10 +36,9 @@ const poppins = Poppins({
 
 export async function getServerSideProps({ req, res }) {
     let cookie = getCookie('barakh-cart-cookie', { req, res })
-    let product = await axios.get('/api/produk').catch(e=>{
+    let product = await axios.get('/api/produk/katalog').catch(e=>{
         console.log(e)
     });
-    console.log(product.data)
     let provinsi = await getAllProvinsi();
     let count = 0;
     console.log(product)
@@ -154,7 +153,7 @@ const Cart = ({ cookie, option, totalPayment, products }) => {
         data.kelurahan_id = data.clientKelurahan;
         await unitUsahas.map(async(unitUsaha)=>{
             console.log('unitUsaha',unitUsaha)
-            let unitUsahaProduct = cartList.filter((cartData)=>{
+            let unitUsahaProduct = cart.filter((cartData)=>{
                 if(cartData.productData.unit_usaha_id == unitUsaha){
                     return true;
                 }
@@ -172,8 +171,8 @@ const Cart = ({ cookie, option, totalPayment, products }) => {
             'Keranjang: '+'\n';
             let total = 0;
             console.log('filtered product', unitUsahaProduct);
-            let product = unitUsahaProduct.map((produk)=>{
-                let cart = '- '+data.product.productData.productName + ' ' + produk.item + 'x '+produk.productData.productPrice+'%0a'
+            let product = cart.map((produk)=>{
+                let cart = '- '+produk.productData.productName + ' ' + produk.item + 'x '+produk.productData.productPrice+'%0a'
                 total += produk.productData.productPrice * produk.item
                 return msg+= cart
             })
@@ -299,7 +298,18 @@ const Cart = ({ cookie, option, totalPayment, products }) => {
         console.log(checked)
       }
 
+      const theme = createTheme({
+        palette:{
+          main:'#94B60F',
+          success: {
+            main:'#94B60F',
+            contrastText: '#ffffff'
+          }
+        }
+      })
+
     return (
+        <ThemeProvider theme={theme}>
         <main className={poppins.className} style={{ backgroundColor: '#fff' }}>
             <ConfirmDialog open={showAlert} onCancel={()=>setShowAlert(false)} onConfirm={()=>setShowAlert(false)} msg={"Anda harus memilih salah satu produk untuk melanjutkan checkout"}></ConfirmDialog>
             <Head>
@@ -384,7 +394,7 @@ const Cart = ({ cookie, option, totalPayment, products }) => {
                                             }else{
                                                 setShowAlert(true)
                                             }
-                                        }} sx={{ py: '1em' }} className={style.buttonBuy} variant="contained" startIcon={<FontAwesomeIcon icon={faShoppingCart}></FontAwesomeIcon>}>
+                                        }} sx={{ py: '1em' }} color="success" variant="contained" startIcon={<FontAwesomeIcon icon={faShoppingCart}></FontAwesomeIcon>}>
                                             Lanjutkan Pembayaran
                                         </Button>
                                     </div>
@@ -408,7 +418,7 @@ const Cart = ({ cookie, option, totalPayment, products }) => {
             }
             <Container sx={{ marginBottom: '4em'}} className={style.containerRekomendasi}>
                 <Typography variant="h5" sx={{fontSize: '2em', fontWeight: '600', textDecoration: 'underline', textUnderlineOffset: '0.4em', textDecorationColor: '#94B60F', marginBottom: '1em'}} className={style.titleRekom}>
-                    Produk Rekomendasi
+                    Produk Lainnya
                 </Typography>
                 <Grid container xs={'12'} columns={12} sx={{ width: '100%' }}>
                     {
@@ -461,6 +471,7 @@ const Cart = ({ cookie, option, totalPayment, products }) => {
                 </DialogContent>
             </Dialog>
         </main>
+        </ThemeProvider>
     )
 }
 

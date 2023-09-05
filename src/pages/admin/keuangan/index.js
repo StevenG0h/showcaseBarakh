@@ -18,6 +18,7 @@ import  ChevronLeft  from "@mui/icons-material/ChevronLeft";
 import { formatCurrency } from "../../../helper/currency";
 import { useEffect } from "react";
 import TotalTableRow from "../../../sections/keuangan/totalTableRow";
+import { checkPrivilege } from "../../../helper/admin";
 
 export async function getServerSideProps({req,res}){
     let token = getCookie('token',{req,res});
@@ -27,23 +28,23 @@ export async function getServerSideProps({req,res}){
               permanent: false,
               destination: "/auth",
             },
-            props:{},
-          };
+            props:{
+          }}
     }
-    await axios.get('/user',{
-        headers:{
-            Authorization: 'Bearer '+token,
-        },
-        withCredentials:true
+    let admin = '';
+await checkPrivilege(token).then((r)=>{
+        admin = r;
+        console.log('admin',admin)
     }).catch((e)=>{
+        console.log(e)
         return {
             redirect: {
-              permanent: false,
-              destination: "/auth",
+                permanent: false,
+                destination: "/auth",
             },
             props:{},
-          };
-    })
+        };
+    });
     try{
         let produk = await axios.post('/api/admin/transaksi/keuangan',{
             "from":"2018-01-01",
@@ -80,6 +81,8 @@ export async function getServerSideProps({req,res}){
         let unitUsaha = await getAllUnitUsaha();
         return {
             props:{
+                isSuper: admin.adminLevel == '1' ? true : false,
+                admin: admin,
                 produk: transaksi,
                 // stat:stat.data,
                 options:{
@@ -99,7 +102,7 @@ export async function getServerSideProps({req,res}){
     }
 }
 
-export default function keuangan({produk, options}){
+export default function keuangan({isSuper,admin,produk, options}){
     let [loading, setLoading] = useState(false)
     const router = useRouter();
     let token = getCookie('token');
@@ -214,7 +217,7 @@ export default function keuangan({produk, options}){
     return (
         <>
         
-            <AdminLayout handleLoading={loading}>
+            <AdminLayout isSuper={isSuper} admin={admin} handleLoading={loading}>
             <Dialog  open={openFilter} maxWidth="xs" fullWidth onClose={()=>{setOpenFilter(false)}}>
                 <DialogTitle fontWeight={600}>
                     Filter

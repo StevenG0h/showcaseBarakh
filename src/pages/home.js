@@ -12,6 +12,7 @@ import { Button } from '@mui/material'
 import WhatsApp from '../components/Whatsapp/WhatsApp'
 import { setVisitor } from '../helper/dataOptions'
 import { useRouter } from 'next/router'
+import Head from 'next/head'
 
 const poppins = Poppins({
   weight: '500',
@@ -25,7 +26,6 @@ export async function getServerSideProps(){
   let unitUsaha = await axios.get('/api/unit-usaha');
   let testimoni = await axios.get('/api/testimoni');
   let produk = await axios.get('/api/produk/home');
-  console.log(testimoni.data.data.data)
   setVisitor()
   return {
     props:{
@@ -42,10 +42,14 @@ export default function Home({data}) {
   let unitUsaha = data.unitUsaha.data;
   let testimoni = data.testimoni.data;
   let produk = data.produk.data;
+  console.log(testimoni)
   const router = useRouter()
   return (
     <main className={poppins.className}>
       <Header/>
+      <Head>
+      <title>Albarakh | Beranda</title>
+      </Head>
       <div className={style.container}>
         <div className={style.hero}>
           <div className={style.content}>

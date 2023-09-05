@@ -7,6 +7,7 @@ import { useForm } from "react-hook-form";
 import AdminLayout from "../../../layouts/adminLayout/AdminLayout";
 import { Alert, Box, Button, Card, Dialog, DialogContent, FormControl, InputLabel, MenuItem, Select, Table, TableBody, TableCell, TableContainer, TableRow, Typography } from "@mui/material";
 import RHFTextField from "../../../components/form/RHFTextField";
+import RHFSelect from "../../../components/form/RHFSelect";
 import RHFAutocomplete from "../../../components/form/RHFAutocomplete";
 import CustomTableHead from "../../../components/table/CustomTableHead";
 import UserTableRow from "../../../sections/user/UserTableRow";
@@ -16,9 +17,12 @@ import  ChevronRight  from "@mui/icons-material/ChevronRight";
 import  ChevronLeft  from "@mui/icons-material/ChevronLeft";
 import { useEffect } from "react";
 import { getAllRole, getAllUnitUsaha } from "../../../helper/dataOptions";
+import { ConfirmDialog } from "../../../components/dialog/ConfirmDialog";
+import { checkPrivilege } from "../../../helper/admin";
 
 export async function getServerSideProps({req,res}){
     let token = getCookie('token',{req,res});
+    let admin = '';
     if(token == undefined){
         return {
             redirect: {
@@ -28,20 +32,20 @@ export async function getServerSideProps({req,res}){
             props:{},
           };
     }
-    let user = await axios.get('/api/admin/user',{
-        headers:{
-            Authorization: 'Bearer '+token,
-        },
-        withCredentials:true
+
+    await checkPrivilege(token).then((r)=>{
+        admin = r;
     }).catch((e)=>{
+        console.log(e)
         return {
             redirect: {
-              permanent: false,
-              destination: "/auth",
+                permanent: false,
+                destination: "/auth",
             },
             props:{},
-          };
-    })
+        };
+    });
+    
     try{
         let user = await axios.get('/api/admin/admin',{
             headers:{
@@ -49,11 +53,12 @@ export async function getServerSideProps({req,res}){
             },
             withCredentials:true
         });
-        console.log(user.data)
         let role = await getAllRole();
         let unitusaha = await getAllUnitUsaha();
         return {
             props:{
+                isSuper: admin.adminLevel == '1' ? true : false,
+                admin: admin,
                 user: user.data,
                 options:{
                     unitUsaha: unitusaha,
@@ -73,16 +78,15 @@ export async function getServerSideProps({req,res}){
     }
 }
 
-export default function product({user,options}){
+export default function product({user,options, isSuper, admin}){
     let [loading, setLoading] = useState(false)
     let token = getCookie('token');
     let title = 'Pegawai';
     let [products, setProducts] = useState(user.data);
     let [productsLink, setProductsLink] = useState(user.links);
-    let [formTitle, setFormTitle] = useState('');
     let [error, setError] = useState('');
-    let [unitUsahaData, setUnitUsaha] = useState('');
-    let [role, setRole] = useState('');
+    let [adminData, setAdminData] = useState('');
+    let [filterActive, setActive] = useState(true);
     //Next router
     const router = useRouter();
 
@@ -102,18 +106,16 @@ export default function product({user,options}){
         defaultValues: {
           id:'',
           productStock:0,
-          productPrice:0
+          productPrice:0,
         },
         resolver: yupResolver(schema)
       })
     
       const onSubmit = async (data) => {
         let finalData = data;
-        finalData.role_id = role;
-        finalData.unit_usaha_id = unitUsahaData;
-        console.log(finalData)
-        console.log(role)
-        console.log(unitUsahaData)
+        if(finalData.password == ''){
+            delete finalData.password;
+        }
         setLoading(true)
         if(editMode == false){
             console.log(finalData)
@@ -130,7 +132,6 @@ export default function product({user,options}){
                     console.log(r.data)
                     router.replace(router.asPath)
                     handleCloseAddForm()
-                    setLoading(false)
                 }).catch((e)=>{
                     console.log(e);
                     setError(e.response.data.message)
@@ -152,7 +153,6 @@ export default function product({user,options}){
                     console.log(r.data)
                     router.replace(router.asPath)
                     handleCloseAddForm()
-                    setLoading(false)
                 }).catch((e)=>{
                     console.log(e);
                     setError(e.response.data.message)
@@ -161,7 +161,8 @@ export default function product({user,options}){
                 console.log(e)
             })
         }
-
+        setLoading(false)
+        
       }
       
       //states
@@ -190,10 +191,8 @@ export default function product({user,options}){
         setValue('adminName',data.admins.adminName);
         setValue('adminNum',data.admins.adminNum);
         setValue('email',data.email);
-        setValue('unit_usaha_id',data.unit_usaha_id)
-        setUnitUsaha(data.unit_usaha_id)
-        setRole(data.role_id)
-        setFormTitle(data.productName);
+        setValue('unit_usaha_id',data.admins.unit_usaha_id)
+        setValue('role_id',data.admins.role_id)
         setAddForm(true)
     }
 
@@ -208,13 +207,14 @@ export default function product({user,options}){
                 withCredentials: true
             }).then((r)=>{
                 console.log(r.data)
-                router.reload()
+                router.replace(router.asPath)
             }).catch((e)=>{
                 console.log(e);
             })
         }).catch((e)=>{
             console.log(e)
         })
+        setAdminData('')
     }
 
     let handleChangePage = async (link)=>{
@@ -230,17 +230,55 @@ export default function product({user,options}){
         }
     }
 
+    let handleChangeFilter = async (data)=>{
+        if(data == true){
+            let unitUsaha = await axios.get('/api/admin/admin', {
+                headers:{
+                    Authorization: 'Bearer '+token
+                },
+                withCredentials:true
+            });
+            setProducts(unitUsaha?.data?.data)
+            setProductsLink(unitUsaha?.data.links)
+            setActive(true)
+            setTableHead(TABLEHEAD)
+        }else{
+            let unitUsaha = await axios.get('/api/admin/admin/deleted', {
+                headers:{
+                    Authorization: 'Bearer '+token
+                },
+                withCredentials:true
+            });
+            setProducts(unitUsaha?.data.data)
+            setProductsLink(unitUsaha?.data.links)
+            setActive(false)
+            setTableHead(TABLEHEAD2)
+        }   
+    }
+
     //utils
 
     let TABLEHEAD = [
         {value: 'No',align: 'left'},
         {value: 'Nama',align: 'left'},
-        {value: 'Email',align: 'left'},
-        {value: 'Nomor Whatsapp',align: 'left'},
+        {value: 'Whatsapp',align: 'left'},
+        {value: 'Departemen',align: 'left'},
         {value: 'Jabatan',align: 'left'},
+        {value: 'Tanggal Bergabung',align: 'left'},
         {value: 'Action',align: 'center'}
     ]
     
+    let TABLEHEAD2 = [
+        {value: 'No',align: 'left'},
+        {value: 'Nama',align: 'left'},
+        {value: 'Whatsapp',align: 'left'},
+        {value: 'Departemen',align: 'left'},
+        {value: 'Jabatan',align: 'left'},
+        {value: 'Tanggal Keluar',align: 'left'}
+    ]
+    
+    let [tableHead, setTableHead] = useState(TABLEHEAD);
+
     let num = 0;
 
     useEffect(() => {
@@ -250,7 +288,8 @@ export default function product({user,options}){
 
     return (
         <>
-            <AdminLayout handleLoading={loading}>
+            <ConfirmDialog onConfirm={()=>handleDelete(adminData.id)} onCancel={()=>{setAdminData('')}} open={adminData != ''} msg={'Anda yakin ingin menonaktifkan '+adminData?.admins?.adminName+' ?'}></ConfirmDialog>
+            <AdminLayout isSuper={isSuper} admin={admin} handleLoading={loading}>
                 <Dialog open={AddForm} onClose={handleCloseAddForm} fullWidth maxWidth='xs'>
                     <DialogContent>
                         <Typography variant="h5" sx={{marginBottom:'1em'}} fontWeight={600}>{editMode == true ? 'Edit' : 'Tambah'} Pegawai</Typography>
@@ -271,14 +310,17 @@ export default function product({user,options}){
                             <FormControl sx={{width:'100%', marginY:'0.5em'}}>
                                 <RHFTextField hiddenLabel={false} label={'Email'} name={"email"} control={control}></RHFTextField>
                             </FormControl>
-                            <FormControl sx={{width:'100%', marginY:'0.5em'}}>
-                            <RHFAutocomplete defaultValue={getValues('unit_usaha_id')} name={'unit_usaha_id'} label={'Unit Usaha'} handleChange={(id) => { setUnitUsaha(id) }} options={options.unitUsaha} control={control} disable={false} hiddenLabel={false}></RHFAutocomplete>
 
-                            </FormControl>
                             <FormControl sx={{width:'100%', marginY:'0.5em'}}>
-                            <RHFAutocomplete defaultValue={getValues('role_id')} name={'role_id'} label={'Role'} handleChange={(id) => { setRole(id) }} options={options.role} control={control} disable={false} hiddenLabel={false}></RHFAutocomplete>
-
+                                <Typography>Departemen</Typography>
+                                <RHFSelect name={'unit_usaha_id'} control={control} option={options.unitUsaha} />
                             </FormControl>
+
+                            <FormControl sx={{width:'100%', marginY:'0.5em'}}>
+                                <Typography>Jabatan</Typography>
+                                <RHFSelect name={'role_id'} control={control} option={options.role} />
+                            </FormControl>
+
                             <FormControl sx={{width:'100%', marginY:'0.5em'}}>
                                 <RHFTextField type={'password'} hiddenLabel={false} label={'Password'} name={"password"} control={control}></RHFTextField>
                             </FormControl>
@@ -291,12 +333,15 @@ export default function product({user,options}){
                 </Dialog>
                 <Typography variant="h3" color={'#94B60F'} sx={{textDecoration:'underline'}} fontWeight={400}>{title}</Typography>
                 
+                <Box sx={{display:'flex', gap:'1em', marginY:'1em', flexDirection:'row',flexWrap:'wrap'}}>
+                    <Button color="success" variant={filterActive == true ? 'contained' :'outlined'} sx={{borderRadius:'5em'}} onClick={()=>{handleChangeFilter(true)}}>Aktif</Button>
+                    <Button color="success" variant={filterActive == false ? 'contained' :'outlined'} sx={{borderRadius:'5em'}} onClick={()=>{handleChangeFilter(false)}}>Non-aktif</Button>
+                </Box>
                 <Button sx={{marginTop:'1em'}} variant="contained" color="success" onClick={()=>handleOpenAddForm()}>Tambah Pegawai</Button>
-                
                 <Card sx={{marginY:'1em'}}>
                     <TableContainer>
                         <Table>
-                            <CustomTableHead tableHead={TABLEHEAD}></CustomTableHead>
+                            <CustomTableHead tableHead={tableHead}></CustomTableHead>
                             <TableBody>
                                 {
                                     products === [] || products==='' || products === undefined ? (
@@ -309,7 +354,7 @@ export default function product({user,options}){
                                             <UserTableRow 
                                             key={num} 
                                             onEdit={() => handleOpenEditForm(map)} 
-                                            onDelete={()=>{handleDelete(map.id)}}
+                                            onDelete={()=>{setAdminData(map)}}
                                             num={++num} row={map}>
 
                                             </UserTableRow>

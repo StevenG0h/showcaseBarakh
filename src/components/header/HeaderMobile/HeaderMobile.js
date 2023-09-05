@@ -62,17 +62,12 @@ const headerMobile = ({ variant, anchor, ...props }) => {
                                     <Collapse sx={{paddingLeft: '1em',}} in={openNav} >
                                     <ListItem onClick={() => setOpen(false)} >
                                         <ListItemText sx={{padding: '0 0.5em', margin: '0', borderRadius: '0.4em' }} >
-                                            <Link style={{ textDecoration: "none", color: router.pathname === '/profil' ? '#94B60F' : '#FFF', fontWeight: router.pathname === '/profil' ? '700' : ''}}  href="/profil">Sekilas</Link>
-                                        </ListItemText>
-                                    </ListItem>
-                                    <ListItem onClick={() => setOpen(false)} >
-                                        <ListItemText sx={{padding: '0 0.5em', margin: '0', borderRadius: '0.4em' }} >
-                                            <Link style={{ textDecoration: "none", color: router.pathname === '/profil/yayasan' ? '#94B60F' : '#FFF', fontWeight: router.pathname === '/profil/yayasan' ? '700' : ''}}  href="/profil/yayasan">Yayasan</Link>
+                                            <Link style={{ textDecoration: "none", color: router.pathname === '/profil' ? '#94B60F' : '#FFF', fontWeight: router.pathname === '/profil' ? '700' : ''}}  href="/profil">Tentang</Link>
                                         </ListItemText>
                                     </ListItem>
                                     <ListItem onClick={() => setOpen(false)}>
                                         <ListItemText  sx={{padding: '0 0.5em', margin: '0', borderRadius: '0.4em' }}>
-                                            <Link style={{ textDecoration: "none", color: router.pathname === '/profil/pesantren' ? '#94B60F' : '#FFF', fontWeight: router.pathname === '/profil/pesantren' ? '700' : ''}}  href="/profil/pesantren">Pesantren</Link>
+                                            <Link style={{ textDecoration: "none", color: router.pathname === '/profil/pesantren' ? '#94B60F' : '#FFF', fontWeight: router.pathname === '/profil/pesantren' ? '700' : ''}} target="_blank"  href="https://ibnualmubarok.site123.me/">Pesantren</Link>
                                         </ListItemText>
                                     </ListItem>
                                     <ListItem onClick={() => setOpen(false)} >

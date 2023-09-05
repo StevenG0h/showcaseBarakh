@@ -1,4 +1,4 @@
-import { Autocomplete, Box, Button, Card, Container, Dialog, DialogContent, DialogTitle, FormControl, Grid, Table, TableCell, TableHead, TableRow, TextField, Typography } from "@mui/material";
+import { Autocomplete, Box, Button, Card, Container, Dialog, DialogContent, DialogTitle, FormControl, Grid, Paper, Table, TableCell, TableContainer, TableHead, TableRow, TextField, Typography } from "@mui/material";
 import CustomBarChart from "../../components/chart/CustomBarChart";
 import AdminLayout from "../../layouts/adminLayout/AdminLayout";
 import CustomLineChart from "../../components/chart/CustomLineChart";
@@ -6,10 +6,11 @@ import CustomDoughnutChart from "../../components/chart/CustomDoughnutChart";
 import {getCookie} from 'cookies-next';
 import axios from "../../utils/axios";
 import { useState } from "react";
-import { getAllKecamatanById, getAllKelurahanById, getAllKotaById, getAllProvinsi, getAllUnitUsaha } from "../../helper/dataOptions";
+import { getAllKecamatanById, getAllKelurahanById, getAllKotaById, getAllProvinsi, getAllUnitUsaha, getAllUnitUsahaAdmin } from "../../helper/dataOptions";
 import  FilterAlt  from "@mui/icons-material/FilterAlt";
 import {RHFAutocomplete} from "../../components/form/RHFAutocomplete";
 import CustomTableHead from "../../components/table/CustomTableHead";
+import { checkPrivilege } from "../../helper/admin";
 
 function formatDashboardData(dashboard){
     let penjualan = {
@@ -215,30 +216,32 @@ function formatDashboardData(dashboard){
 
 export async function getServerSideProps({req,res}){
     let token = getCookie('token',{req,res});
+    let admin = '';
     if(token == undefined){
         return {
             redirect: {
                 permanent: false,
                 destination: "/auth",
             },
-            props:{},
+            props:{}
             };
     }
-    await axios.get('/user',{
-        headers:{
-            Authorization: 'Bearer '+token,
-        },
-        withCredentials:true
+
+    await checkPrivilege(token).then((r)=>{
+        admin = r;
     }).catch((e)=>{
+        console.log(e)
         return {
             redirect: {
                 permanent: false,
                 destination: "/auth",
             },
-            props:{},
+            props:{
+            }
         };
-    })
-    let dashboard = await axios.post('/api/dashboard',{        
+    });
+
+    let dashboard = await axios.post('/api/admin/dashboard',{        
             "from":"2018-01-01",
             "to":"2025-01-01",
             "kelurahan":'',
@@ -246,13 +249,18 @@ export async function getServerSideProps({req,res}){
             "kecamatan":'',
             "kota":'',
             "provinsi":''
-    }).catch(e=>{
-        console.log(e)
-    });
-    let unitUsaha = await getAllUnitUsaha()
+    },{
+        headers:{
+            Authorization: 'Bearer '+token,
+        },
+        withCredentials:true
+    })
+    let unitUsaha = await getAllUnitUsahaAdmin(token)
     let provinsi = await getAllProvinsi();
     return {
         props:{
+            isSuper: admin.adminLevel == '1' ? true : false,
+            admin: admin,
             data:formatDashboardData(dashboard),
             options: {
                 unitUsaha: unitUsaha,
@@ -262,8 +270,9 @@ export async function getServerSideProps({req,res}){
     }
 }
 
-export default function Dashboard({data, options}){
+export default function Dashboard({isSuper,admin,data, options}){
     let [loading, setLoading] = useState(false)
+    const token = getCookie('token');
 
     let [dashboardData, setData] = useState(data)
     let [filterData, setFilter] = useState({
@@ -278,8 +287,12 @@ export default function Dashboard({data, options}){
     let [kelurahan, setKelurahan] = useState([])
     let handleChange = async ()=>{
         console.log(filterData);
-        let dashboard = await axios.post('/api/dashboard',filterData);
-        console.log(dashboard)
+        let dashboard = await axios.post('/api/admin/dashboard',filterData,{
+        headers:{
+            Authorization: 'Bearer '+token,
+        },
+        withCredentials:true
+    })
         setData(formatDashboardData(dashboard))
     }
     const [openFilter, setOpenFilter] = useState(false);
@@ -434,11 +447,9 @@ export default function Dashboard({data, options}){
                 </DialogContent>
             </Dialog>
                 
-                <AdminLayout handleLoading={loading}>
-                    <Container maxWidth={'lg'}>
-                        <Grid container sx={{margin:'-1em'}}>
-                            <Grid item xs={'12'}>
-                                <Box sx={{margin:'1em', display:'flex', flexDirection:'row', justifyContent:'space-between'}}>
+                <AdminLayout isSuper={isSuper} admin={admin} handleLoading={loading}>
+                    <Container maxWidth={'lg'} sx={{justifyContent:'center'}}>
+                                <Box sx={{display:'flex',marginBottom:'1em',width:'100%', flexDirection:'row', justifyContent:'space-between'}}>
                                 <Typography variant="h3" color={'#94B60F'} sx={{textDecoration:'underline'}} fontWeight={400}>
                                     Dashboard
                                 </Typography>
@@ -446,35 +457,51 @@ export default function Dashboard({data, options}){
                                     Filter
                                 </Button>
                                 </Box>
-                            </Grid>  
+                        <Grid container>
 
                             <Grid item xs={'12'}>
-                                <Card sx={{height:'50vh',padding:'1em', margin:'1em'}}>
+                                <Card sx={{height:'50vh',padding:'1em'}}>
                                     <CustomBarChart chartTitle={'Keuangan'} dataset={dashboardData?.penjualan} color={['#049ffb','#58B63B']}></CustomBarChart>
                                 </Card>
                             </Grid>  
     
-                            <Grid item xs={'12'} sx={{marginX:'1em'}}>
-                                <Box sx={{justifyContent:'space-between', flexDirection:'row', display:'flex', gap:'1em'}}>
-                                    <Card sx={{width:'100%',padding:'1em'}}>
+                            <Grid item xs={'12'} sx={{marginTop:'1em'}}>
+                                <Box sx={{justifyContent:'space-between', flexDirection:'row', display:'flex', gap:'1em', flexWrap:'wrap'}}>
+                                    <Card sx={{width:{
+                                        xs:'100%',
+                                        md:'43%',
+                                        lg: '20%'
+                                    },flexGrow:'1',padding:'1em'}}>
                                         <Typography sx={{fontWeight:'600'}}>
                                             Pengunjung
                                         </Typography>
                                         {dashboardData?.visitor[0]?.total}
                                     </Card>
-                                    <Card sx={{width:'100%',padding:'1em'}}>
+                                    <Card sx={{width:{
+                                        xs:'100%',
+                                        md:'43%',
+                                        lg: '20%'
+                                    },flexGrow:'1',padding:'1em'}}>
                                         <Typography sx={{fontWeight:'600'}}>
                                             Pelanggan
                                         </Typography>
                                         {dashboardData?.pelangganStat}
                                     </Card>
-                                    <Card sx={{width:'100%',padding:'1em'}}>
+                                    <Card sx={{width:{
+                                        xs:'100%',
+                                        md:'43%',
+                                        lg: '20%'
+                                    },flexGrow:'1',padding:'1em'}}>
                                         <Typography sx={{fontWeight:'600'}}>
                                             Jumlah Produk Terjual
                                         </Typography>
                                         {dashboardData?.totalProdukTerjual}
                                     </Card>
-                                    <Card sx={{width:'100%',padding:'1em'}}>
+                                    <Card sx={{width:{
+                                        xs:'100%',
+                                        md:'43%',
+                                        lg: '20%'
+                                    },flexGrow:'1',padding:'1em'}}>
                                     <Typography sx={{fontWeight:'600'}}>
                                         Stok
                                     </Typography>
@@ -483,19 +510,28 @@ export default function Dashboard({data, options}){
                                 </Box>
                             </Grid>
 
-                            <Grid item xs={'6'} paddingY={'1em'} paddingLeft={'1em'} paddingRight={'0.5em'}>
-                                <Card sx={{height:'50vh',padding:'1em'}}>
-                                    <CustomLineChart chartTitle={'Penjualan'} dataset={dashboardData?.total}></CustomLineChart>
-                                </Card>
-                            </Grid>  
+                            <Grid item xs={'12'} sx={{
+                                paddingRight:{
+                                    xs:'2em',
+                                    md:'0'
+                                }
+                            }}>
+                                <Box sx={{width:'auto',my:'1em',display:'flex',flexGrow:'1', gap:'1em',flexDirection:{
+                                    xs:'column',
+                                    md:'row'
+                                }}}>
+                                    <Card sx={{height:'300px',width:'100%',padding:'1em'}}>
+                                        <CustomLineChart chartTitle={'Penjualan'} dataset={dashboardData?.total}></CustomLineChart>
+                                    </Card>
+                                
+                                    <Card sx={{height:'300px',width:'100%',padding:'1em'}}>
+                                        <CustomBarChart chartTitle={'Unit usaha dengan produk terlaris'} dataset={dashboardData?.produkTerlaris} color={['#049ffb','#58B63B']}></CustomBarChart>
+                                    </Card>
+                                </Box>
+                            </Grid>
                             
-                            <Grid item xs={'6'} paddingY={'1em'} paddingLeft={'0.5em'} paddingRight={'1em'}>
-                                <Card sx={{height:'50vh',padding:'1em'}}>
-                                    <CustomBarChart chartTitle={'Unit usaha dengan produk terlaris'} dataset={dashboardData?.produkTerlaris} color={['#049ffb','#58B63B']}></CustomBarChart>
-                                </Card>
-                            </Grid>  
-                            <Grid item xs={'12'} sx={{paddingX:'1em',marginBottom:'3em'}}>
-                                <Card sx={{padding:'1em'}}>
+                            <Grid item xs={'12'} sx={{marginBottom:'3em'}}>
+                                <Paper sx={{padding:'1em',overflow:'scroll'}}>
                                     <Button onClick={()=>{
                                         setFilter({"from":"2018-01-01",
                                         "to":"2025-01-01",
@@ -509,7 +545,8 @@ export default function Dashboard({data, options}){
                                     }} variant="contained" color="success">
                                         Reset Filter
                                     </Button>
-                                    <Table>
+                                    <Table sx={{overflowX:'auto'}}>
+                                        <TableContainer>
                                         <CustomTableHead tableHead={tableHead}>
 
                                         </CustomTableHead>
@@ -550,7 +587,7 @@ export default function Dashboard({data, options}){
                                                         </TableCell>
                                                         <TableCell>
                                                             {data?.unitUsaha.map((unit)=>{
-                                                               
+                                                            
                                                                 return (
                                                                     <Button onClick={()=>{
                                                                         let filter = filterData;
@@ -567,8 +604,10 @@ export default function Dashboard({data, options}){
                                                 )
                                             })
                                         }
+                                        </TableContainer>
+                                        
                                     </Table>
-                                </Card>
+                                </Paper>
                             </Grid>
                         </Grid>
                         

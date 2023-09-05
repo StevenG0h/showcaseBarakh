@@ -17,6 +17,8 @@ export async function getServerSideProps({req,res,query}){
   console.log(unitUsaha)
   return {
     props:{
+            isSuper: admin.adminLevel == '1' ? true : false,
+            admin: admin,
       data:unitUsaha.data
     }
   }
@@ -28,6 +30,7 @@ export default function detailUsaha({data}){
     <>
       <main className={poppinsFont.className} style={{backgroundColor:'white'}}>
         <Header>
+          <title>Albarakh | Detail Unit Usaha</title>
         </Header>
         <Container className={style.container}>
           <div className={style.containerDetailUsaha}>   

@@ -5,15 +5,17 @@ import * as yup from "yup";
 import {yupResolver} from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 import AdminLayout from "../../../layouts/adminLayout/AdminLayout";
-import { Box, Button, Card, Chip, Dialog, DialogContent, FormControl, Grid, IconButton, ImageList, ImageListItem, ImageListItemBar, Input, MenuItem, Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
+import { Box, Button, Card, Chip, Dialog, DialogContent, FormControl, Grid, IconButton, ImageList, ImageListItem, ImageListItemBar, Input, InputBase, MenuItem, Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
 import RHFTextField from "../../../components/form/RHFTextField";
 import CustomTableHead from "../../../components/table/CustomTableHead";
-import { getAllUnitUsaha } from "../../../helper/dataOptions";
+import { getAllUnitUsaha, getAllUnitUsahaAdmin } from "../../../helper/dataOptions";
 import StockTableRow from "../../../sections/stock/StockTableRow";
 import {getCookie} from 'cookies-next';
 import  ChevronRight  from "@mui/icons-material/ChevronRight";
 import  ChevronLeft  from "@mui/icons-material/ChevronLeft";
 import { useEffect } from "react";
+import { checkPrivilege } from "../../../helper/admin";
+import  Search  from "@mui/icons-material/Search";
 
 export async function getServerSideProps({req,res}){
     let token = getCookie('token',{req,res});
@@ -26,20 +28,20 @@ export async function getServerSideProps({req,res}){
             props:{},
           };
     }
-    await axios.get('/user',{
-        headers:{
-            Authorization: 'Bearer '+token,
-        },
-        withCredentials:true
+    let admin = '';
+await checkPrivilege(token).then((r)=>{
+        admin = r;
+        console.log('admin',admin)
     }).catch((e)=>{
+        console.log(e)
         return {
             redirect: {
-              permanent: false,
-              destination: "/auth",
+                permanent: false,
+                destination: "/auth",
             },
             props:{},
-          };
-    })
+        };
+    });
     try{
         let produk = await axios.get('/api/admin/produk',{
             headers:{
@@ -47,9 +49,11 @@ export async function getServerSideProps({req,res}){
             },
             withCredentials:true
         });
-        let unitusaha = await getAllUnitUsaha();
+        let unitusaha = await getAllUnitUsahaAdmin(token);
         return {
             props:{
+                isSuper: admin.adminLevel == '1' ? true : false,
+                admin: admin,
                 produk: produk.data.data,
                 options:{
                     unitUsaha: unitusaha
@@ -68,14 +72,19 @@ export async function getServerSideProps({req,res}){
     }
 }
 
-export default function product({produk, options}){
+export default function product({isSuper,admin,produk, options}){
     let [loading, setLoading] = useState(false)
     let title = 'Stock';
     const token = getCookie('token');
     let [products, setProducts] = useState(produk.data);
     let [productsLink, setProductsLink] = useState(produk.links);
     let [formTitle, setFormTitle] = useState('');
-    let [activeLink, setActiveLink] = useState('*');
+    let [search, setSearch] = useState({
+        id:'all',
+        orderBy:'desc',
+        keyword:'',
+        harga:''
+    });
     //Next router
     const router = useRouter();
 
@@ -126,27 +135,8 @@ export default function product({produk, options}){
 
     //state handler
     let handleChangeFilter = async (data)=>{
-        setActiveLink(data);
-        if(data != '*'){
-            let unitUsaha = await axios.get('/api/admin/produk/withFilter/'+data, {
-                headers:{
-                    Authorization: 'Bearer '+token
-                },
-                withCredentials:true
-            });
-            console.log(unitUsaha);
-            setProducts(unitUsaha?.data?.data)
-            setProductsLink(unitUsaha?.data.links)
-        }else{
-            let unitUsaha = await axios.get('/api/admin/produk/', {
-                headers:{
-                    Authorization: 'Bearer '+token
-                },
-                withCredentials:true
-            });
-            setProducts(unitUsaha?.data.data.data)
-            setProductsLink(unitUsaha?.data.data.links)
-        }   
+        let unitUsaha = await axios.post('/api/produk/search',data);
+        setProducts(unitUsaha?.data?.data)
     }
 
     let handleCloseAddForm = ()=>{
@@ -201,7 +191,7 @@ export default function product({produk, options}){
 
     return (
         <>
-            <AdminLayout handleLoading={loading}>
+            <AdminLayout isSuper={isSuper} admin={admin} handleLoading={loading}>
                 <Dialog open={AddForm} onClose={handleCloseAddForm} fullWidth maxWidth='xs'>
                     <DialogContent>
                         <Typography variant="h5" sx={{marginBottom:'1em'}} fontWeight={600}>Edit Stok</Typography>
@@ -224,16 +214,48 @@ export default function product({produk, options}){
                     <Typography variant="h6" sx={{margin:0}}>
                         Unit Usaha:
                     </Typography>
-                    <Button color="success" variant={activeLink === '*' ? 'contained' : 'outlined'} sx={{borderRadius:'5em'}} onClick={()=>{handleChangeFilter('*')}}>Semua</Button>
+                    <Button color="success" variant={search.id === 'all' ? 'contained' : 'outlined'} sx={{borderRadius:'5em'}} 
+                    onClick={()=>{
+                        let searchData = search;
+                        searchData.id = 'all';
+                        setSearch(searchData);
+                        handleChangeFilter(searchData);
+                    }}>Semua</Button>
                     {
                         options.unitUsaha.map((unitUsaha)=>{
                             return (
-                                <Button color="success" variant={activeLink === unitUsaha.id ? 'contained' : 'outlined'} sx={{borderRadius:'5em'}} onClick={()=>{handleChangeFilter(unitUsaha.id)}}>{unitUsaha.label}</Button>
+                                <Button color="success" variant={search.id === unitUsaha.id ? 'contained' : 'outlined'} sx={{borderRadius:'5em'}} onClick={()=>{let searchData = search;
+                                    searchData.id = unitUsaha.id;
+                                    setSearch(searchData);
+                                    handleChangeFilter(searchData);}}>{unitUsaha.label}</Button>
                             )
                         })
                     }
                 </Box>
+                <Box sx={{display:'flex', gap:'1em', alignItems:'start', justifyContent:'space-between',flexDirection:{
+                            lg:'row',
+                            xs:'column'
+                        }}}>
+                        <Card sx={{width:{
+                                lg:'30%',
+                                xs:'100%'
+                            },borderRadius:'5em',display:'flex',flexDirection:'row',justifyContent:'stretch'}}>
+                            <FormControl sx={{backgroundColor:'white',width:'100%'}}>
+                                <InputBase placeholder="ketik untuk mencari produk" defaultValue={search.keyword} onChange={(e)=>{
+                                    let data = search;
+                                    data.keyword =e.target.value;
+                                    setSearch(data);
+                                }} sx={{borderRadius:'5em', paddingY:'0.5em',width:'100%',outline:'none',"& fieldset": { border: 'none' },paddingLeft:'1em'}}>
+                                
+                                </InputBase>
+                            </FormControl>
+                            <IconButton onClick={()=>handleChangeFilter(search)} variant="contained" color="success" sx={{height:'100%',paddingY:'0.5em', borderRadius:'0'}}>
+                                <Search></Search>
+                            </IconButton>
+                        </Card>
+                    </Box>
                 <Card sx={{marginY:'1em'}}>
+                    
                     <TableContainer>
                         <Table>
                             <CustomTableHead tableHead={TABLEHEAD}></CustomTableHead>

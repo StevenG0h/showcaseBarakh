@@ -1,5 +1,4 @@
-import { faCartShopping } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import { formatCurrency } from "../../../helper/currency";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -111,12 +110,14 @@ export default function KatalogCard({ row, isCart=false }) {
                 <p className={style.titleCard}>{productName}</p>
                 <RatingLabel value={row.rating} />
                 <p className={style.price}>Harga : <span className={style.nominal}>Rp.{formatCurrency(productPrice)}</span></p>
-                <p className={style.descriptionCard}>{
+                {/* <p className={style.descriptionCard}>{
                     productDesc
-                }</p>
+                }</p> */}
                 <div className={style.directButton}>
                     <button onClick={() => { productDetail(id) }} className={style.detil} >Selengkapnya</button>
-                    <button onClick={() => handleChangeStatus(row)} className={style.cart}><FontAwesomeIcon icon={faCartShopping} /></button>
+                    <button onClick={() => handleChangeStatus(row)} className={style.cart}>
+                        <ShoppingCartIcon fontSize='12px'></ShoppingCartIcon>
+                    </button>
                 </div>
             </div>
         </div>

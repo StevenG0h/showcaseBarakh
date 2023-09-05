@@ -8,7 +8,7 @@ export default function CustomTableHead({tableHead}){
                     tableHead.map((map)=>{
                         return(
                             <TableCell key={map.value} align={map.align}>
-                                <Typography fontWeight="600">{map.value}</Typography>
+                                <Typography noWrap fontWeight="600">{map.value}</Typography>
                             </TableCell>
                         )
                     })

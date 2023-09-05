@@ -5,36 +5,36 @@ import * as yup from "yup";
 import {yupResolver} from "@hookform/resolvers/yup";
 import { Controller, useForm } from "react-hook-form";
 import AdminLayout from "../../../layouts/adminLayout/AdminLayout";
-import { Box, Button, Card, Dialog, DialogContent, FormControl, Grid, IconButton, ImageList, ImageListItem, ImageListItemBar, Input, MenuItem, Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
+import { Box, Button, Card, Dialog, DialogContent, FormControl, Grid, IconButton, ImageList, ImageListItem, ImageListItemBar, Input, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
 import RHFTextField from "../../../components/form/RHFTextField";
 import CustomTableHead from "../../../components/table/CustomTableHead";
+import ProductTableRow from "../../../sections/product/ProductTableRow";
 import  Delete  from "@mui/icons-material/Delete";
 import  Star  from "@mui/icons-material/Star";
 import RHFDnd from "../../../components/form/RHFDnd";
-import { getAllUnitUsaha } from "../../../helper/dataOptions";
 import {getCookie} from 'cookies-next';
-import GaleriTableRow from "../../../sections/galeri/GaleriTableRow";
+import { getAllUnitUsaha } from "../../../helper/dataOptions";
 import  ChevronRight  from "@mui/icons-material/ChevronRight";
 import  ChevronLeft  from "@mui/icons-material/ChevronLeft";
 import { useEffect } from "react";
-import { ConfirmDialog } from "../../../components/dialog/ConfirmDialog";
 import { checkPrivilege } from "../../../helper/admin";
+import { ConfirmDialog } from "../../../components/dialog/ConfirmDialog";
+import RoleTableRow from "../../../sections/role/RoleTableRow";
 
-export async function getServerSideProps({req,res}){
+export async function getServerSideProps({req,res,query}){
     let token = getCookie('token',{req,res});
     if(token == undefined){
         return {
             redirect: {
-                permanent: false,
-                destination: "/auth",
+              permanent: false,
+              destination: "/auth",
             },
             props:{},
           };
     }
-    let admin = '';
-await checkPrivilege(token).then((r)=>{
+    let admin = ''
+    await checkPrivilege(token).then((r)=>{
         admin = r;
-        console.log('admin',admin)
     }).catch((e)=>{
         console.log(e)
         return {
@@ -46,18 +46,17 @@ await checkPrivilege(token).then((r)=>{
         };
     });
     try{
-        let galeri = await axios.get('/api/admin/galeri',{
+        let produk = await axios.get('/api/admin/role',{
             headers:{
                 Authorization: 'Bearer '+token,
             },
             withCredentials:true
         });
-        console.log(galeri);
         return {
             props:{
                 isSuper: admin.adminLevel == '1' ? true : false,
                 admin: admin,
-                data: galeri.data.data
+                product: produk.data
             }
         }
     }catch(e){
@@ -72,48 +71,44 @@ await checkPrivilege(token).then((r)=>{
     }
 }
 
-export default function galeri({isSuper,admin,data}){
-    const token = getCookie('token');
+export default function product({isSuper,admin,unitUsaha,product}){
+    let token = getCookie('token')
     let [loading, setLoading] = useState(false)
-    let [galeris, setgaleriUsahas] = useState(data?.data);
-    let [links, setUnitUsahaLink] = useState(data?.links);
+    let [products, setProducts] = useState(product.data);
+    let [productsLink, setProductsLink] = useState(product.links);
     let [imageData, setImage] = useState([]);
     let [deletedImage, setDeletedImage] = useState([]);
-    let [imageBackup, setImageBackup] = useState([]);
-    let [deleteId, setDelete] = useState('');
+    let [deleteProduct, setDeleteProduct] = useState('');
     //Next router
     const router = useRouter();
 
     //React hook form and YUP validator
     const schema = yup.object().shape({
-        galeriTitle: yup.string().required('Judul tidak boleh kosong'),
-        galeriDate: yup.string().required('Tanggal tidak boleh kosong'),
+        roleName: yup.string().required('Nama role tidak boleh kosong'),
     })
 
-    const { control, handleSubmit, getValues, setValue, reset, register , formState:{errors}} = useForm({
+    const { control, handleSubmit, setValue, reset, register , formState:{errors}} = useForm({
         defaultValues: {
-            id: ''  ,
-          galeriDate:'',
-          galeriTitle: "",
-          path: ""
+          id: ''  ,
+          roleName: "",
         },
         resolver: yupResolver(schema)
       })
     
       const onSubmit = async (data) => {
         setLoading(true)
-        console.log(data)
         if(editMode == false){
+            console.log(data)
             await axios.get('/sanctum/csrf-cookie',{
                 headers: { Authorization: `Bearer `+token},
                 withCredentials: true
             }).then(async (r)=>{
-                console.log(data)
-                await axios.post('/api/admin/galeri',data,{
-                    headers: { Authorization: `Bearer `+token, "Content-Type":'multipart/form-data'},
-                    withCredentials: true,
+                await axios.post('/api/admin/role',data,{
+                    headers: { Authorization: `Bearer `+token,
+                    'Content-Type': 'multipart/form-data'
+                    },  
+                    withCredentials: true
                 }).then((r)=>{
-                    handleCloseAddForm();
                     console.log(r.data)
                 }).catch((e)=>{
                     console.log(e);
@@ -126,11 +121,12 @@ export default function galeri({isSuper,admin,data}){
                 headers: { Authorization: `Bearer `+token},
                 withCredentials: true
             }).then(async (r)=>{
-                await axios.post('/api/admin/galeri/edit/'+data.id,data,{
-                    headers: { Authorization: `Bearer `+token, "Content-Type":'multipart/form-data'},
-                    withCredentials: true,
+                await axios.post('/api/admin/role/edit/'+data.id,data,{
+                    headers: { Authorization: `Bearer `+token,
+                    'Content-Type': 'multipart/form-data'
+                },
+                    withCredentials: true
                 }).then((r)=>{
-                handleCloseAddForm();
                     console.log(r.data)
                 }).catch((e)=>{
                     console.log(e);
@@ -138,34 +134,29 @@ export default function galeri({isSuper,admin,data}){
             }).catch((e)=>{
                 console.log(e)
             })
-            
         }
-
-        handleCloseAddForm()
         router.replace(router.asPath);
         setLoading(false)
+        handleCloseAddForm()
       }
       
       //states
-    const [showImage, setShowImage] = useState('');
     const [AddForm, setAddForm] = useState(false);
     const [editMode, setEditMode] = useState(false);
-    const [usahaId, setUsahaId] = useState('');
-
+    
     //handler
     async function handleDelete(id){
-        const csrf = await axios.get('/sanctum/csrf-cookie',{
-            withCredentials:true
-        }).then(async (r)=>{
-            const deleteUnitUsaha = await axios.delete('/api/admin/galeri/'+id,{
-                headers:{
-                    Authorization: `Bearer `+token
-                }
-            }).then((r)=>{
-                router.replace(router.asPath)
-                setDelete('');
-            });
+        
+        const csrf = await axios.get('/sanctum/csrf-cookie').then(async(r)=>{
+            const deleteProduct = await axios.delete('/api/admin/role/'+id,
+            {headers:{
+                Authorization: 'Bearer '+token
+            },withCredentials:true});
+        }).catch((e)=>{
+            console.log(e);
         })
+        setDeleteProduct('')
+        router.replace(router.asPath)
     }
 
     //state handler
@@ -177,94 +168,69 @@ export default function galeri({isSuper,admin,data}){
         setEditMode(false);
         setAddForm(false);
         setValue('id','');
-        setValue('galeriTitle','');
-        setValue('galeriDate','');
-        setImage('path');
-        setShowImage('')
+        setValue('roleName','');
     }
     
     let handleOpenEditForm = (data)=>{
         setEditMode(true);
         setValue('id',data.id);
-        setValue('galeriTitle',data?.galeriTitle);
-        setValue('galeriDate',data?.galeriDate);
-        setValue('galeriDate',data?.galeriDate);
-        setValue('path',data?.path);
+        setValue('roleName',data.roleName);
+        
         setAddForm(true)
-    }
-   
-    let handleShowImage = (data)=>{
-        setShowImage(process.env.NEXT_PUBLIC_BACKEND_URL+'/storage/galeri/'+data)
-    }
-    
-    let handleCloseShowImage = (data)=>{
-        setShowImage('')
-    }
-
-    let handleDeletePreview = (id)=>{
-        if(id != undefined){
-            let deleteImage = deletedImage;
-            deleteImage.push(id);
-            setDeletedImage(deleteImage);
-        }
     }
 
     let handleChangePage = async (link)=>{
-        let unitUsaha = await axios.get(link);
-        setUnitUsaha(unitUsaha?.data?.data?.data)
-        setUnitUsahaLink(unitUsaha?.data?.data?.links)
+        if(link != null){
+            try{
+                let unitUsaha = await axios.get(link,{
+                    headers:{
+                        Authorization: 'Bearer '+token,
+                    },
+                    withCredentials:true
+                });
+                console.log(unitUsaha.data)
+                setProducts(unitUsaha?.data.product.data)
+                setProductsLink(unitUsaha?.data.product.links)
+            }catch(e){
+                console.log(e)
+            }
+        }
     }
 
     //utils
 
     let TABLEHEAD = [
         {value: 'No',align: 'left'},
-        {value: 'Judul',align: 'left'},
-        {value: 'Kegiatan pada',align: 'left'},
-        {value: 'Gambar',align: 'left'},
-        {value: 'Action',align: 'center'}
+        {value: 'Nama Role',align: 'left'},
+        {value: 'Action',align: 'center'},
     ]
     
     let num = 0;
 
     useEffect(() => {
-        setgaleriUsahas(data.data)
-        setUnitUsahaLink(data.links)
-      }, [data]);
+        setProducts(product.data)
+        setProductsLink(product.links)
+      }, [product]);
 
     return (
         <>
-            <ConfirmDialog open={deleteId != ''} onCancel={()=>{setDelete('')}} onConfirm={()=>{handleDelete(deleteId)}} msg={'Anda yakin ingin menghapus?'}></ConfirmDialog>
+        <ConfirmDialog onCancel={()=>setDeleteProduct('')} msg={'Anda yakin ingin menghapus Role '+deleteProduct.roleName+" ?"} title={"Hapus Role"} open={deleteProduct != ''} onConfirm={()=>handleDelete(deleteProduct.id)}></ConfirmDialog>
             <AdminLayout isSuper={isSuper} admin={admin} handleLoading={loading}>
-                <Dialog open={showImage != ''} onClose={handleCloseShowImage} fullWidth maxWidth={'md'}>
-                        <img height={"100%"} style={{objectFit:'contain'}} src={showImage}></img>
-                </Dialog>
                 <Dialog open={AddForm} sx={{overflow:'hidden'}} onClose={handleCloseAddForm} fullWidth maxWidth='xs'>
                     <DialogContent>
-                        <Typography variant="h5" sx={{marginBottom:'1em'}} fontWeight={600}>{editMode? 'Edit Galeri' : 'Tambah Galeri'}</Typography>
+                        <Typography variant="h5" sx={{marginBottom:'1em'}} fontWeight={600}>Tambah Role</Typography>
                         <form onSubmit={handleSubmit(onSubmit)}>
                             <FormControl sx={{width:'100%', marginY:'0.5em'}}>
-                                <RHFTextField hiddenLabel={false} label={'Judul'} name={"galeriTitle"} control={control}></RHFTextField>
+                                <RHFTextField hiddenLabel={false} label={'Nama Role'} name={"roleName"} control={control}></RHFTextField>
                             </FormControl>
-                            <FormControl sx={{width:'100%', marginY:'0.5em'}}>
-                                <RHFTextField type="date" hiddenLabel={false} label={'Tanggal'} name={"galeriDate"} control={control}></RHFTextField>
-                            </FormControl>
-                            <Typography>
-                                Gambar(max 1MB)
-                            </Typography>
-                            <FormControl sx={{marginY:'0.5em',display:'flex', flexDirection:'row', flexWrap:'wrap', width:'99%',overflow:'hidden'}}>
-                                <Box sx={{width:'100%'}}>
-                                    <RHFDnd name="path" files={process.env.NEXT_PUBLIC_BACKEND_URL+'/storage/galeri/'+getValues('path')} control={control}></RHFDnd>
-                                </Box>
-                            </FormControl>
-                            <Button variant="contained" color="success" sx={{width:'100%'}} type="submit">{editMode ? 'Simpan Perubahan' : 'Tambah Galeri'}</Button>
+                            <Button variant="contained" color="success" sx={{width:'100%'}} type="submit">{editMode ? 'Simpan Perubahan' : 'Tambah Produk'}</Button>
                         </form>
                     </DialogContent>
                 </Dialog>
-                <Typography variant="h3" color={'#94B60F'} sx={{textDecoration:'underline'}} fontWeight={400}>Galeri</Typography>
-                <Box sx={{display:'flex',flexDirection:'row',alignItems:'center', marginY:'1em'}}>
+                <Typography variant="h3" color={'#94B60F'} sx={{textDecoration:'underline'}} fontWeight={400}>Role</Typography>
+                <Box sx={{display:'flex',flexDirection:'row',alignItems:'center',marginY:'1em'}}>
                     <Button onClick={handleOpenAddForm} color="success" variant="contained" startIcon="">
-                        Tambah Galeri
+                        Tambah Role
                     </Button>
                 </Box>
                 <Card sx={{marginY:'1em'}}>
@@ -273,21 +239,20 @@ export default function galeri({isSuper,admin,data}){
                             <CustomTableHead tableHead={TABLEHEAD}></CustomTableHead>
                             <TableBody>
                                 {
-                                    galeris.length==0 ? (
+                                    products === [] || products==='' || products === undefined ? (
                                         <TableRow>
                                             <TableCell>Data kosong</TableCell>
                                         </TableRow>
                                     ) :
-                                    galeris.map((map)=>{
+                                    products?.map((map)=>{
                                         return ( <>
-                                            <GaleriTableRow 
+                                            <RoleTableRow 
                                             key={map.id} 
-                                            onDelete={() => setDelete(map.id)} 
+                                            onDelete={() => setDeleteProduct(map)} 
                                             onEdit={() => handleOpenEditForm(map)} 
-                                            onShowImage={()=> handleShowImage(map.path)}
                                             num={++num} row={map}>
 
-                                            </GaleriTableRow>
+                                            </RoleTableRow>
                                         </>
                                         )
                                     })
@@ -297,7 +262,7 @@ export default function galeri({isSuper,admin,data}){
                     </TableContainer>
                     <Box sx={{display:'flex', flexDirection:'row', justifyContent:'center'}}>
                         {
-                            links.map((link)=>{
+                            productsLink.map((link,index)=>{
                                 return (
                                     <Button fullWidth size="sm" sx={{margin:'0.5em',paddingY:'1em', paddingX:'0', width:0, height:0}} key={link.label} variant={link.active ? 'contained' : 'outlined'} color={'success'} onClick={()=> handleChangePage(link.url)}>{
                                         link.label == '&laquo; Previous'? <ChevronLeft ></ChevronLeft> : link.label == 'Next &raquo;' ? <ChevronRight></ChevronRight> : link.label

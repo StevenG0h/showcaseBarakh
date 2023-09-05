@@ -5,7 +5,7 @@ import * as yup from "yup";
 import {yupResolver} from "@hookform/resolvers/yup";
 import { Controller, useForm } from "react-hook-form";
 import AdminLayout from "../../../../layouts/adminLayout/AdminLayout";
-import { Box, Button, Card, Dialog, DialogContent, FormControl, Grid, IconButton, ImageList, ImageListItem, ImageListItemBar, Input, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
+import { Box, Breadcrumbs, Button, Card, Dialog, DialogContent, FormControl, Grid, IconButton, ImageList, ImageListItem, ImageListItemBar, Input, Link, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
 import RHFTextField from "../../../../components/form/RHFTextField";
 import CustomTableHead from "../../../../components/table/CustomTableHead";
 import ProductTableRow from "../../../../sections/product/ProductTableRow";
@@ -17,6 +17,8 @@ import { getAllUnitUsaha } from "../../../../helper/dataOptions";
 import  ChevronRight  from "@mui/icons-material/ChevronRight";
 import  ChevronLeft  from "@mui/icons-material/ChevronLeft";
 import { useEffect } from "react";
+import { checkPrivilege } from "../../../../helper/admin";
+import { ConfirmDialog } from "../../../../components/dialog/ConfirmDialog";
 
 export async function getServerSideProps({req,res,query}){
     let token = getCookie('token',{req,res});
@@ -29,20 +31,19 @@ export async function getServerSideProps({req,res,query}){
             props:{},
           };
     }
-    await axios.get('/user',{
-        headers:{
-            Authorization: 'Bearer '+token,
-        },
-        withCredentials:true
+    let admin = ''
+    await checkPrivilege(token).then((r)=>{
+        admin = r;
     }).catch((e)=>{
+        console.log(e)
         return {
             redirect: {
-              permanent: false,
-              destination: "/auth",
+                permanent: false,
+                destination: "/auth",
             },
             props:{},
-          };
-    })
+        };
+    });
     try{
         let produk = await axios.get('/api/admin/unit-usaha/'+query.unitUsaha,{
             headers:{
@@ -52,6 +53,8 @@ export async function getServerSideProps({req,res,query}){
         });
         return {
             props:{
+                isSuper: admin.adminLevel == '1' ? true : false,
+                admin: admin,
                 unitUsaha: produk.data.unitUsaha,
                 product: produk.data.product
             }
@@ -68,7 +71,7 @@ export async function getServerSideProps({req,res,query}){
     }
 }
 
-export default function product({unitUsaha,product}){
+export default function product({isSuper,admin,unitUsaha,product}){
     let token = getCookie('token')
     let [loading, setLoading] = useState(false)
     let {usahaName} = unitUsaha;
@@ -76,7 +79,7 @@ export default function product({unitUsaha,product}){
     let [productsLink, setProductsLink] = useState(product.links);
     let [imageData, setImage] = useState([]);
     let [deletedImage, setDeletedImage] = useState([]);
-    let [imageBackup, setImageBackup] = useState([]);
+    let [deleteProduct, setDeleteProduct] = useState('');
     //Next router
     const router = useRouter();
 
@@ -195,7 +198,7 @@ export default function product({unitUsaha,product}){
     async function handleDelete(id){
         
         const csrf = await axios.get('/sanctum/csrf-cookie').then(async(r)=>{
-            const deleteUnitUsaha = await axios.delete('/api/admin/produk/'+id,
+            const deleteProduct = await axios.delete('/api/admin/produk/'+id,
             {headers:{
                 Authorization: 'Bearer '+token
             },withCredentials:true});
@@ -203,6 +206,7 @@ export default function product({unitUsaha,product}){
             console.log(e);
         })
         router.replace(router.asPath)
+         setDeleteProduct('')
     }
 
     //state handler
@@ -258,6 +262,7 @@ export default function product({unitUsaha,product}){
             let deleteImage = deletedImage;
             deleteImage.push(id);
             setDeletedImage(deleteImage);
+            setDeleteProduct('')
         }
     }
 
@@ -300,7 +305,8 @@ export default function product({unitUsaha,product}){
 
     return (
         <>
-            <AdminLayout handleLoading={loading}>
+        <ConfirmDialog onCancel={()=>setDeleteProduct('')} msg={'Anda yakin ingin menghapus produk '+deleteProduct.productName+" ?"} title={"Hapus Produk"} open={deleteProduct != ''} onConfirm={()=>handleDelete(deleteProduct.id)}></ConfirmDialog>
+            <AdminLayout isSuper={isSuper} admin={admin} handleLoading={loading}>
                 <Dialog open={AddForm} sx={{overflow:'hidden'}} onClose={handleCloseAddForm} fullWidth maxWidth='xs'>
                     <DialogContent>
                         <Typography variant="h5" sx={{marginBottom:'1em'}} fontWeight={600}>Tambah Produk</Typography>
@@ -339,6 +345,12 @@ export default function product({unitUsaha,product}){
                     </DialogContent>
                 </Dialog>
                 <Typography variant="h3" color={'#94B60F'} sx={{textDecoration:'underline'}} fontWeight={400}>{usahaName}</Typography>
+                <Breadcrumbs sx={{color:'#000000',marginY:'1em'}} aria-label="breadcrumb">
+                    <Link sx={{color:'#000000'}} underline="hover" color="inherit" href="/admin/unit-usaha">
+                        Unit usaha
+                    </Link>
+                    <Typography color={'#94B60F'}>{usahaName}</Typography>
+                </Breadcrumbs>
                 <Box sx={{display:'flex',flexDirection:'row',alignItems:'center',marginY:'1em'}}>
                     <Button onClick={handleOpenAddForm} color="success" variant="contained" startIcon="">
                         Tambah Produk
@@ -350,7 +362,7 @@ export default function product({unitUsaha,product}){
                             <CustomTableHead tableHead={TABLEHEAD}></CustomTableHead>
                             <TableBody>
                                 {
-                                    products === [] || products==='' || products === undefined ? (
+                                    products === [] || products==='' || products === undefined || products.length ==0 ? (
                                         <TableRow>
                                             <TableCell>Data kosong</TableCell>
                                         </TableRow>
@@ -359,7 +371,7 @@ export default function product({unitUsaha,product}){
                                         return ( <>
                                             <ProductTableRow 
                                             key={map.id} 
-                                            onDelete={() => handleDelete(map.id)} 
+                                            onDelete={() => setDeleteProduct(map)} 
                                             onEdit={() => handleOpenEditForm(map)} 
                                             onShowImage={()=> handleShowImage(map.usahaImage)}
                                             num={++num} row={map}>

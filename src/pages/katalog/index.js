@@ -4,6 +4,8 @@ import KatalogCard from "../../components/card/KatalogCard/KatalogCard";
 import Ballot from "@mui/icons-material/Ballot";
 import Filter from "@mui/icons-material/Filter";
 import Search from "@mui/icons-material/Search";
+import ChevronLeft from "@mui/icons-material/ChevronLeft";
+import ChevronRight from "@mui/icons-material/ChevronRight";
 import style from "./katalog.module.css";
 import { Poppins } from 'next/font/google'
 import axios from "../../utils/axios";
@@ -11,6 +13,7 @@ import { Accordion, AccordionDetails, AccordionSummary, Box, Button, Card, Colla
 import WhatsApp from "../../components/Whatsapp/WhatsApp"
 
 import {useState} from "react";
+import Head from "next/head";
 
 const poppins = Poppins({
     weight: '500',
@@ -19,18 +22,20 @@ const poppins = Poppins({
   })
 
 export async function getServerSideProps({context}){
-    let produk = await axios.get('/api/produk');
+    let produk = await axios.get('/api/produk/katalog');
     let unitUsaha = await axios.get('/api/unit-usaha')
     return {
         props:{
             products:produk.data.data.data,
-            unitUsaha: unitUsaha.data.data.data
+            unitUsaha: unitUsaha.data.data.data,
+            productsLinks: produk.data.data.links
         }
     }
 }
 
-const Katalog = ({products, unitUsaha}) => {
+const Katalog = ({products, unitUsaha, productsLinks}) => {
     let [product, setProducts] = useState(products);
+    let [productLinks, setProductsLinks] = useState(productsLinks);
     let [search, setSearch] = useState({
         id:'all',
         orderBy:'desc',
@@ -55,10 +60,26 @@ const Katalog = ({products, unitUsaha}) => {
         }
       })
 
+      let handleChangePage = async (link)=>{
+        if(link != null){
+            try{
+                let produk = await axios.get(link);
+                console.log(produk);
+                setProducts(produk?.data.data.data)
+                setProductsLinks(produk?.data.data.links)
+            }catch(e){
+                console.log(e)
+            }
+        }
+    }
+
     return (
         <ThemeProvider theme={theme}>
             <main className={poppins.className}>
         <Header/>
+            <Head>
+                <title>Albarakh | Katalog</title>
+            </Head>
             <div className={style.container}>
                 <div className={style.containerBase}>
                     <div className={style.banner}>
@@ -228,7 +249,7 @@ const Katalog = ({products, unitUsaha}) => {
                                             },
                                             width:{
                                                 lg:'31.5%',
-                                                xs:'48%'
+                                                xs:'46%'
                                             },
                                             maxWidth:'50em'
                                         }} >
@@ -243,6 +264,17 @@ const Katalog = ({products, unitUsaha}) => {
                                 <img style={{width:'60%',margin:'auto'}} src={'http://localhost:3000/assets/image/Business, Startup, workflow, error _ exhaustion, exhausted, work, laptop, computer, support 1.png'}></img>
                                 </Box>
                             }
+                            <Box sx={{display:'flex', width:'100%', flexDirection:'row', justifyContent:'center'}}>
+                                {
+                                    productLinks.map((link)=>{
+                                        return (
+                                            <Button fullWidth size="sm" sx={{margin:'0.5em',paddingY:'1em', paddingX:'0', width:0, height:0}} key={link.label} variant={link.active ? 'contained' : 'outlined'} color={'success'} onClick={()=> handleChangePage(link.url)}>{
+                                                link.label == '&laquo; Previous'? <ChevronLeft ></ChevronLeft> : link.label == 'Next &raquo;' ? <ChevronRight></ChevronRight> : link.label
+                                            }</Button>
+                                        )
+                                    })
+                                }
+                            </Box>
                         </Box>
                     </Box>
                     

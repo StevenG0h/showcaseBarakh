@@ -11,6 +11,24 @@ export async function getAllUnitUsaha(){
     return unitUsahas;
 }
 
+export async function getAllUnitUsahaAdmin(token){
+    let unitUsahas = await axios.get(process.env.NEXT_PUBLIC_BACKEND_URL+'/api/admin/unit-usaha/options',{
+        headers:{
+            Authorization: 'Bearer '+token,
+        },
+        withCredentials:true
+    }).catch(e=>{
+        console.log(e)
+    });
+    unitUsahas = unitUsahas?.data?.data.map((unitUsaha)=>{
+        return {
+            id: unitUsaha.id,
+            label: unitUsaha.usahaName
+        }
+    })
+    return unitUsahas;
+}
+
 export async function getAllRole(){
     let unitUsahas = await axios.get(process.env.NEXT_PUBLIC_BACKEND_URL+'/api/role/options');
     unitUsahas = unitUsahas?.data.map((unitUsaha)=>{
