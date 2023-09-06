@@ -90,6 +90,12 @@
     -webkit-box-orient: vertical;
 }
 
+.imageLogo{
+    aspect-ratio: 1/1;
+    width: 20%;
+    border-radius: 10em;
+}
+
 @media screen and (max-width: 768px){
     .containerUsaha{
         width: 90%;

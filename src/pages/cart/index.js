@@ -97,6 +97,7 @@ const Cart = ({ cookie, option, totalPayment, products }) => {
                     setCookie('barakh-cart-cookie', newCookie)
                 }
             }
+            
             return cart
         })
         setCart(newCartList);
@@ -183,7 +184,7 @@ const Cart = ({ cookie, option, totalPayment, products }) => {
         })
         let newCart = cartList.filter((cartData)=>{
             if(checked.includes(cartData.productData.id)!=true){
-                return cartData;
+                return cartData
             }
         })
         setCookie('barakh-cart-cookie', newCart);
@@ -234,6 +235,7 @@ const Cart = ({ cookie, option, totalPayment, products }) => {
         let addChecked = checked
         addChecked.push(id);
         setChecked(addChecked);
+        countTotal(addChecked);
     }
 
     const handleCartUnchecked = (id) => {
@@ -266,6 +268,11 @@ const Cart = ({ cookie, option, totalPayment, products }) => {
 
     const countTotal = (cart) => {
         let count = 0;
+         cart = cartList.filter((cartData)=>{
+            if(checked.includes(cartData.productData.id)== true){
+                return true;
+            }
+        })
         if (cart == undefined) {
             cartList.map((data) => {
                 count += data.item * Number(data.productData.productPrice)
@@ -283,6 +290,7 @@ const Cart = ({ cookie, option, totalPayment, products }) => {
         setShowCheckout(cookie.length !=0)
         setTotal(totalPayment)
         setProduct(product)
+        handleCheckAll()
       }, [cookie, option, totalPayment, product]);
 
       function handleCheckAll(){
@@ -337,7 +345,7 @@ const Cart = ({ cookie, option, totalPayment, products }) => {
                                             cartList.map(({ item, productData, productId }) => {
                                                 return (
                                                     <div key={productData.id} onChange={(e) => handleChangeItem(e.target.value)} className={style.fieldListProduct}>
-                                                        <input onChange={(e) => {
+                                                        <input onChange={(e) => {   
                                                             if (e.target.checked === true) {
                                                                 handleCartChecked(Number(e.target.value))
                                                                 console.log(checked)
@@ -404,7 +412,7 @@ const Cart = ({ cookie, option, totalPayment, products }) => {
                     ) :
                     <Container>
                         <Box sx={{ display: 'flex', flexDirection: 'column', marginBottom: '2em' }}>
-                            <img className={style.imageProdukKosong} src={'http://albarakh.com/assets/image/Business, Startup, workflow, error _ exhaustion, exhausted, work, laptop, computer, support 1.png'}></img>
+                            <img className={style.imageProdukKosong} src={'http://albarakh.com/assets/image/keranjangkosong.png'}></img>
                             <Typography textAlign={'center'}>
                                 Yuk isi dengan produk produk unggulan!
                             </Typography>

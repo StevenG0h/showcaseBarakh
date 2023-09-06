@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import style from './header.module.css';
 import Image from 'next/image';
-import ImageBrand from '../../../public/assets/images/LogoBarakhFix_1.png';
+import ImageBrand from '../../../public/assets/images/Group 5.png';
 import Link from 'next/link';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -44,7 +44,7 @@ const Header = () => {
     return (
         <>
             <Head>
-            <link rel="icon" type="image/x-icon" href={'http://localhost:3000/assets/images/LogoSimple.png'}/>
+            <link rel="icon" type="image/x-icon" href={'http://localhost:3000/assets/images/MESJIDBSA.png'}/>
             </Head>
             <div className={style.header}>
             <div className={style.container}>
