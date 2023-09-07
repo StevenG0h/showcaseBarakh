@@ -14,7 +14,7 @@ import { ConfirmDialog } from "../../dialog/ConfirmDialog";
 import RatingLabel from "../../Rating/rating_label";
 
 
-export default function KatalogCard({ row, isCart=false }) {
+export default function KatalogCard({ row, isCart=false, handleAddCart }) {
     const router = useRouter();
     let { id, product_images, productName, productDesc, productPrice, unit_usaha } = row;
     const settings = {
@@ -80,7 +80,7 @@ export default function KatalogCard({ row, isCart=false }) {
     let handleChangeStatus = (data) => {
         if(isCart){
             addItem(data)
-            return router.replace(router.asPath);
+            return router.reload();
         }
         addItem(data)
         setNewTransactionStatus(true)

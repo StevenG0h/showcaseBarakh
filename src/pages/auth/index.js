@@ -114,8 +114,7 @@ export default function auth(){
                             : ''
                         }
                         </FormControl>
-                        <FormControl>
-
+                        <FormControl> 
                             <RHFTextFieldAuth sx={{backgroundColor:'white'}}  name={'email'} control={control} label={'Email'}></RHFTextFieldAuth>
                         </FormControl>
                         <FormControl>

@@ -21,9 +21,9 @@ const poppins = Poppins({
     // display: 'swap'
   })
 
-export async function getServerSideProps({context}){
-    let produk = await axios.get('/api/produk/katalog');
-    let unitUsaha = await axios.get('/api/unit-usaha')
+export async function getServerSideProps({context}){ 
+        let produk = await axios.get('/api/produk/katalog');
+        let unitUsaha = await axios.get('/api/unit-usaha')
     return {
         props:{
             products:produk.data.data.data,
