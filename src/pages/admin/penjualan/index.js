@@ -55,11 +55,8 @@ await checkPrivilege(token).then((r)=>{
         })
         console.log(produk)
         let unitusaha = await getAllUnitUsahaAdmin(token);
-        if(admin.adminLevel != '1'){
-            produk = produk.data.data
-        }else{
             produk = produk.data
-        }
+    
         return {
             props:{
                 isSuper: admin.adminLevel == '1' ? true : false,
@@ -198,7 +195,7 @@ export default function product({isSuper,admin,produk, options}){
                 },
                 withCredentials:true
             });
-            setProducts(unitUsaha?.data.data)
+            setProducts(unitUsaha?.data?.data)
             setProductsLink(unitUsaha?.data.links)
         }   
     }
@@ -312,6 +309,7 @@ export default function product({isSuper,admin,produk, options}){
                 <Button color="info" variant={activeLink === 'TERVERIFIKASI' ? 'contained' : 'outlined'} sx={{borderRadius:'5em'}} onClick={()=>{handleChangeFilter('TERVERIFIKASI')}}>Terverifikasi</Button>
                 <Button color="warning" variant={activeLink === 'PENGIRIMAN' ? 'contained' : 'outlined'} sx={{borderRadius:'5em'}} onClick={()=>{handleChangeFilter('PENGIRIMAN')}}>Pengiriman</Button>
                 <Button color="success" variant={activeLink === 'SELESAI' ? 'contained' : 'outlined'} sx={{borderRadius:'5em'}} onClick={()=>{handleChangeFilter('SELESAI')}}>Selesai</Button>
+                <Button color="error" variant={activeLink === 'BATAL' ? 'contained' : 'outlined'} sx={{borderRadius:'5em'}} onClick={()=>{handleChangeFilter('BATAL')}}>BATAL</Button>
             </Box>
                 {/* <Typography variant="h3" fontWeight={400}>{title}</Typography>
                 <Select defaultValue={'*'}

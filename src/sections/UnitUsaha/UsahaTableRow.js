@@ -3,8 +3,8 @@ import Edit from "@mui/icons-material/Edit";
 import {Button, IconButton, TableCell, TableRow} from "@mui/material"
 import { useRouter } from "next/router";
 
-export default function UsahaTableRow({row, num, onShowImage, onDelete, onEdit, onShowLogo}){
-    let {usahaName, usahaImage, usahaDesc, products, created_at, unitUsahaLogo} = row;
+export default function UsahaTableRow({row, num, onShowImage, onDelete, onEdit, onShowLogo, isSuper}){
+    let {usahaName, usahaImage, usahaDesc, products, created_at, unitUsahaLogo, orders} = row;
     let productCount = products.filter(product=> product.isActive == 1);
     const router = useRouter()
     
@@ -13,7 +13,7 @@ export default function UsahaTableRow({row, num, onShowImage, onDelete, onEdit, 
         
             <TableRow sx={{width:'100%'}}>
                 <TableCell width={'25px'}>
-                    {num}
+                    {orders}
                 </TableCell>
                 {/* <TableCell>
                     {created_at}
@@ -39,14 +39,18 @@ export default function UsahaTableRow({row, num, onShowImage, onDelete, onEdit, 
                         {usahaImage}
                     </Button>
                 </TableCell>
-                <TableCell align="center" width={'150px'}>
-                    <IconButton onClick={onEdit} sx={{marginX:'0.5em'}} variant="contained" color="warning" >
-                        <Edit></Edit>
-                    </IconButton>
-                    <IconButton onClick={onDelete} sx={{marginX:'0.5em'}} variant="contained" color="error" >
-                        <Delete></Delete>
-                    </IconButton>
-                </TableCell>
+                {
+                    isSuper == true ? (
+                        <TableCell align="center" width={'150px'}>
+                            <IconButton onClick={onEdit} sx={{marginX:'0.5em'}} variant="contained" color="warning" >
+                                <Edit></Edit>
+                            </IconButton>
+                            <IconButton onClick={onDelete} sx={{marginX:'0.5em'}} variant="contained" color="error" >
+                                <Delete></Delete>
+                            </IconButton>
+                        </TableCell>
+                    ) : ''
+                }
             </TableRow>
         </>
     )

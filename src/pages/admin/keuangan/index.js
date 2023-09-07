@@ -60,24 +60,49 @@ await checkPrivilege(token).then((r)=>{
             },
             withCredentials:true
         });
-        let penjualan = produk.data.penjualan;
-        let pengeluaran = produk.data.pengeluaran;
+        let penjualan = produk?.data?.penjualan;
+        let pengeluaran = produk?.data?.pengeluaran;
+        console.log(penjualan)
+        console.log(pengeluaran)
         let transaksi = '';
         if(penjualan.length >= pengeluaran.length){
-            transaksi=(penjualan.map(
+            transaksi=(penjualan?.map(
                 data => Object.assign({}, data, {
                   pengeluaran: pengeluaran
-                    .filter(pengeluaran => pengeluaran.month === data.month && pengeluaran.year === data.year)[0].pengeluaran
+                    .filter(pengeluaran => {
+                        if(data.penjualan == null){
+                            return true;
+                        }else{
+                            return pengeluaran.month === data.month && pengeluaran.year === data.year
+                        }
+                    })[0].pengeluaran,
+                  month: pengeluaran
+                    .filter(pengeluaran => {
+                        if(data.penjualan == null){
+                            return true;
+                        }else{
+                            return pengeluaran.month === data.month && pengeluaran.year === data.year
+                        }
+                    })[0].month,
+                  year: pengeluaran
+                    .filter(pengeluaran => {
+                        if(data.penjualan == null){
+                            return true;
+                        }else{
+                            return pengeluaran.month === data.month && pengeluaran.year === data.year
+                        }
+                    })[0].year
                 })
               ))
         }else{
-            transaksi=(pengeluaran.map(
+            transaksi=(pengeluaran?.map(
                 data => Object.assign({}, data, {
                   penjualan: penjualan
                     .filter(penjualan => penjualan.month === data.month && penjualan.year === data.year)[0].penjualan
                 })
               ))
         }
+        console.log(transaksi)
         let unitUsaha = await getAllUnitUsaha();
         return {
             props:{
@@ -179,18 +204,18 @@ export default function keuangan({isSuper,admin,produk, options}){
             },
             withCredentials:true
         });
-        let penjualan = dashboard.data.penjualan;
-        let pengeluaran = dashboard.data.pengeluaran;
+        let penjualan = dashboard?.data?.penjualan;
+        let pengeluaran = dashboard?.data?.pengeluaran;
         let transaksi = '';
-        if(penjualan.length >= pengeluaran.length){
-            transaksi=(penjualan.map(
+        if(penjualan?.length >= pengeluaran?.length){
+            transaksi=(penjualan?.map(
                 data => Object.assign({}, data, {
                   pengeluaran: pengeluaran
                     .filter(pengeluaran => pengeluaran.month === data.month && pengeluaran.year === data.year)[0].pengeluaran
                 })
               ))
         }else{
-            transaksi=(pengeluaran.map(
+            transaksi=(pengeluaran?.map(
                 data => Object.assign({}, data, {
                   penjualan: penjualan
                     .filter(penjualan => penjualan.month === data.month && penjualan.year === data.year)[0].penjualan
@@ -252,7 +277,7 @@ export default function keuangan({isSuper,admin,produk, options}){
                     <Button color="success" sx={{marginTop:'1em'}} variant="contained" onClick={()=>{handleChange()}}>Terapkan Filter</Button>
                 </DialogContent>
             </Dialog>
-            <Typography variant="h3" color={'#94B60F'} fontWeight={400} sx={{textDecoration:'underline'}}>Keuangan</Typography>
+            <Typography variant="h3" color={'#94B60F'} fontWeight={400} sx={{textDecoration:'underline'}}>Laporan Keuangan</Typography>
             
             <Button sx={{marginTop:'1em'}} onClick={()=>{
                 setOpenFilter(true)

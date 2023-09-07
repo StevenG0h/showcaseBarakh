@@ -40,7 +40,8 @@ export default function PenjualanTableRow({row, num, onShowImage, onDelete, onEd
         {value:'BELUMTERVERIFIKASI',label:'Belum Terverifikasi'},
         {value:'TERVERIFIKASI',label:'Terverifikasi'},
         {value:'PENGIRIMAN',label:'Pengiriman'},
-        {value:'SELESAI',label:'SELESAI'}
+        {value:'SELESAI',label:'SELESAI'},
+        {value:'BATAL',label:'BATAL'}
     ]
     return (
         <>

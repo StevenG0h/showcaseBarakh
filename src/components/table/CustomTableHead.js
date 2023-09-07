@@ -2,7 +2,7 @@ import { TableCell, TableHead, TableRow, Typography } from "@mui/material"
 
 export default function CustomTableHead({tableHead}){
     return (
-        <TableHead>
+        <TableHead sx={{width:'100%'}}>
             <TableRow>
                 {
                     tableHead.map((map)=>{

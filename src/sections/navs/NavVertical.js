@@ -24,7 +24,7 @@ export default function NavVertical({isSuper, admin, open, handleOpenMobile}){
     let [openList,setOpenList] = useState(false);
     let [openList2,setOpenList2] = useState(false);
     let handleChangePage = (url)=>{
-        router.replace('https://localhost:3000'+url)
+        router.replace('http://localhost:3000'+url)
     }
     let [openLogout, setOpenLogout]= useState(false);
     let handleOpenLogout = ()=>{
@@ -114,7 +114,7 @@ export default function NavVertical({isSuper, admin, open, handleOpenMobile}){
                             <Paid style={{color: router.pathname.includes('/admin/keuangan') == true ? '#94B60F' : ''}} sx={{m:'auto',color:'white'}}></Paid>
                         </ListItemIcon>
                         <ListItemText style={{color: router.pathname.includes('/admin/keuangan') == true ? '#94B60F' : ''}}>
-                            Keuangan
+                            Laporan
                         </ListItemText>
                     </ListItemButton>
                     

@@ -11,7 +11,6 @@ import { fDate } from "../../helper/date";
 
 export default function SpendingTableRow({row, num, onShowImage, onDelete, onEdit, onDetail}){
     let {transactionType, spending} = row;
-    console.log(spending);
     let {SpendingName, SpendingDescription, SpendingValue, unit_usaha} = spending;
     return (
         <>

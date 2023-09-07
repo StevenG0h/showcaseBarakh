@@ -26,10 +26,11 @@ import {
   
   
   
-  export default function CustomDoughnutChart({dataset, chartTitle}) {
+  export default function CustomDoughnutChart({dataset, chartTitle, axis = 'x'}) {
       return (
           <Bar title='' options={
               {
+                indexAxis: axis,
                 maintainAspectRatio:false,
                 responsive: true,
                 plugins: {
