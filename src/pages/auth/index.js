@@ -93,7 +93,7 @@ export default function auth(){
     return(<>
     <Head>
                 <link rel="icon" type="image/x-icon" href={'http://localhost:3000/assets/images/LogoSimple.png'}/>
-                <title>Albarakh | Login Admin</title>
+                <title>Albarakh | Login</title>
             </Head>
             <ThemeProvider theme={theme}>
     <Container>

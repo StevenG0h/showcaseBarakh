@@ -5,7 +5,7 @@ import * as yup from "yup";
 import {yupResolver} from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 import AdminLayout from "../../../layouts/adminLayout/AdminLayout";
-import { Button, Card, Dialog, DialogTitle, DialogContent, FormControl, Grid, IconButton, ImageList, ImageListItem, ImageListItemBar, Input, MenuItem, Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Box } from "@mui/material";
+import { Button, Card, Dialog, DialogTitle, DialogContent, FormControl, Grid, IconButton, ImageList, ImageListItem, ImageListItemBar, Input, MenuItem, Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Box, MenuList, InputLabel } from "@mui/material";
 import RHFTextField from "../../../components/form/RHFTextField";
 import RHFAutocomplete from "../../../components/form/RHFAutocomplete";
 import CustomTableHead from "../../../components/table/CustomTableHead";
@@ -33,9 +33,7 @@ export async function getServerSideProps({req,res}){
     let admin = '';
 await checkPrivilege(token).then((r)=>{
         admin = r;
-        console.log('admin',admin)
     }).catch((e)=>{
-        console.log(e)
         return {
             redirect: {
                 permanent: false,
@@ -45,20 +43,22 @@ await checkPrivilege(token).then((r)=>{
         };
     });
     try{
-        let produk = await axios.get('/api/admin/transaksi',{
+        let produk = await axios.post('/api/admin/transaksi/pencatatan-detail',{
+            "year": ''
+        },{
+            headers:{
+                Authorization: 'Bearer '+token,
+            },
+            withCredentials:true
+        });
+        let year = await axios.get('/api/admin/transaksi/year',{
             headers:{
                 Authorization: 'Bearer '+token,
             },
             withCredentials:true
         });
         let stat = await axios.post('/api/admin/transaksi/pencatatan',{        
-            "from":"2018-01-01",
-            "to":"2025-01-01",
-            "kelurahan":'',
-            "unitUsaha":'',
-            "kecamatan":'',
-            "kota":'',
-            "provinsi":''
+            "year": ''
         },{
             headers:{
                 Authorization: 'Bearer '+token,
@@ -72,6 +72,7 @@ await checkPrivilege(token).then((r)=>{
                 admin: admin,
                 produk: produk.data.data,
                 stat:stat.data,
+                year: year.data,
                 options:{
                     unitUsaha: unitUsaha
                 }
@@ -89,17 +90,16 @@ await checkPrivilege(token).then((r)=>{
     }
 }
 
-export default function keuangan({isSuper,admin,produk, stat, options}){
+export default function keuangan({isSuper,admin,produk, stat, options,year}){
     let [loading, setLoading] = useState(false)
     const router = useRouter();
     let token = getCookie('token');
     let title = 'Stock';
     let [products, setProducts] = useState(produk.data);
     let [productsLink, setProductsLink] = useState(produk.links);
+    let [statData, setStat] = useState(stat);
     let [transaction, setTransaction] = useState([]);
-    let [formTitle, setFormTitle] = useState([]);
-    let [addDetailTransactionForm, setAddDetailTransactionForm] = useState('');
-    let [productOption, setProductOptions] = useState([]);
+    let [filterYear, setYear] = useState('');
     //Next router
     
       const schemaAddSpendingTransaction = yup.object().shape({
@@ -131,7 +131,7 @@ export default function keuangan({isSuper,admin,produk, stat, options}){
                 headers: { Authorization: `Bearer `+token},
                 withCredentials: true
             }).then((r)=>{
-                console.log(r.data)
+
             }).catch((e)=>{
                 console.log(e);
             })
@@ -182,6 +182,29 @@ export default function keuangan({isSuper,admin,produk, stat, options}){
         }
     }
 
+    let handleChangeFilter = async (year)=>{
+        setYear(year);
+        let stat = await axios.post('/api/admin/transaksi/pencatatan',{        
+            "year": year
+        },{
+            headers:{
+                Authorization: 'Bearer '+token,
+            },
+            withCredentials:true
+        });
+        let produk = await axios.post('/api/admin/transaksi/pencatatan-detail',{
+            "year": year
+        },{
+            headers:{
+                Authorization: 'Bearer '+token,
+            },
+            withCredentials:true
+        });
+        setProducts(produk.data.data.data)
+        setProductsLink(produk.data.data.links)
+        setStat(stat.data)
+    }
+
     let TABLEHEAD = [
         {value: 'No',align: 'left'},
         {value: 'Nama',align: 'left'},
@@ -201,32 +224,48 @@ export default function keuangan({isSuper,admin,produk, stat, options}){
     return (
         <>
             <AdminLayout isSuper={isSuper} admin={admin} handleLoading={loading}>
-            <Typography variant="h3" color={'#94B60F'} fontWeight={400} sx={{textDecoration:'underline'}}>Pencatatan</Typography>
+            <Typography variant="h3" color={'#94B60F'} fontWeight={400} sx={{textDecoration:'underline'}}>Pencatatan Transaksi</Typography>
             
             <Box sx={{justifyContent:'space-between', flexDirection:'row', display:'flex', marginY:'1em', gap:'1em'}}>
                 <Card sx={{width:'100%',padding:'1em'}}>
                     <Typography variant="h6">
                         Pemasukan
                     </Typography>
-                    Rp.{formatCurrency(Number(stat.penjualan.total))}
+                    Rp.{formatCurrency(Number(statData.penjualan?.total))}
                 </Card>
                 <Card sx={{width:'100%',padding:'1em'}}>
                     <Typography variant="h6">
                         Pengeluaran
                     </Typography>
-                    Rp.{ formatCurrency(Number(stat.pengeluaran.total))}
+                    Rp.{ formatCurrency(Number(statData.pengeluaran?.total))}
                 </Card>
                 <Card sx={{width:'100%',padding:'1em'}}>
                     <Typography variant="h6">
                         Total
                     </Typography>
-                    Rp.{ formatCurrency( Number(stat.penjualan.total) - Number(stat.pengeluaran.total) )}
+                    Rp.{ formatCurrency( Number(statData.penjualan?.total) - Number(stat.pengeluaran?.total) )}
                 </Card>
             </Box>
-            
-            <Button color="success" sx={{marginY:'1em'}} variant="contained" onClick={()=>{openSpendingForm()}}>
-                Tambah Pengeluaran
-            </Button>
+            <Box sx={{display:'flex', justifyContent:'space-between'}}>
+                <Button color="success" sx={{marginY:'1em'}} variant="contained" onClick={()=>{openSpendingForm()}}>
+                    Tambah Pengeluaran
+                </Button>
+                <FormControl sx={{width:'10em'}}>
+                    <InputLabel id="labelPeriode">Periode</InputLabel>
+                    <Select onChange={(e)=>{
+                        handleChangeFilter(e.target.value);
+
+                    }} value={filterYear} label="Periode" labelId="labelPeriode">
+                    {
+                            year.map((value)=>{
+                                return (
+                                    <MenuItem value={value.year}>{value.year}</MenuItem>
+                                )
+                            })
+                        }
+                            </Select>
+                </FormControl>
+            </Box>
                 {/* <Typography variant="h3" fontWeight={400}>{title}</Typography>
                 <Select defaultValue={'*'}
                 onChange={(e)=>handleChangeFilter(e.target.value)}
@@ -280,7 +319,7 @@ export default function keuangan({isSuper,admin,produk, stat, options}){
                             <CustomTableHead tableHead={TABLEHEAD}></CustomTableHead>
                             <TableBody>
                                 {
-                                    products === [] || products==='' || products === undefined ? (
+                                    products === [] || products==='' || products === undefined || products.length === 0 ? (
                                         <TableRow>
                                             <TableCell>Data kosong</TableCell>
                                         </TableRow>

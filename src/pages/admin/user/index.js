@@ -81,7 +81,7 @@ export async function getServerSideProps({req,res}){
 export default function product({user,options, isSuper, admin}){
     let [loading, setLoading] = useState(false)
     let token = getCookie('token');
-    let title = 'Pegawai';
+    let title = 'Operator';
     let [products, setProducts] = useState(user.data);
     let [productsLink, setProductsLink] = useState(user.links);
     let [error, setError] = useState('');
@@ -292,7 +292,7 @@ export default function product({user,options, isSuper, admin}){
             <AdminLayout isSuper={isSuper} admin={admin} handleLoading={loading}>
                 <Dialog open={AddForm} onClose={handleCloseAddForm} fullWidth maxWidth='xs'>
                     <DialogContent>
-                        <Typography variant="h5" sx={{marginBottom:'1em'}} fontWeight={600}>{editMode == true ? 'Edit' : 'Tambah'} Pegawai</Typography>
+                        <Typography variant="h5" sx={{marginBottom:'1em'}} fontWeight={600}>{editMode == true ? 'Edit' : 'Tambah'} Operator</Typography>
                         <form onSubmit={handleSubmit(onSubmit)}>
                             {
                                 error != '' ?
@@ -327,7 +327,7 @@ export default function product({user,options, isSuper, admin}){
                             <FormControl sx={{width:'100%', marginY:'0.5em'}}>
                                 <RHFTextField type={'password'} hiddenLabel={false} label={'Ketik Ulang Password'} name={"password_confirmation"} control={control}></RHFTextField>
                             </FormControl>
-                            <Button variant="contained" color="success" sx={{width:'100%'}} type="submit">{editMode ? 'Simpan Perubahan' : 'Tambah Pegawai'}</Button>
+                            <Button variant="contained" color="success" sx={{width:'100%'}} type="submit">{editMode ? 'Simpan Perubahan' : 'Tambah Operator'}</Button>
                         </form>
                     </DialogContent>
                 </Dialog>
@@ -337,7 +337,7 @@ export default function product({user,options, isSuper, admin}){
                     <Button color="success" variant={filterActive == true ? 'contained' :'outlined'} sx={{borderRadius:'5em'}} onClick={()=>{handleChangeFilter(true)}}>Aktif</Button>
                     <Button color="success" variant={filterActive == false ? 'contained' :'outlined'} sx={{borderRadius:'5em'}} onClick={()=>{handleChangeFilter(false)}}>Non-aktif</Button>
                 </Box>
-                <Button sx={{marginTop:'1em'}} variant="contained" color="success" onClick={()=>handleOpenAddForm()}>Tambah Pegawai</Button>
+                <Button sx={{marginTop:'1em'}} variant="contained" color="success" onClick={()=>handleOpenAddForm()}>Tambah Operator</Button>
                 <Card sx={{marginY:'1em'}}>
                     <TableContainer>
                         <Table>

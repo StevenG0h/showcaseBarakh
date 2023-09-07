@@ -105,37 +105,7 @@ export default function admin({isSuper,admin,data}){
             }else{
                 return true;
             }
-          }),
-          adminName: yup.string().when([],{
-            is: editMode == false,
-            then: ()=>{
-                yup.string().required('Nama tidak boleh kosong')
-            }
-          }),
-          adminNum: yup.string().when([],{
-            is: editMode == false,
-            then: ()=>{
-                yup.string().required('Nomor WhatsApp tidak boleh kosong')
-            },
-          }),
-          email: yup.string().when([],{
-            is: editMode == false,
-            then: ()=>{
-                yup.string().email().required('Email tidak boleh kosong')
-            },
-          }),
-          password: yup.string().when([],{
-            is: editMode == false,
-            then: ()=>{
-                yup.string().min('Password minimal 8 Karakter')
-            }
-          }),
-          password_confirmation: yup.string().when([],{
-            is: ()=>editMode == false,
-            then: ()=>{
-                yup.string().oneOf([yup.ref('password')], 'Password Anda tidak cocok')
-            },
-          }),
+          })
     })
 
     const { control, handleSubmit, setValue,getValues, reset, register , formState:{errors}} = useForm({
@@ -276,7 +246,7 @@ export default function admin({isSuper,admin,data}){
 
     //utils
 
-    let TABLEHEAD = [
+    let TABLEHEAD = isSuper == true ? [
         // {value: 'Dibuat pada',align: 'left'},
         {value: 'Urutan',align: 'left'},
         {value: 'Nama unit usaha',align: 'left'},
@@ -285,7 +255,15 @@ export default function admin({isSuper,admin,data}){
         {value: 'Logo',align: 'left'},
         {value: 'Gambar',align: 'left'},
         {value: 'Action',align: 'center'}
-    ]
+    ] : [
+        // {value: 'Dibuat pada',align: 'left'},
+        {value: 'Urutan',align: 'left'},
+        {value: 'Nama unit usaha',align: 'left'},
+        {value: 'Deskripsi',align: 'left'},
+        {value: 'Jumlah Produk',align: 'left'},
+        {value: 'Logo',align: 'left'},
+        {value: 'Gambar',align: 'left'}
+    ];
     
     let num = 0;
 
@@ -378,7 +356,9 @@ export default function admin({isSuper,admin,data}){
                                     unitUsaha === [] || unitUsaha==='' || unitUsaha === undefined ? 'data kosong' :
                                     unitUsaha?.map((map)=>{
                                         return (
-                                            <UsahaTableRow key={map.id} 
+                                            <UsahaTableRow 
+                                            isSuper = {isSuper}
+                                            key={map.id} 
                                             onDelete={() => setDeleteUnitUsaha(map)} 
                                             onEdit={() => handleOpenEditForm(map)} 
                                             onShowImage={()=> handleShowImage(map.usahaImage)}

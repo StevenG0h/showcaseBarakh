@@ -254,7 +254,10 @@ export async function getServerSideProps({req,res}){
             Authorization: 'Bearer '+token,
         },
         withCredentials:true
+    }).catch((e)=>{
+        console.log(e)
     })
+    console.log(dashboard.data)
     let unitUsaha = await getAllUnitUsahaAdmin(token)
     let provinsi = await getAllProvinsi();
     return {
@@ -525,7 +528,7 @@ export default function Dashboard({isSuper,admin,data, options}){
                                     </Card>
                                 
                                     <Card sx={{height:'300px',width:'100%',padding:'1em'}}>
-                                        <CustomBarChart chartTitle={'Unit usaha dengan produk terlaris'} dataset={dashboardData?.produkTerlaris} color={['#049ffb','#58B63B']}></CustomBarChart>
+                                        <CustomBarChart axis="y" chartTitle={'Unit usaha dengan produk terlaris'} dataset={dashboardData?.produkTerlaris} color={['#049ffb','#58B63B']}></CustomBarChart>
                                     </Card>
                                 </Box>
                             </Grid>
@@ -546,7 +549,7 @@ export default function Dashboard({isSuper,admin,data, options}){
                                         Reset Filter
                                     </Button>
                                     <Table sx={{overflowX:'auto'}}>
-                                        <TableContainer>
+                                        <TableContainer sx={{width:'100%'}}>
                                         <CustomTableHead tableHead={tableHead}>
 
                                         </CustomTableHead>
