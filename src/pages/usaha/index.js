@@ -5,9 +5,9 @@ import ExpandMore from "@mui/icons-material/ExpandMore";
 import { Poppins } from 'next/font/google'
 import axios from "../../utils/axios";
 import WhatsApp from "../../components/Whatsapp/WhatsApp"
-import { Accordion, AccordionDetails, AccordionSummary, Box, Card, Divider, List, ListItem, ListItemButton, ListItemText, Typography, Button} from "@mui/material";
+import { Accordion, AccordionDetails, AccordionSummary, Box, Card, Divider, List, ListItem, ListItemButton, ListItemText, Typography, Button } from "@mui/material";
 import { useState } from "react";
-
+import { useRouter } from 'next/router'
 const poppins = Poppins({
   weight: '500',
   subsets: ['latin'],
@@ -32,6 +32,7 @@ const UnitUsaha = ({ data }) => {
   let [selected, setSelected] = useState(data.unitUsaha.data[0].id);
   let [profil, setProfil] = useState(data.profil);
   let unitUsaha = data.unitUsaha.data;
+  const router = useRouter()
   let handleChange = async (data) => {
     let unitUsaha = await axios.get('/api/profil/' + data);
     console.log(unitUsaha);
@@ -110,7 +111,7 @@ const UnitUsaha = ({ data }) => {
                   profil == '' ? '' : (
                     <>
                       <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', columnGap: '1em' }}>
-                          <img className={style.imageLogo} src={process.env.NEXT_PUBLIC_BACKEND_URL + '/storage/unitUsaha/logo/' + profil.unit_usaha.unitUsahaLogo} alt="Gambar"></img>
+                        <img className={style.imageLogo} src={process.env.NEXT_PUBLIC_BACKEND_URL + '/storage/unitUsaha/logo/' + profil.unit_usaha.unitUsahaLogo} alt="Gambar"></img>
                         <Typography fontWeight="600" sx={{ textAlign: 'left' }} variant="h4" >{
                           (
                             <span style={{ color: '#94B60F' }}>{profil.unit_usaha.usahaName}</span>
@@ -120,8 +121,12 @@ const UnitUsaha = ({ data }) => {
                       <Box sx={{ marginY: '1em' }}>
                         <div dangerouslySetInnerHTML={{ __html: profil.profil_usaha_desc }}></div>
                       </Box>
-                      <Box sx={{display: 'flex', justifyContent: 'flex-end', margin: '2em 1em'}}>
-                        <Button color="success" variant="contained">Lihat Produk</Button>
+                      <Box sx={{ display: 'flex', justifyContent: 'flex-end', margin: '2em 1em' }}>
+                        <Button variant={'contained'} color={'success'} onClick={
+                          ()=> {
+                            router.push('/katalog')
+                          }
+                        } >Lihat Produk</Button>
                       </Box>
 
                       {/* {

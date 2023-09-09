@@ -229,9 +229,9 @@
 }
 
 .imageProdukKosong  {
-    width: 45%;
+    width:35%;
     margin: auto;
-    margin-top: -8em;
+    /* margin-top: -8em; */
 }
 
 
@@ -291,8 +291,11 @@
         padding: 0;
     }
 
-    .imageProdukKosong{
-        margin-top: -2em;
+
+    .imageProdukKosong  {
+        width:45%;
+        margin: auto;
+        /* margin-top: -8em; */
     }
 }
 

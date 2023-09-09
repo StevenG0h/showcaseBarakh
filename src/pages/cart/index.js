@@ -412,8 +412,8 @@ const Cart = ({ cookie, option, totalPayment, products }) => {
                     ) :
                     <Container>
                         <Box sx={{ display: 'flex', flexDirection: 'column', marginBottom: '2em' }}>
-                            <img className={style.imageProdukKosong} src={'http://albarakh.com/assets/image/keranjangkosong.png'}></img>
-                            <Typography textAlign={'center'}>
+                            <img className={style.imageProdukKosong} src={'../../assets/images/keranjangkosong.png'}></img>
+                            <Typography textAlign={'center'} >
                                 Yuk isi dengan produk produk unggulan!
                             </Typography>
                             <Box sx={{ display: 'flex', justifyContent: 'center', margin: '1em' }}>

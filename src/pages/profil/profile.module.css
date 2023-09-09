@@ -19,8 +19,8 @@
     width: 100%;
     background-image: url("../../../public/assets/images/bgProfile.png");
     background-repeat: no-repeat;
-    background-size: contain;
-    background-position: right;
+    background-size: 60%;
+    background-position:top 0 right;
 }
 
 .fieldSekilasEx{
