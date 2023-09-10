@@ -61,7 +61,7 @@ Dari semua kegiatan tersebut sudah terjadi sirkulasi aktivitas ekonomi dari peng
                             <div className={style.field1}>
                                 <div className={style.columInfo}>
                                     <p className={style.titleInfo}>Nama UMKM</p>
-                                    <p className={style.description}>Al-Barakh</p>
+                                    <p className={style.description}>Bank Sampah Agrowisata Ibnu Al-Mubarok</p>
                                 </div>
                                 <div className={style.columInfo}>
                                     <p className={style.titleInfo}>Tahun Pendirian</p>

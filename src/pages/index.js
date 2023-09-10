@@ -67,7 +67,7 @@ export default function Home({data}) {
               ()=>{
                 router.push('/katalog')
               }
-            } sx={{width: 'fit-content', padding: '0.8em', marginTop:'5em',marginLeft:'auto',marginRight:'0', backgroundColor: '#94B60F', color: '#fff'}} className={style.button} >Belanja Sekarang!</Button>
+            } className={style.button} >Belanja Sekarang!</Button>
           </div>
           <div className={style.contentImage}>
             <SliderImages produk={produk} />

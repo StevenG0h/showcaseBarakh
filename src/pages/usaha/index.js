@@ -5,7 +5,7 @@ import ExpandMore from "@mui/icons-material/ExpandMore";
 import { Poppins } from 'next/font/google'
 import axios from "../../utils/axios";
 import WhatsApp from "../../components/Whatsapp/WhatsApp"
-import { Accordion, AccordionDetails, AccordionSummary, Box, Card, Divider, List, ListItem, ListItemButton, ListItemText, Typography, Button } from "@mui/material";
+import { Accordion, AccordionDetails, AccordionSummary, Box, Card, Divider, List, ListItem, ListItemButton, ListItemText, Typography, Button,ThemeProvider,createTheme } from "@mui/material";
 import { useState } from "react";
 import { useRouter } from 'next/router'
 const poppins = Poppins({
@@ -39,7 +39,19 @@ const UnitUsaha = ({ data }) => {
     setProfil(unitUsaha?.data)
   }
 
+  const theme = createTheme({
+    palette:{
+      main:'#94B60F',
+      success: {
+        main:'#94B60F',
+        contrastText: '#ffffff'
+      }
+    }
+  })
+
+
   return (
+    <ThemeProvider theme={theme}>
     <main className={poppins.className}>
       <Header />
       <div className={style.container}>
@@ -110,19 +122,19 @@ const UnitUsaha = ({ data }) => {
                 {
                   profil == '' ? '' : (
                     <>
-                      <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', columnGap: '1em' }}>
+                      <Box sx={{ display: 'flex', flexDirection: 'row' , alignItems: 'center', columnGap: '1em'}} >
                         <img className={style.imageLogo} src={process.env.NEXT_PUBLIC_BACKEND_URL + '/storage/unitUsaha/logo/' + profil.unit_usaha.unitUsahaLogo} alt="Gambar"></img>
-                        <Typography fontWeight="600" sx={{ textAlign: 'left' }} variant="h4" >{
+                        <Typography  fontWeight="600" sx={{ textAlign: 'left', fontSize:{xs: '1.05em', md:'2.2em',  lg:'2.2em' }}} >{
                           (
                             <span style={{ color: '#94B60F' }}>{profil.unit_usaha.usahaName}</span>
                           )
                         }</Typography>
                       </Box>
-                      <Box sx={{ marginY: '1em' }}>
+                      <Box sx={{ marginTop: '2em' }}>
                         <div dangerouslySetInnerHTML={{ __html: profil.profil_usaha_desc }}></div>
                       </Box>
-                      <Box sx={{ display: 'flex', justifyContent: 'flex-end', margin: '2em 1em' }}>
-                        <Button variant={'contained'} color={'success'} onClick={
+                      <Box sx={{ display: 'flex', justifyContent: 'flex-end', margin: '1em 1em' }}>
+                        <Button variant='contained' color='success' onClick={
                           ()=> {
                             router.push('/katalog')
                           }
@@ -156,6 +168,7 @@ const UnitUsaha = ({ data }) => {
       <Footer />
       <WhatsApp />
     </main>
+    </ThemeProvider>
   )
 }
 
