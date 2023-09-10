@@ -72,7 +72,7 @@ const headerMobile = ({ variant, anchor, ...props }) => {
                                     </ListItem>
                                     <ListItem onClick={() => setOpen(false)} >
                                         <ListItemText sx={{padding: '0 0.5em', margin: '0', borderRadius: '0.4em' }}>
-                                            <Link style={{ textDecoration: "none", color: router.pathname === '' ? '#94B60F' : '#FFF', fontWeight: router.pathname === '' ? '700' : ''}}  href="">Galeri</Link>
+                                            <Link style={{ textDecoration: "none", color: router.pathname === '/galeri' ? '#94B60F' : '#FFF', fontWeight: router.pathname === '/galeri' ? '700' : ''}}  href="/galeri">Galeri</Link>
                                         </ListItemText>
                                     </ListItem>
                                 </Collapse>

@@ -4,10 +4,6 @@ import "slick-carousel/slick/slick-theme.css";
 import "../../app/testimonislider.css";
 import Card from "../card/page";
 
-const theme = {
-    
-}
-
 export default function Testimoni({testimoni}) {
     const settings = {
         dots: false,
@@ -15,8 +11,8 @@ export default function Testimoni({testimoni}) {
         speed: 500,
         slidesToShow: 3,
         slidesToScroll: 3,
-        autoplay: false,
-        autoplaySpeed: 4000,
+        autoplay: true,
+        autoplaySpeed: 2500,
         pauseOnHover: true,
         centerMode: true,
         responsive: [
