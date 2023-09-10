@@ -5,7 +5,7 @@ import * as yup from "yup";
 import {yupResolver} from "@hookform/resolvers/yup";
 import { Controller, useForm } from "react-hook-form";
 import AdminLayout from "../../../../layouts/adminLayout/AdminLayout";
-import { Box, Breadcrumbs, Button, Card, Dialog, DialogContent, FormControl, Grid, IconButton, ImageList, ImageListItem, ImageListItemBar, Input, Link, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
+import { Box, Breadcrumbs, Button, Card, Dialog, DialogContent, FormControl, Grid, IconButton, ImageList, ImageListItem, ImageListItemBar, Input, InputBase, Link, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
 import RHFTextField from "../../../../components/form/RHFTextField";
 import CustomTableHead from "../../../../components/table/CustomTableHead";
 import ProductTableRow from "../../../../sections/product/ProductTableRow";
@@ -19,6 +19,7 @@ import  ChevronLeft  from "@mui/icons-material/ChevronLeft";
 import { useEffect } from "react";
 import { checkPrivilege } from "../../../../helper/admin";
 import { ConfirmDialog } from "../../../../components/dialog/ConfirmDialog";
+import  Search  from "@mui/icons-material/Search";
 
 export async function getServerSideProps({req,res,query}){
     let token = getCookie('token',{req,res});
@@ -298,6 +299,23 @@ export default function product({isSuper,admin,unitUsaha,product}){
     
     let num = 0;
 
+    let [search, setSearch] = useState({
+        id:'all',
+        orderBy:'desc',
+        keyword:'',
+        harga:''
+    });
+
+    let handleChangeFilter = async (data)=>{
+        let unitUsaha = await axios.post('/api/admin/produk/search',data,{
+            headers:{
+                Authorization: 'Bearer '+token
+            },
+            withCredentials: true
+        });
+        setProducts(unitUsaha?.data?.data)
+    }
+
     useEffect(() => {
         setProducts(product.data)
         setProductsLink(product.links)
@@ -351,7 +369,27 @@ export default function product({isSuper,admin,unitUsaha,product}){
                     </Link>
                     <Typography color={'#94B60F'}>{usahaName}</Typography>
                 </Breadcrumbs>
-                <Box sx={{display:'flex',flexDirection:'row',alignItems:'center',marginY:'1em'}}>
+                <Box sx={{display:'flex',justifyContent:'space-between',flexDirection:'row',alignItems:'center',marginY:'1em'}}>
+                    
+                    <Box sx={{display:'flex', gap:'1em', alignItems:'start', justifyContent:'space-between',flexDirection:{
+                            lg:'row',
+                            xs:'column'
+                        }}}>
+                        <Card sx={{borderRadius:'5em',display:'flex',flexDirection:'row',justifyContent:'stretch'}}>
+                            <FormControl sx={{backgroundColor:'white',width:'100%'}}>
+                                <InputBase placeholder="ketik untuk mencari produk" defaultValue={search.keyword} onChange={(e)=>{
+                                    let data = search;
+                                    data.keyword =e.target.value;
+                                    setSearch(data);
+                                }} sx={{borderRadius:'5em', paddingY:'0.5em',width:'100%',outline:'none',"& fieldset": { border: 'none' },paddingLeft:'1em'}}>
+                                
+                                </InputBase>
+                            </FormControl>
+                            <IconButton onClick={()=>handleChangeFilter(search)} variant="contained" color="success" sx={{height:'100%',paddingY:'0.5em', borderRadius:'0'}}>
+                                <Search></Search>
+                            </IconButton>
+                        </Card>
+                    </Box>
                     <Button onClick={handleOpenAddForm} color="success" variant="contained" startIcon="">
                         Tambah Produk
                     </Button>

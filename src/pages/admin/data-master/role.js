@@ -20,6 +20,7 @@ import { useEffect } from "react";
 import { checkPrivilege } from "../../../helper/admin";
 import { ConfirmDialog } from "../../../components/dialog/ConfirmDialog";
 import RoleTableRow from "../../../sections/role/RoleTableRow";
+import RHFSelect from "../../../components/form/RHFSelect";
 
 export async function getServerSideProps({req,res,query}){
     let token = getCookie('token',{req,res});
@@ -91,6 +92,7 @@ export default function product({isSuper,admin,unitUsaha,product}){
         defaultValues: {
           id: ''  ,
           roleName: "",
+          permission: ""
         },
         resolver: yupResolver(schema)
       })
@@ -169,12 +171,14 @@ export default function product({isSuper,admin,unitUsaha,product}){
         setAddForm(false);
         setValue('id','');
         setValue('roleName','');
+        setValue('permission','');
     }
     
     let handleOpenEditForm = (data)=>{
         setEditMode(true);
         setValue('id',data.id);
         setValue('roleName',data.roleName);
+        setValue('permission',data.permission);
         
         setAddForm(true)
     }
@@ -212,6 +216,11 @@ export default function product({isSuper,admin,unitUsaha,product}){
         setProductsLink(product.links)
       }, [product]);
 
+    let PERMISSION = [
+        {id: '1', label: 'Admin'},
+        {id: '0', label: 'Operator'}
+    ]
+
     return (
         <>
         <ConfirmDialog onCancel={()=>setDeleteProduct('')} msg={'Anda yakin ingin menghapus Role '+deleteProduct.roleName+" ?"} title={"Hapus Role"} open={deleteProduct != ''} onConfirm={()=>handleDelete(deleteProduct.id)}></ConfirmDialog>
@@ -222,6 +231,9 @@ export default function product({isSuper,admin,unitUsaha,product}){
                         <form onSubmit={handleSubmit(onSubmit)}>
                             <FormControl sx={{width:'100%', marginY:'0.5em'}}>
                                 <RHFTextField hiddenLabel={false} label={'Nama Role'} name={"roleName"} control={control}></RHFTextField>
+                            </FormControl>
+                            <FormControl sx={{width:'100%', marginY:'0.5em'}}>
+                                <RHFSelect label={'Hak Akses'} option={PERMISSION} control={control} name={'permission'}></RHFSelect>
                             </FormControl>
                             <Button variant="contained" color="success" sx={{width:'100%'}} type="submit">{editMode ? 'Simpan Perubahan' : 'Tambah Produk'}</Button>
                         </form>
@@ -239,7 +251,7 @@ export default function product({isSuper,admin,unitUsaha,product}){
                             <CustomTableHead tableHead={TABLEHEAD}></CustomTableHead>
                             <TableBody>
                                 {
-                                    products === [] || products==='' || products === undefined ? (
+                                    products === [] || products==='' || products === undefined || products.length ===0 ? (
                                         <TableRow>
                                             <TableCell>Data kosong</TableCell>
                                         </TableRow>

@@ -12,22 +12,10 @@ export default function DetailPenjualanTableRow({row, num, onShowImage, onDelete
     let handleChangeStatus = (data)=>{
         setNewTransactionStatus(data)
     }
-    let handleCloseDialog = (data)=>{
+    let handleCloseDialog = ()=>{
         setNewTransactionStatus(true)
     }
     let msg = 'Anda yakin ingin menghapus data penjualan ini?'
-    let handleUpdateTransaction = async ()=>{
-        let data = {
-            transactionStatus: newTransactionStatus
-        }
-        try{
-            let update = await axios.put(process.env.NEXT_PUBLIC_BACKEND_URL+'/api/transaksi/'+row.id,data)
-        }catch(e){
-
-        }finally{
-            router.replace(router.asPath);
-        }
-    }
     return (
         <>
             <TableRow>
@@ -51,7 +39,7 @@ export default function DetailPenjualanTableRow({row, num, onShowImage, onDelete
                     <IconButton onClick={onEdit} sx={{marginX:'0.5em'}} variant="contained" color="warning" >
                         <Edit></Edit>
                     </IconButton>
-                    <IconButton onClick={onDelete} sx={{marginX:'0.5em'}} variant="contained" color="error" >
+                    <IconButton onClick={()=>setNewTransactionStatus(true)} sx={{marginX:'0.5em'}} variant="contained" color="error" >
                         <Delete></Delete>
                     </IconButton>
                 </TableCell>

@@ -6,9 +6,14 @@ export default function RHFTextField({control, name, label, hiddenLabel = false,
 
       return (
         <>
+            { hiddenLabel== true?'': (
             <Typography>
                 {label}
             </Typography>
+
+        )
+            
+        }
             <Controller
                 name={name}
                 control={control}
