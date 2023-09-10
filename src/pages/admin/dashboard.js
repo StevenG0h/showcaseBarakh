@@ -11,6 +11,8 @@ import  FilterAlt  from "@mui/icons-material/FilterAlt";
 import {RHFAutocomplete} from "../../components/form/RHFAutocomplete";
 import CustomTableHead from "../../components/table/CustomTableHead";
 import { checkPrivilege } from "../../helper/admin";
+import  ArrowDownward  from "@mui/icons-material/ArrowDownward";
+import fileDownload from "js-file-download";
 
 function formatDashboardData(dashboard){
     let penjualan = {
@@ -243,7 +245,7 @@ export async function getServerSideProps({req,res}){
 
     let dashboard = await axios.post('/api/admin/dashboard',{        
             "from":"2018-01-01",
-            "to":"2025-01-01",
+            "to":"",
             "kelurahan":'',
             "unitUsaha":'',
             "kecamatan":'',
@@ -297,6 +299,19 @@ export default function Dashboard({isSuper,admin,data, options}){
         withCredentials:true
     })
         setData(formatDashboardData(dashboard))
+    }
+    let handleDownload = async ()=>{
+        console.log(filterData);
+        let dashboard = await axios.post('/api/admin/dashboard/download',filterData,{
+        headers:{
+            Authorization: 'Bearer '+token,
+        },
+        withCredentials:true,
+        responseType: 'blob'
+    }).then((r)=>{
+        console.log(r)
+        fileDownload(r.data, 'dashboard.xlsx');
+    })
     }
     const [openFilter, setOpenFilter] = useState(false);
 
@@ -456,9 +471,14 @@ export default function Dashboard({isSuper,admin,data, options}){
                                 <Typography variant="h3" color={'#94B60F'} sx={{textDecoration:'underline'}} fontWeight={400}>
                                     Dashboard
                                 </Typography>
-                                <Button variant="contained" color="success" sx={{height:'0',marginY:'auto'}} onClick={()=>{setOpenFilter(true)}} startIcon={<FilterAlt></FilterAlt>}>
-                                    Filter
-                                </Button>
+                                <Box sx={{display:'flex',marginBottom:'1em',width:'100%', height:'100%', gap:'1em', flexDirection:'row', justifyContent:'end'}}>
+                                    <Button variant="contained" color="success" sx={{height:'0',marginY:'auto'}} onClick={()=>{handleDownload()}} startIcon={<ArrowDownward></ArrowDownward>}>
+                                        Export Ke Excel
+                                    </Button>
+                                    <Button variant="contained" color="success" sx={{height:'0',marginY:'auto'}} onClick={()=>{setOpenFilter(true)}} startIcon={<FilterAlt></FilterAlt>}>
+                                        Filter
+                                    </Button>
+                                </Box>
                                 </Box>
                         <Grid container>
 
@@ -556,7 +576,7 @@ export default function Dashboard({isSuper,admin,data, options}){
                                         {
                                             dashboardData?.pelangganDetail?.map((data,index)=>{
                                                 return (
-                                                    <TableRow>
+                                                    <TableRow sx={{width:'100%'}}>
                                                         <TableCell>
                                                                 {index+1}
                                                         </TableCell>

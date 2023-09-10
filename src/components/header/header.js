@@ -5,16 +5,11 @@ import ImageBrand from '../../../public/assets/images/Group 5.png';
 import Link from 'next/link';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-    faSearch,
-    faCartShopping,
-    faBars
+    faCartShopping
 } from "@fortawesome/free-solid-svg-icons";
-import { IconButton } from "@mui/material";
-import MenuIcon from '@mui/icons-material/Menu'; 
 import { useRouter } from "next/router";
 import HeaderMobile from "./HeaderMobile/HeaderMobile";
 import Badge from "@mui/material/Badge";
-import { setVisitor } from "../../helper/dataOptions";
 import { getCookie } from "cookies-next";
 import Head from "next/head";
 

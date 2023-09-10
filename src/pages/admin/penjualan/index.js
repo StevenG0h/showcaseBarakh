@@ -150,6 +150,9 @@ export default function product({isSuper,admin,produk, options}){
         data.transactionAddress = addDetailTransactionForm.sales[0].transactionAddress
         data.client_id = addDetailTransactionForm.sales[0].client_id
         data.kelurahan_id = addDetailTransactionForm.sales[0].kelurahan_id
+        data.kecamatan_id = addDetailTransactionForm.sales[0].kecamatan_id
+        data.kota_id = addDetailTransactionForm.sales[0].kota_id
+        data.provinsi_id = addDetailTransactionForm.sales[0].provinsi_id
         data.transactionAmount = Number(data.productPrice) * data.productCount;
         try{
             await axios.get('/sanctum/csrf-cookie',{
@@ -159,6 +162,8 @@ export default function product({isSuper,admin,produk, options}){
                 {
                     headers:{Authorization:"Bearer "+token},
                     withCredentials:true
+                }).catch(e=>{
+                    
                 });
             })
             handleCloseAddForm()
@@ -189,7 +194,7 @@ export default function product({isSuper,admin,produk, options}){
             setProducts(unitUsaha?.data?.data)
             setProductsLink(unitUsaha?.data.links)
         }else{
-            let unitUsaha = await axios.get('/api/admin/transaksi/penjualan/', {
+            let unitUsaha = await axios.get('/api/admin/transaksi/penjualan', {
                 headers:{
                     Authorization: 'Bearer '+token
                 },
@@ -302,7 +307,7 @@ export default function product({isSuper,admin,produk, options}){
             <Typography variant="h3" color={'#94B60F'} sx={{textDecoration:'underline'}} fontWeight={400}>Penjualan</Typography>
             <Box sx={{display:'flex', gap:'1em', marginY:'1em', flexDirection:'row', flexWrap:'wrap'}}>
             <Typography variant="h6" sx={{margin:0}}>
-                Unit Usaha:
+                Status:
             </Typography>
                 <Button color="success" variant={activeLink === '*' ? 'contained' : 'outlined'} sx={{borderRadius:'5em'}} onClick={()=>{handleChangeFilter('*')}}>Semua</Button>
                 <Button color={"error"} variant={activeLink === 'BELUMTERVERIFIKASI' ? 'contained' : 'outlined'} sx={{borderRadius:'5em'}} onClick={()=>{handleChangeFilter('BELUMTERVERIFIKASI')}}>Belum Terverifikasi</Button>

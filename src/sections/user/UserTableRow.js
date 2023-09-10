@@ -3,9 +3,10 @@ import Edit from "@mui/icons-material/Edit";
 import Details from "@mui/icons-material/Details";
 import {Button, IconButton, TableCell, TableRow} from "@mui/material"
 import {fDate} from '../../helper/date';
-export default function UserTableRow({row, num, onShowImage, onDelete, onEdit}){
+export default function UserTableRow({row, num, onShowImage, isSuper, onDelete, onEdit}){
     let {email, admins,created_at } = row;
     let {adminName, adminNum, adminLevel,role,unit_usaha, isActive, deleted_at} =  admins;
+    let {roleName, permission} =  role;
     return (
         <>
         
@@ -23,7 +24,7 @@ export default function UserTableRow({row, num, onShowImage, onDelete, onEdit}){
                     {unit_usaha?.usahaName}
                 </TableCell>
                 <TableCell>
-                    {role?.roleName}
+                    {roleName}
                 </TableCell>
                 {
                     isActive != 0 ? (
@@ -46,7 +47,7 @@ export default function UserTableRow({row, num, onShowImage, onDelete, onEdit}){
                         <Edit></Edit>
                     </IconButton>
                     {
-                        adminLevel == 1 ? '' : (
+                        permission == 1 ? '' : (
                             <IconButton onClick={onDelete} sx={{marginX:'0.5em'}} variant="contained" color="error" >
                                 <Delete></Delete>
                             </IconButton>

@@ -135,7 +135,12 @@ export default function product({isSuper,admin,produk, options}){
 
     //state handler
     let handleChangeFilter = async (data)=>{
-        let unitUsaha = await axios.post('/api/produk/search',data);
+        let unitUsaha = await axios.post('/api/admin/produk/search',data,{
+            headers:{
+                Authorization: 'Bearer '+token
+            },
+            withCredentials: true
+        });
         setProducts(unitUsaha?.data?.data)
     }
 

@@ -9,11 +9,11 @@ import ShoppingCart from "@mui/icons-material/ShoppingCart";
 import Circle from "@mui/icons-material/Circle"; 
 import Exit from "@mui/icons-material/ExitToApp"; 
 import Image from "next/image";
-import logo from "../../../public/assets/images/LogoBarakhFix_1.png"
+import logo from "../../../public/assets/images/Group 5.png"
 import { useState } from "react";
 import { useRouter } from "next/router";
 import {ConfirmDialog} from '../../components/dialog/ConfirmDialog';
-import {getCookie, setCookie, deleteCookie} from 'cookies-next';
+import {getCookie, deleteCookie} from 'cookies-next';
 import axios from "../../utils/axios";
 import  Paid  from "@mui/icons-material/Paid";
 import  Dataset  from "@mui/icons-material/Dataset";
@@ -24,7 +24,7 @@ export default function NavVertical({isSuper, admin, open, handleOpenMobile}){
     let [openList,setOpenList] = useState(false);
     let [openList2,setOpenList2] = useState(false);
     let handleChangePage = (url)=>{
-        router.replace('http://localhost:3000'+url)
+        router.replace('https://albarakh.com'+url)
     }
     let [openLogout, setOpenLogout]= useState(false);
     let handleOpenLogout = ()=>{

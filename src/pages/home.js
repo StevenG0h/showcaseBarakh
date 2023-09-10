@@ -42,7 +42,6 @@ export default function Home({data}) {
   let unitUsaha = data.unitUsaha.data;
   let testimoni = data.testimoni.data;
   let produk = data.produk.data;
-  console.log(testimoni)
   const router = useRouter()
   return (
     <main className={poppins.className}>

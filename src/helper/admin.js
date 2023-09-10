@@ -10,6 +10,6 @@ export async function checkPrivilege(token){
     return {
         user_id: user.data.user_id,
         adminName: user.data.adminName,
-        adminLevel: user.data.adminLevel
+        adminLevel: user.data.role.permission
     }
 }
