@@ -231,22 +231,22 @@ export default function product({isSuper,admin,produk, options}){
 
     let handleDeleteDetailRow =async (data)=>{
 
-            try{
-                await axios.get('/sanctum/csrf-cookie',{
+        try{
+            axios.get('/sanctum/csrf-cookie',{
+                withCredentials:true
+            }).then(async(r)=>{
+                let createSalesTransaction = await axios.delete('/api/admin/penjualan/'+data.id,
+                {
+                    headers:{Authorization:"Bearer "+token},
                     withCredentials:true
-                }).then(async(r)=>{
-                    let createSalesTransaction = await axios.delete('/api/admin/penjualan/'+data.id,
-                    {
-                        headers:{Authorization:"Bearer "+token},
-                        withCredentials:true
-                    });
-                })
-            }catch(e){
-                console.log(e)
-            }finally{
-                handleCloseAddSalesTransactionForm()
-                router.replace(router.asPath)
-            }
+                });
+            })
+            handleCloseAddSalesTransactionForm()
+        }catch(e){
+            console.log(e)
+        }finally{
+            router.replace(router.asPath)
+        }
     }
 
     let handleAddSalesTransactionForm = (data)=>{
@@ -261,7 +261,6 @@ export default function product({isSuper,admin,produk, options}){
 
     let handleProductOption = async (id)=>{
         let products = await getAllUnitUsahaProduct(id)
-        console.log(products)
         setProductOptions(products);
     }
 
@@ -450,7 +449,7 @@ export default function product({isSuper,admin,produk, options}){
                             <CustomTableHead tableHead={TABLEHEAD}></CustomTableHead>
                             <TableBody>
                                 {
-                                    products === [] || products==='' || products.length == 0 || products === undefined ? (
+                                    products === [] || products==='' || products.length === 0 || products === undefined ? (
                                         <TableRow>
                                             <TableCell>Data kosong</TableCell>
                                         </TableRow>

@@ -254,7 +254,7 @@ export default function galeri({isSuper,admin,data}){
                             </Typography>
                             <FormControl sx={{marginY:'0.5em',display:'flex', flexDirection:'row', flexWrap:'wrap', width:'99%',overflow:'hidden'}}>
                                 <Box sx={{width:'100%'}}>
-                                    <RHFDnd name="path" files={process.env.NEXT_PUBLIC_BACKEND_URL+'/storage/galeri/'+getValues('path')} control={control}></RHFDnd>
+                                    <RHFDnd preventDelete={true} name="path" files={process.env.NEXT_PUBLIC_BACKEND_URL+'/storage/galeri/'+getValues('path')} control={control}></RHFDnd>
                                 </Box>
                             </FormControl>
                             <Button variant="contained" color="success" sx={{width:'100%'}} type="submit">{editMode ? 'Simpan Perubahan' : 'Tambah Galeri'}</Button>

@@ -19,6 +19,7 @@ import { useEffect } from "react";
 import { getAllRole, getAllUnitUsaha } from "../../../helper/dataOptions";
 import { ConfirmDialog } from "../../../components/dialog/ConfirmDialog";
 import { checkPrivilege } from "../../../helper/admin";
+import RHFPassword from "../../../components/form/RHFPassword";
 
 export async function getServerSideProps({req,res}){
     let token = getCookie('token',{req,res});
@@ -78,14 +79,16 @@ export async function getServerSideProps({req,res}){
     }
 }
 
-export default function product({user,options, isSuper, admin}){
+export default function user({user,options, isSuper, admin}){
     let [loading, setLoading] = useState(false)
     let token = getCookie('token');
     let title = 'Operator';
-    let [products, setProducts] = useState(user.data);
-    let [productsLink, setProductsLink] = useState(user.links);
+    let [Data, setData] = useState(user.data);
+    let [DataLink, setDataLink] = useState(user.links);
     let [error, setError] = useState('');
     let [adminData, setAdminData] = useState('');
+    let [activateAdmin, setActivateAdmin] = useState('');
+    let [destroyAdmin, setDestroyAdmin] = useState('');
     let [filterActive, setActive] = useState(true);
     //Next router
     const router = useRouter();
@@ -104,9 +107,14 @@ export default function product({user,options, isSuper, admin}){
 
     const { control, handleSubmit, setValue, getValues, reset, register , formState:{errors}} = useForm({
         defaultValues: {
-          id:'',
-          productStock:0,
-          productPrice:0,
+            id: '',
+            adminName: '',
+            adminNum: '',
+            email: '',
+            password: '',
+            unit_usaha_id: '',
+            role_id: '',
+            password_confirmation : ''
         },
         resolver: yupResolver(schema)
       })
@@ -215,6 +223,28 @@ export default function product({user,options, isSuper, admin}){
             console.log(e)
         })
         setAdminData('')
+        setActivateAdmin('')
+    }
+
+    let handleDestroy = async (data)=>{
+        await axios.get('/sanctum/csrf-cookie',{
+            headers: { Authorization: `Bearer `+token},
+            withCredentials: true
+        }).then(async (r)=>{
+            await axios.delete('/api/admin/admin/destroy/'+data,{
+                headers: { Authorization: `Bearer `+token
+                },
+                withCredentials: true
+            }).then((r)=>{
+                console.log(r.data)
+                router.replace(router.asPath)
+            }).catch((e)=>{
+                console.log(e);
+            })
+        }).catch((e)=>{
+            console.log(e)
+        })
+        setDestroyAdmin('')
     }
 
     let handleChangePage = async (link)=>{
@@ -225,8 +255,8 @@ export default function product({user,options, isSuper, admin}){
                 },
                 withCredentials:true
             });
-            setProducts(unitUsaha?.data?.data?.data)
-            setProductsLink(unitUsaha?.data?.data?.links)
+            setData(unitUsaha?.data?.data?.data)
+            setDataLink(unitUsaha?.data?.data?.links)
         }
     }
 
@@ -238,10 +268,9 @@ export default function product({user,options, isSuper, admin}){
                 },
                 withCredentials:true
             });
-            setProducts(unitUsaha?.data?.data)
-            setProductsLink(unitUsaha?.data.links)
+            setData(unitUsaha?.data?.data)
+            setDataLink(unitUsaha?.data.links)
             setActive(true)
-            setTableHead(TABLEHEAD)
         }else{
             let unitUsaha = await axios.get('/api/admin/admin/deleted', {
                 headers:{
@@ -249,10 +278,9 @@ export default function product({user,options, isSuper, admin}){
                 },
                 withCredentials:true
             });
-            setProducts(unitUsaha?.data.data)
-            setProductsLink(unitUsaha?.data.links)
+            setData(unitUsaha?.data.data)
+            setDataLink(unitUsaha?.data.links)
             setActive(false)
-            setTableHead(TABLEHEAD2)
         }   
     }
 
@@ -268,27 +296,19 @@ export default function product({user,options, isSuper, admin}){
         {value: 'Action',align: 'center'}
     ]
     
-    let TABLEHEAD2 = [
-        {value: 'No',align: 'left'},
-        {value: 'Nama',align: 'left'},
-        {value: 'Whatsapp',align: 'left'},
-        {value: 'Departemen',align: 'left'},
-        {value: 'Jabatan',align: 'left'},
-        {value: 'Tanggal Keluar',align: 'left'}
-    ]
-    
-    let [tableHead, setTableHead] = useState(TABLEHEAD);
 
     let num = 0;
 
     useEffect(() => {
-        setProducts(user.data)
-        setProductsLink(user.links)
+        setData(user.data)
+        setDataLink(user.links)
       }, [user]);
 
     return (
         <>
             <ConfirmDialog onConfirm={()=>handleDelete(adminData.id)} onCancel={()=>{setAdminData('')}} open={adminData != ''} msg={'Anda yakin ingin menonaktifkan '+adminData?.admins?.adminName+' ?'}></ConfirmDialog>
+            <ConfirmDialog onConfirm={()=>handleDelete(activateAdmin.id)} onCancel={()=>{setActivateAdmin('')}} open={activateAdmin != ''} msg={'Anda yakin ingin mengaktifkan '+activateAdmin?.admins?.adminName+' ?'}></ConfirmDialog>
+            <ConfirmDialog onConfirm={()=>handleDestroy(destroyAdmin.id)} onCancel={()=>{setDestroyAdmin('')}} open={destroyAdmin != ''} msg={'Anda yakin ingin menghapus '+destroyAdmin?.admins?.adminName+' ?'}></ConfirmDialog>
             <AdminLayout isSuper={isSuper} admin={admin} handleLoading={loading}>
                 <Dialog open={AddForm} onClose={handleCloseAddForm} fullWidth maxWidth='xs'>
                     <DialogContent>
@@ -322,10 +342,10 @@ export default function product({user,options, isSuper, admin}){
                             </FormControl>
 
                             <FormControl sx={{width:'100%', marginY:'0.5em'}}>
-                                <RHFTextField type={'password'} hiddenLabel={false} label={'Password'} name={"password"} control={control}></RHFTextField>
+                                <RHFPassword type={'password'} hiddenLabel={false} label={'Password'} name={"password"} control={control}></RHFPassword>
                             </FormControl>
                             <FormControl sx={{width:'100%', marginY:'0.5em'}}>
-                                <RHFTextField type={'password'} hiddenLabel={false} label={'Ketik Ulang Password'} name={"password_confirmation"} control={control}></RHFTextField>
+                                <RHFPassword type={'password'} hiddenLabel={false} label={'Ketik Ulang Password'} name={"password_confirmation"} control={control}></RHFPassword>
                             </FormControl>
                             <Button variant="contained" color="success" sx={{width:'100%'}} type="submit">{editMode ? 'Simpan Perubahan' : 'Tambah Operator'}</Button>
                         </form>
@@ -341,20 +361,22 @@ export default function product({user,options, isSuper, admin}){
                 <Card sx={{marginY:'1em'}}>
                     <TableContainer>
                         <Table>
-                            <CustomTableHead tableHead={tableHead}></CustomTableHead>
+                            <CustomTableHead tableHead={TABLEHEAD}></CustomTableHead>
                             <TableBody>
                                 {
-                                    products === [] || products==='' || products === undefined ? (
+                                    Data.length == 0 ? (
                                         <TableRow>
                                             <TableCell>Data kosong</TableCell>
                                         </TableRow>
                                     ) :
-                                    products?.map((map)=>{
+                                    Data?.map((map)=>{
                                         return ( <>
                                             <UserTableRow 
                                             key={num} 
                                             onEdit={() => handleOpenEditForm(map)} 
                                             onDelete={()=>{setAdminData(map)}}
+                                            onActive={()=>{setActivateAdmin(map)}}
+                                            onDestroy={()=>{setDestroyAdmin(map)}}
                                             num={++num} row={map}>
 
                                             </UserTableRow>
@@ -367,7 +389,7 @@ export default function product({user,options, isSuper, admin}){
                     </TableContainer>
                     <Box sx={{display:'flex', flexDirection:'row', justifyContent:'center'}}>
                     {
-                        productsLink.map((link)=>{
+                        DataLink.map((link)=>{
                             return (
                                 <Button fullWidth size="sm" sx={{margin:'0.5em',paddingY:'1em', paddingX:'0', width:0, height:0}} key={link.label} variant={link.active ? 'contained' : 'outlined'} color={'success'} onClick={()=> handleChangePage(link.url)}>{
                                     link.label == '&laquo; Previous'? <ChevronLeft ></ChevronLeft> : link.label == 'Next &raquo;' ? <ChevronRight></ChevronRight> : link.label

@@ -63,6 +63,8 @@ export default function KeuanganTableRow({row, num, onShowImage, onDelete, onEdi
                 <TableCell>
                     Rp.{formatCurrency(total)}
                 </TableCell> 
+                <TableCell>
+                </TableCell> 
             </TableRow>
         </>
     )

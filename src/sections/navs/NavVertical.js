@@ -82,7 +82,7 @@ export default function NavVertical({isSuper, admin, open, handleOpenMobile}){
                             <Inventory style={{color: router.pathname === '/admin/stok' ? '#94B60F' : ''}} sx={{m:'auto',color:'white'}}></Inventory>
                         </ListItemIcon>
                         <ListItemText style={{color: router.pathname === '/admin/stok' ? '#94B60F' : ''}}>
-                            Stock
+                            Produk
                         </ListItemText>
                     </ListItemButton>
                     <ListItemButton onClick={()=>{handleChangePage('/admin/unit-usaha')}} sx={{paddingRight:"5em",paddingLeft:'0'}}>

@@ -1,6 +1,7 @@
 import style from "./cart.module.css"
 import { useState } from "react";
 import * as yup from "yup";
+import Delete from "@mui/icons-material/Delete";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 import Header from "../../components/header/header";
@@ -67,7 +68,6 @@ const Cart = ({ cookie, option, totalPayment, products }) => {
     let [total, setTotal] = useState(totalPayment);
     const router = useRouter()
     let [checked, setChecked] = useState([]);
-    let [deleteCart, setDelete] = useState([]);
     let [checkoutDialog, setCheckoutDialog] = useState(false);
     let [location, setLocation] = useState({
         provinsi: '',
@@ -79,6 +79,7 @@ const Cart = ({ cookie, option, totalPayment, products }) => {
     let [kecamatan, setKecamatan] = useState([]);
     let [kelurahan, setKelurahan] = useState([]);
     const [showNotice, setShowNotice] = useState(false);
+    const [showConfirm, setShowConfirm] = useState(false);
 
     const handleChangeItem = (id, change) => {
         let newCartList = cartList.map((cart) => {
@@ -106,8 +107,8 @@ const Cart = ({ cookie, option, totalPayment, products }) => {
 
     const schema = yup.object().shape({
         clientName: yup.string().required('Nama tidak boleh kosong'),
-        clientEmail: yup.string().required('Email tidak boleh kosong'),
-        clientNum: yup.string().required('Nomor WhatsApp tidak boleh kosong'),
+        clientEmail: yup.string(),
+        clientNum: yup.string().required('Nomor WhatsApp tidak boleh kosong').min(9,'nomor whatsapp anda tidak valid'),
         provinsi: yup.string().required('Nomor WhatsApp tidak boleh kosong'),
         kota: yup.string().required('Nomor WhatsApp tidak boleh kosong'),
         kecamatan: yup.string().required('Nomor WhatsApp tidak boleh kosong'),
@@ -153,7 +154,6 @@ const Cart = ({ cookie, option, totalPayment, products }) => {
         data.client_id = createproduk.data.id;
         data.kelurahan_id = data.clientKelurahan;
         await unitUsahas.map(async(unitUsaha)=>{
-            console.log('unitUsaha',unitUsaha)
             let unitUsahaProduct = cart.filter((cartData)=>{
                 if(cartData.productData.unit_usaha_id == unitUsaha){
                     return true;
@@ -168,10 +168,10 @@ const Cart = ({ cookie, option, totalPayment, products }) => {
             let msg = 'Halo, '+data.clientName+', berikut ini data diri dan belanjaan kamu'+'%0a'+
             'Alamat: '+data.clientAddress +'%0a'+
             'Nama: '+data.clientName + '%0a'+
-            'Email: '+data.clientNum + '%0a'+
+            'No.Hp: '+data.clientNum + '%0a'+
+	    'Email: '+data.clientEmail + '%0a' +	
             'Keranjang: '+'\n';
             let total = 0;
-            console.log('filtered product', unitUsahaProduct);
             let product = cart.map((produk)=>{
                 let cart = '- '+produk.productData.productName + ' ' + produk.item + 'x '+produk.productData.productPrice+'%0a'
                 total += produk.productData.productPrice * produk.item
@@ -190,7 +190,7 @@ const Cart = ({ cookie, option, totalPayment, products }) => {
         setCookie('barakh-cart-cookie', newCart);
         setCart(newCart);
         handleCloseCheckoutDialog()
-        // router.replace(router.asPath);
+        router.replace('/katalog');
     }
 
     const handleNextDialog = () => {
@@ -235,15 +235,18 @@ const Cart = ({ cookie, option, totalPayment, products }) => {
         let addChecked = checked
         addChecked.push(id);
         setChecked(addChecked);
-        countTotal(addChecked);
+        countTotal();
     }
 
     const handleCartUnchecked = (id) => {
         let addChecked = checked.filter((checkedId) => {
             return checkedId != id
         })
-        setChecked(addChecked);
+        setChecked(addChecked)
+        countTotalUnCheck(addChecked)
     }
+
+    
 
     const handleDeleteCart = () => {
         let cookie = getCookie('barakh-cart-cookie')
@@ -260,7 +263,8 @@ const Cart = ({ cookie, option, totalPayment, products }) => {
         })
         setCookie('barakh-cart-cookie', newCookie);
         setCart(newCookie);
-        countTotal(newCookie)
+        setShowConfirm(false)
+        setTotal(0)
         if (newCookie.length === 0) {
             setShowCheckout(false)
         }
@@ -282,6 +286,29 @@ const Cart = ({ cookie, option, totalPayment, products }) => {
                 count += data.item * Number(data.productData.productPrice)
             })
         }
+        console.log(cart)
+        console.log(count)
+        setTotal(count)
+    }
+
+    const countTotalUnCheck = (check) => {
+        let count = 0;
+        console.log(check)
+        let cart = cartList.filter((cartData)=>{
+            if(check.includes(cartData.productData.id)== true){
+                return true;
+            }
+        })
+        console.log(cart)
+        if (cart == undefined) {
+            cartList.map((data) => {
+                count += data.item * Number(data.productData.productPrice)
+            })
+        } else {
+            cart.map((data) => {
+                count += data.item * Number(data.productData.productPrice)
+            })
+        }
         setTotal(count)
     }
 
@@ -294,16 +321,15 @@ const Cart = ({ cookie, option, totalPayment, products }) => {
       }, [cookie, option, totalPayment, product]);
 
       function handleCheckAll(){
-            console.log(cartList.length);
-          if(checked.length < cartList.length){
-            let check = [];
-            cartList.map((cart)=>{
-                check.push(cart.productId)
-            })
-            console.log(check)
+            let total = 0;
+            if(checked.length < cartList.length){
+                let check = [];
+                cartList.map((cart)=>{
+                    total += cart.item * parseInt(cart.productData.productPrice)
+                    check.push(cart.productId)
+                })
             setChecked(check)
         }
-        console.log(checked)
       }
 
       const theme = createTheme({
@@ -331,12 +357,15 @@ const Cart = ({ cookie, option, totalPayment, products }) => {
                             <div className={style.containerCart} >
                                 <p className={style.title}>Keranjang</p>
                                 <div className={style.topCart}>
-                                    <div className={style.pilih}>
+                                    <Box sx={{display:'flex', flexDirection:'column', gap:'1em'}} >
                                         <Button color="success" variant="contained" startIcon={<FontAwesomeIcon icon={faCheck}></FontAwesomeIcon>} onClick={()=>handleCheckAll()}>
                                             Pilih Semua
                                         </Button>
-                                    </div>
-                                    <button onClick={() => { handleDeleteCart() }} className={style.buttonHapus}>Hapus</button>
+                                            <Button variant="contained" color="error" onClick={() => { setShowConfirm(true) }}  startIcon={<Delete></Delete>}>
+                                            Hapus
+                                        </Button>
+                                    </Box>
+                                    
                                 </div>
                                 <hr className={style.garis} />
                                 <div className={style.mainCart}>
@@ -344,14 +373,12 @@ const Cart = ({ cookie, option, totalPayment, products }) => {
                                         {
                                             cartList.map(({ item, productData, productId }) => {
                                                 return (
-                                                    <div key={productData.id} onChange={(e) => handleChangeItem(e.target.value)} className={style.fieldListProduct}>
+                                                    <div key={productData.id}  className={style.fieldListProduct}>
                                                         <input onChange={(e) => {   
                                                             if (e.target.checked === true) {
                                                                 handleCartChecked(Number(e.target.value))
-                                                                console.log(checked)
                                                             } else {
                                                                 handleCartUnchecked(Number(e.target.value))
-                                                                console.log(checked)
                                                             }
                                                         }} className={style.inputt} checked={checked.includes(Number(productId))} type="checkbox" value={productData.id} />
                                                         <div className={style.list}>
@@ -393,7 +420,7 @@ const Cart = ({ cookie, option, totalPayment, products }) => {
                                             <p className={style.titleRingkasan}>Ringkasan Belanja</p>
                                             <div className={style.detailPrice}>
                                                 <div className={style.textTotal}>Total Belanja Anda : </div>
-                                                <div className={style.total}>Rp.{formatCurrency(total)}</div>
+                                                <div className={style.total}>Rp.{total}</div>
                                             </div>
                                         </div>
                                         <Button onClick={() => {
@@ -442,6 +469,7 @@ const Cart = ({ cookie, option, totalPayment, products }) => {
             </Container>
             <Footer />
             <NoticeModal total={total} handleNext={() => handleNextDialog()} isVisible={showNotice} CloseClick={() => setShowNotice(false)} />
+            <ConfirmDialog onCancel={()=>{setShowConfirm(false)}} msg={'Anda yakin ingin menghapus keranjang?'} open={showConfirm} onConfirm={handleDeleteCart}></ConfirmDialog>
             <Dialog open={checkoutDialog} maxWidth={'xs'} onClose={() => { handleCloseCheckoutDialog() }} fullWidth>
                 <DialogTitle>
                     Form data diri

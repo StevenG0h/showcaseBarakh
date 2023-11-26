@@ -34,9 +34,7 @@ export async function getServerSideProps({req,res}){
     let admin = '';
 await checkPrivilege(token).then((r)=>{
         admin = r;
-        console.log('admin',admin)
     }).catch((e)=>{
-        console.log(e)
         return {
             redirect: {
                 permanent: false,
@@ -62,47 +60,36 @@ await checkPrivilege(token).then((r)=>{
         });
         let penjualan = produk?.data?.penjualan;
         let pengeluaran = produk?.data?.pengeluaran;
-        console.log(penjualan)
-        console.log(pengeluaran)
+        console.log(produk.data)
         let transaksi = '';
-        if(penjualan.length >= pengeluaran.length){
-            transaksi=(penjualan?.map(
-                data => Object.assign({}, data, {
-                  pengeluaran: pengeluaran
-                    .filter(pengeluaran => {
-                        if(data.penjualan == null){
-                            return true;
-                        }else{
-                            return pengeluaran.month === data.month && pengeluaran.year === data.year
-                        }
-                    })[0].pengeluaran,
-                  month: pengeluaran
-                    .filter(pengeluaran => {
-                        if(data.penjualan == null){
-                            return true;
-                        }else{
-                            return pengeluaran.month === data.month && pengeluaran.year === data.year
-                        }
-                    })[0].month,
-                  year: pengeluaran
-                    .filter(pengeluaran => {
-                        if(data.penjualan == null){
-                            return true;
-                        }else{
-                            return pengeluaran.month === data.month && pengeluaran.year === data.year
-                        }
-                    })[0].year
+
+        transaksi=(penjualan?.map(
+            data => {
+                let checkPengeluaran =  pengeluaran.filter(pengeluaran => {
+                    if(data.penjualan == null){
+                        return true;
+                    }else{
+                        return pengeluaran.month === data.month && pengeluaran.year === data.year
+                    }
+                });
+                return Object.assign({}, data, {
+                    pengeluaran:checkPengeluaran[0] == undefined ? 0 : checkPengeluaran[0].pengeluaran,
+                    month: checkPengeluaran[0] == undefined ? data.month : checkPengeluaran[0].month ,
+                    year: checkPengeluaran[0] == undefined ? data.year : checkPengeluaran[0].year
                 })
-              ))
-        }else{
-            transaksi=(pengeluaran?.map(
-                data => Object.assign({}, data, {
-                  penjualan: penjualan
-                    .filter(penjualan => penjualan.month === data.month && penjualan.year === data.year)[0].penjualan
-                })
-              ))
-        }
-        console.log(transaksi)
+            }
+        ))
+
+        pengeluaran?.filter(pengeluaranData=>{
+            transaksi.map(transaksiData=>{
+                let included = transaksiData.month == pengeluaranData.month && transaksiData.year == pengeluaranData.year
+                if(!included){
+                    pengeluaranData.penjualan = 0;
+                    transaksi.push(pengeluaranData);
+                }
+            })
+        })
+        transaksi = transaksi.sort()
         let unitUsaha = await getAllUnitUsaha();
         return {
             props:{
@@ -117,13 +104,13 @@ await checkPrivilege(token).then((r)=>{
         }
     }catch(e){
         console.log(e)
-        return {
-            redirect: {
-              permanent: false,
-              destination: "/auth",
-            },
-            props:{},
-          };
+        // return {
+        //     redirect: {
+        //       permanent: false,
+        //       destination: "/auth",
+        //     },
+        //     props:{},
+        //   };
     }
 }
 
@@ -207,21 +194,33 @@ export default function keuangan({isSuper,admin,produk, options}){
         let penjualan = dashboard?.data?.penjualan;
         let pengeluaran = dashboard?.data?.pengeluaran;
         let transaksi = '';
-        if(penjualan?.length >= pengeluaran?.length){
-            transaksi=(penjualan?.map(
-                data => Object.assign({}, data, {
-                  pengeluaran: pengeluaran
-                    .filter(pengeluaran => pengeluaran.month === data.month && pengeluaran.year === data.year)[0].pengeluaran
+        transaksi=(penjualan?.map(
+            data => {
+                let checkPengeluaran =  pengeluaran.filter(pengeluaran => {
+                    if(data.penjualan == null){
+                        return true;
+                    }else{
+                        return pengeluaran.month === data.month && pengeluaran.year === data.year
+                    }
+                });
+                return Object.assign({}, data, {
+                    pengeluaran:checkPengeluaran[0] == undefined ? 0 : checkPengeluaran[0].pengeluaran,
+                    month: checkPengeluaran[0] == undefined ? data.month : checkPengeluaran[0].month ,
+                    year: checkPengeluaran[0] == undefined ? data.year : checkPengeluaran[0].year
                 })
-              ))
-        }else{
-            transaksi=(pengeluaran?.map(
-                data => Object.assign({}, data, {
-                  penjualan: penjualan
-                    .filter(penjualan => penjualan.month === data.month && penjualan.year === data.year)[0].penjualan
-                })
-              ))
-        }
+            }
+        ))
+
+        pengeluaran?.filter(pengeluaranData=>{
+            transaksi.map(transaksiData=>{
+                let included = transaksiData.month == pengeluaranData.month && transaksiData.year == pengeluaranData.year
+                if(!included){
+                    pengeluaranData.penjualan = 0;
+                    transaksi.push(pengeluaranData);
+                }
+            })
+        })
+        transaksi = transaksi.sort()
         setProducts(transaksi)
         setLoading(false);
         setOpenFilter(false);
@@ -325,8 +324,7 @@ export default function keuangan({isSuper,admin,produk, options}){
                             <CustomTableHead tableHead={TABLEHEAD}></CustomTableHead>
                             <TableBody>
                                 {
-                                     
-                                    products === [] || products==='' || products === undefined ? (
+                                    products.length === 0 ? (
                                         <TableRow>
                                             <TableCell>Data kosong</TableCell>
                                         </TableRow>

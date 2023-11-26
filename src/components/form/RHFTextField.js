@@ -16,7 +16,7 @@ export default function RHFTextField({control, name, label, hiddenLabel = false,
             <Controller
                 name={name}
                 control={control}
-                render={({ field, fieldState:{ error} }) => <TextField  sx={{width:'100%'}}  type={type} hiddenLabel error={!!error} helperText={error ? error?.message : ''} label={label} {...field} />}
+                render={({ field, fieldState:{ error} }) => <TextField  sx={{width:'100%'}}  type={type} hiddenLabel={hiddenLabel} error={!!error} helperText={error ? error?.message : ''} label={label} {...field} />}
             />
         </>
       )

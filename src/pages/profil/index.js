@@ -9,12 +9,25 @@ import ImageVisiMisi from "../../../public/assets/images/Imagevisimisi.png";
 import Link from "next/link";
 import WhatsApp from "../../components/Whatsapp/WhatsApp"
 import Head from "next/head";
+import { getAdminNumber } from "../../helper/dataOptions";
+import axios from "../../utils/axios";
 const poppins = Poppins({
     weight: '500',
     subsets: ['latin'],
 })
 
-const Profile = () => {
+export async function getServerSideProps() { 
+    let adminNum = await getAdminNumber();
+    let unitUsaha = await axios.get('/api/unit-usaha')
+    return {
+        props:{
+            unitUsaha: unitUsaha.data.data.data,
+            adminNum:adminNum.data.adminNum
+        }
+    }
+}
+
+const Profile = ({adminNum, unitUsaha}) => {
     return (
         <main className={poppins.className}>
             <Header />
@@ -73,7 +86,7 @@ Dari semua kegiatan tersebut sudah terjadi sirkulasi aktivitas ekonomi dari peng
                                 </div>
                                 <div className={style.columInfo}>
                                     <p className={style.titleInfo}>Alamat</p>
-                                    <p className={style.description}>Jl. Sri Palas, Rumbai Bukit, Kec. Rumbai, Kota Pekanbaru, Riau 28264</p>
+                                    <p className={style.description}>Jln. Sri Amanah RT 01/03 - Kal.Agrowisata - Kec. Rumbai Barat - Pekanbaru kode pos 28264</p>
                                 </div>
                             </div>
                             <div className={style.field2}>
@@ -83,23 +96,26 @@ Dari semua kegiatan tersebut sudah terjadi sirkulasi aktivitas ekonomi dari peng
                                 <div className={style.columInfo}>
                                     <p className={style.titleInfo}>Bidang Usaha</p>
                                     <ul className={style.ul}>
-                                        <li className={style.li}><Link href="" className={style.listUnitUsaha}>Bank Sampah Agrowisata Ibnu Al-Mubarok</Link></li>
-                                        <li className={style.li}><Link href="" className={style.listUnitUsaha}>Perternakan & Perikanan</Link></li>
-                                        <li className={style.li}><Link href="" className={style.listUnitUsaha}>Pertanian</Link></li>
-                                        <li className={style.li}><Link href="" className={style.listUnitUsaha}>Briket Arang</Link></li>
-                                        <li className={style.li}><Link href="" className={style.listUnitUsaha}>Clean & Wash</Link></li>
-                                        <li className={style.li}><Link href="" className={style.listUnitUsaha}>Fashion & Craft</Link></li>
-                                        <li className={style.li}><Link href="" className={style.listUnitUsaha}>Kuliner</Link></li>
-                                        <li className={style.li}><Link href="" className={style.listUnitUsaha}>Lembaga Pelatihan dan Konsultasi</Link></li>
+                                    {
+                                        unitUsaha.map((map)=>{
+                                                return (
+                                                    <li className={style.li}><Link href="/usaha" className={style.listUnitUsaha}>{map.usahaName}</Link></li>
+                                                )
+                                        })
+                                    };kjekrlrem ipsum dolor sit amet constectur adipisicing eliet set d
                                     </ul>
                                 </div>
                                 <div className={style.columInfo}>
                                     <p className={style.titleInfo}>Instagram</p>
-                                    <p className={style.description}>@bsa_al_mubarok</p>
+                                    <Link href="https://instagram.com/banksampah_agrowisata?utm_source=qr&igshid=MzNlNGNkZWQ4Mg==" style={{margin:0, padding:0, fontStyle:'italic'}}><p className={style.description}>banksampah_agrowisata</p></Link>
+                                </div>
+                                <div className={style.columInfo}>
+                                    <p className={style.titleInfo}>TikTok</p>
+                                    <Link href="https://www.tiktok.com/@banksampah_agrowisata" style={{margin:0, padding:0, fontStyle:'italic'}}><p className={style.description}>banksampah_agrowisata</p></Link>
                                 </div>
                                 <div className={style.columInfo}>
                                     <p className={style.titleInfo}>Whatsapp</p>
-                                    <p className={style.description}>081392248571</p>
+                                    <p className={style.description}>0821 2257 9634</p>
                                 </div>
                             </div>
                         </div>

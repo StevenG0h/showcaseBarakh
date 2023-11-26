@@ -13,13 +13,16 @@ export default function DetailPenjualanTableRow({row, num, onShowImage, onDelete
         setNewTransactionStatus(data)
     }
     let handleCloseDialog = ()=>{
-        setNewTransactionStatus(true)
+        setNewTransactionStatus(false)
     }
     let msg = 'Anda yakin ingin menghapus data penjualan ini?'
     return (
         <>
             <TableRow>
-                <ConfirmDialog onConfirm={()=>{onDelete()}} onCancel={()=>{handleCloseDialog()}} msg={msg} open={newTransactionStatus}></ConfirmDialog>
+                <ConfirmDialog onConfirm={()=>{
+                onDelete()
+                handleCloseDialog()
+                }} onCancel={()=>{handleCloseDialog()}} msg={msg} open={newTransactionStatus}></ConfirmDialog>
                 <TableCell width={'25px'}>
                     {num}
                 </TableCell>

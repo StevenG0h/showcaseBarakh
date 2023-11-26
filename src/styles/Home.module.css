@@ -62,16 +62,22 @@
 
 .button{
     width: fit-content;
-    padding: 0.8em;
+    padding: 1em;
     margin-top: 5em;
     margin-left: auto;
     margin-right:0 ;
     background-color: #94B60F;
     color: #fff;
+    outline: none;
+    border-radius: 0.5em;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 1em;
 }
 
 .button:hover{
-    background-color: #D5F06B;
+    background-color: #758f0d;
 }
 
 .contentImage{

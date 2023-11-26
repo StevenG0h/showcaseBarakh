@@ -18,6 +18,8 @@ import  ChevronLeft  from "@mui/icons-material/ChevronLeft";
 import { formatCurrency } from "../../../helper/currency";
 import { useEffect } from "react";
 import { checkPrivilege } from "../../../helper/admin";
+import RHFSelect from "../../../components/form/RHFSelect";
+import { Label } from "@mui/icons-material";
 
 export async function getServerSideProps({req,res}){
     let token = getCookie('token',{req,res});
@@ -43,7 +45,7 @@ await checkPrivilege(token).then((r)=>{
         };
     });
     try{
-        let produk = await axios.post('/api/admin/transaksi/pencatatan-detail',{
+        let transaksi = await axios.post('/api/admin/transaksi/pencatatan-detail',{
             "year": ''
         },{
             headers:{
@@ -66,11 +68,12 @@ await checkPrivilege(token).then((r)=>{
             withCredentials:true
         });
         let unitUsaha = await getAllUnitUsahaAdmin(token);
+
         return {
             props:{
                 isSuper: admin.adminLevel == '1' ? true : false,
                 admin: admin,
-                produk: produk.data.data,
+                transaksi: transaksi.data.data,
                 stat:stat.data,
                 year: year.data,
                 options:{
@@ -90,21 +93,24 @@ await checkPrivilege(token).then((r)=>{
     }
 }
 
-export default function keuangan({isSuper,admin,produk, stat, options,year}){
+export default function keuangan({isSuper,admin,transaksi, stat, options,year}){
+    console.log(options)
     let [loading, setLoading] = useState(false)
     const router = useRouter();
     let token = getCookie('token');
     let title = 'Stock';
-    let [products, setProducts] = useState(produk.data);
-    let [productsLink, setProductsLink] = useState(produk.links);
+    let [data, setData] = useState(transaksi.data);
+    let [dataLink, setDataLink] = useState(transaksi.links);
     let [statData, setStat] = useState(stat);
     let [transaction, setTransaction] = useState([]);
+    let [editMode, setEditMode] = useState(false);
     let [filterYear, setYear] = useState('');
     //Next router
     
       const schemaAddSpendingTransaction = yup.object().shape({
         unit_usaha_id: yup.string().required('Unit usaha tidak boleh kosong'),
         SpendingName: yup.string().required('Nama pengeluaran tidak boleh kosong'),
+        create_time: yup.string().required('Tanggal tidak boleh kosong'),
         SpendingDescription: yup.string().required('Deskripsi pengeluaran tidak boleh kosong'),
         SpendingValue: yup.string().required('Jumlah pengeluaran tidak boleh kosong'),
     })
@@ -114,6 +120,7 @@ export default function keuangan({isSuper,admin,produk, stat, options,year}){
           transactionType:'PENGELUARAN',
           unit_usaha_id:'',
           SpendingName:'',
+          create_time:'',
           SpendingDescription:'',
           SpendingValue:0
         },
@@ -122,36 +129,89 @@ export default function keuangan({isSuper,admin,produk, stat, options,year}){
     
       const onSubmit = async (data) => {
         setLoading(true)
-        await axios.get('/sanctum/csrf-cookie',{
-            headers: { Authorization: `Bearer `+token},
-            withCredentials: true
-        }).then(async (r)=>{
-            handleCloseAddForm();
-            await axios.post('/api/admin/transaksi',data,{
+        if(editMode == true){
+            await axios.get('/sanctum/csrf-cookie',{
                 headers: { Authorization: `Bearer `+token},
                 withCredentials: true
+            }).then(async (r)=>{
+                handleCloseAddForm();
+                await axios.put('/api/admin/transaksi/spending/'+data.id,data,{
+                    headers: { Authorization: `Bearer `+token},
+                    withCredentials: true
+                }).then((r)=>{
+    
+                }).catch((e)=>{
+                    console.log(e);
+                })
+            }).catch((e)=>{
+                console.log(e)
+            })
+            router.replace(router.asPath);
+            setLoading(false)
+        }else{
+            await axios.get('/sanctum/csrf-cookie',{
+                headers: { Authorization: `Bearer `+token},
+                withCredentials: true
+            }).then(async (r)=>{
+                handleCloseAddForm();
+                await axios.post('/api/admin/transaksi',data,{
+                    headers: { Authorization: `Bearer `+token},
+                    withCredentials: true
+                }).then((r)=>{
+    
+                }).catch((e)=>{
+                    console.log(e);
+                })
+            }).catch((e)=>{
+                console.log(e)
+            })
+            router.replace(router.asPath);
+            setLoading(false)
+        }
+      }
+      
+      let handleDelete = (data)=>{
+        axios.get('/sanctum/csrf-cookie',{
+            headers: { Authorization: `Bearer `+token},
+            withCredentials: true
+        }).then((r)=>{
+            axios.delete('/api/transaksi/'+data.id,{
+                headers: { Authorization: `Bearer `+token
+                },
+                withCredentials: true
             }).then((r)=>{
-
+                console.log(r.data)
+                router.replace(router.asPath)
             }).catch((e)=>{
                 console.log(e);
             })
         }).catch((e)=>{
             console.log(e)
         })
-        router.replace(router.asPath);
-        setLoading(false)
-      }
-      
+    }
       //states
     const [AddForm, setAddForm] = useState(false);
 
     //state handler
     let handleCloseAddForm = ()=>{
         setAddForm(false);
+        setEditMode(false);
         setValue('unit_usaha_id','');
         setValue('SpendingName','');
         setValue('SpendingDescription','');
         setValue('SpendingValue',0);
+    }
+    
+    let handleOpenUpdateForm = (data)=>{
+        setAddForm(true);
+        setEditMode(true);
+        console.log(data);
+        setValue('unit_usaha_id',data.spending.unit_usaha_id);
+        setValue('id',data.spending.id);
+        setValue('SpendingName',data.spending.SpendingName);
+        setValue('SpendingDescription',data.spending.SpendingDescription);
+        setValue('SpendingValue',data.spending.SpendingValue);
+        setValue('create_time',data.spending.create_time);
     }
     
     let openSpendingForm = (data)=>{
@@ -177,8 +237,8 @@ export default function keuangan({isSuper,admin,produk, stat, options,year}){
                 },
                 withCredentials:true
             });
-            setProducts(unitUsaha?.data?.data?.data)
-            setProductsLink(unitUsaha?.data?.data?.links)
+            setData(unitUsaha?.data?.data?.data)
+            setDataLink(unitUsaha?.data?.data?.links)
         }
     }
 
@@ -200,8 +260,8 @@ export default function keuangan({isSuper,admin,produk, stat, options,year}){
             },
             withCredentials:true
         });
-        setProducts(produk.data.data.data)
-        setProductsLink(produk.data.data.links)
+        setData(produk.data.data.data)
+        setDataLink(produk.data.data.links)
         setStat(stat.data)
     }
 
@@ -211,15 +271,16 @@ export default function keuangan({isSuper,admin,produk, stat, options,year}){
         {value: 'Tanggal',align: 'left'},
         {value: 'Tipe Transaksi',align: 'left'},
         {value: 'Total',align: 'left'},
+        {value: 'action',align: 'center'},
     ]
     
     let num = 0;
     let detailNum = 0;
 
     useEffect(() => {
-        setProducts(produk.data)
-        setProductsLink(produk.links)
-      }, [produk]);
+        setData(transaksi.data)
+        setDataLink(transaksi.links)
+      }, [transaksi]);
 
     return (
         <>
@@ -281,34 +342,23 @@ export default function keuangan({isSuper,admin,produk, stat, options,year}){
                 </Select> */}
                 <Dialog onClose={handleCloseAddForm} open={AddForm} fullWidth maxWidth="xs">
                     <DialogTitle>
-                        Tambah Pengeluaran
+                        {editMode == true ? "Edit" : 'Tambah'} Pengeluaran
                     </DialogTitle>
                     <DialogContent>
                         <form onSubmit={handleSubmit(onSubmit)}>
                             <FormControl sx={{width:'100%'}}>
-                                <RHFAutocomplete sx={{width:'100%'}}
+                                <Typography>Unit Usaha</Typography>
+                                <RHFSelect sx={{width:'100%'}}
                                     name={'unit_usaha_id'}
-                                    options={options.unitUsaha}
+                                    option={options.unitUsaha}
                                     control= {control}
-                                    disable={false}
-                                    handleChange={(data)=>{
-                                        setValue('unit_usaha_id', data)
-                                        return data
-                                    }}
                                 />
                                 <RHFTextField sx={{width:'100%'}} label={'Nama Pengeluaran'} control={control} name={'SpendingName'}></RHFTextField>
+                                <Typography>Tanggal</Typography>
+                                <RHFTextField hiddenLabel={true} type="date" sx={{width:'100%'}} label={''} control={control} name={'create_time'}></RHFTextField>
                                 <RHFTextField sx={{width:'100%'}} label={'Deskripsi Pengeluaran'} control={control} name={'SpendingDescription'}></RHFTextField>
                                 <RHFTextField sx={{width:'100%'}} label={'Jumlah Pengeluaran'} control={control} name={'SpendingValue'}></RHFTextField>
-                                {/* <Select defaultValue={1}>
-                                    {
-                                    options?.unitUsaha.map(({id, label})=>{
-                                            return (
-                                                <MenuItem value={id}>{label}</MenuItem>
-                                            )
-                                        })
-                                    }
-                                </Select> */}
-                                <Button sx={{marginTop:'1em'}} variant="contained" color="success" type="submit">Tambah Pengeluaran</Button>
+                                <Button sx={{marginTop:'1em'}} variant="contained" color="success" type="submit">Simpan Pengeluaran</Button>
                             </FormControl>
                         </form>
                     </DialogContent>
@@ -319,12 +369,12 @@ export default function keuangan({isSuper,admin,produk, stat, options,year}){
                             <CustomTableHead tableHead={TABLEHEAD}></CustomTableHead>
                             <TableBody>
                                 {
-                                    products === [] || products==='' || products === undefined || products.length === 0 ? (
+                                    data === [] || data==='' || data === undefined || data.length === 0 ? (
                                         <TableRow>
                                             <TableCell>Data kosong</TableCell>
                                         </TableRow>
                                     ) :
-                                    products?.map((map)=>{
+                                    data?.map((map)=>{
                                         if(map.sales.length != 0){
                                             return ( <>
                                                 <KeuanganTableRow 
@@ -340,7 +390,8 @@ export default function keuangan({isSuper,admin,produk, stat, options,year}){
                                                 <SpendingTableRow 
                                                 key={detailNum} 
                                                 onDetail={()=>{handleTransactionDetails(map)}}
-                                                onEdit={() => handleOpenEditForm(map)} 
+                                                onEdit={() => handleOpenUpdateForm(map)} 
+                                                onDelete={()=> handleDelete(map)}
                                                 num={++detailNum} row={map}>
                                                 </SpendingTableRow>
                                             </>
@@ -353,7 +404,7 @@ export default function keuangan({isSuper,admin,produk, stat, options,year}){
                     </TableContainer>
                     <Box sx={{display:'flex', flexDirection:'row', justifyContent:'center'}}>
                     {
-                        productsLink.map((link)=>{
+                        dataLink.map((link)=>{
                             return (
                                 <Button fullWidth size="sm" sx={{margin:'0.5em',paddingY:'1em', paddingX:'0', width:0, height:0}} key={link.label} variant={link.active ? 'contained' : 'outlined'} color={'success'} onClick={()=> handleChangePage(link.url)}>{
                                     link.label == '&laquo; Previous'? <ChevronLeft ></ChevronLeft> : link.label == 'Next &raquo;' ? <ChevronRight></ChevronRight> : link.label

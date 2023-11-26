@@ -96,6 +96,10 @@
     border-radius: 10em;
 }
 
+.imageLogoContent{
+    width: 8em;
+}
+
 @media screen and (max-width: 768px){
     .containerUsaha{
         width: 90%;

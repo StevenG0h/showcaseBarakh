@@ -9,6 +9,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFacebookF } from '@fortawesome/free-brands-svg-icons';
 import { faInstagram } from '@fortawesome/free-brands-svg-icons';
 import { faYoutube } from '@fortawesome/free-brands-svg-icons';
+import { faTiktok } from "@fortawesome/free-brands-svg-icons";
 import Link from 'next/link';
 
 const Footer = () => {
@@ -32,8 +33,8 @@ const Footer = () => {
                                 <p className={style.title}>Ikuti Kami</p>
                                 <div className={style.sosmedIcon}>
                                     <Link href="" className={style.facebook_icon}><FontAwesomeIcon icon={faFacebookF} className={style.icon} /></Link>
-                                    <Link href="" className={style.instagram_icon}><FontAwesomeIcon icon={faInstagram} className={style.icon} /></Link>
-                                    <Link href="" className={style.youtube_icon}><FontAwesomeIcon icon={faYoutube} className={style.icon} /></Link>
+                                    <Link href="https://instagram.com/banksampah_agrowisata?utm_source=qr&igshid=MzNlNGNkZWQ4Mg==" className={style.instagram_icon}><FontAwesomeIcon icon={faInstagram} className={style.icon} /></Link>
+                                    <Link href="https://www.tiktok.com/@banksampah_agrowisata" className={style.youtube_icon}><FontAwesomeIcon icon={faTiktok} className={style.icon} /></Link>
                                 </div>
                             </div>
                         </div>

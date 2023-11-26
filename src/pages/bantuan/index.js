@@ -15,7 +15,7 @@ const poppins = Poppins({
     subsets: ['latin'],
     })
 
-export async function getServerSideProps(serverSide) { 
+export async function getServerSideProps() { 
     let adminNum = await getAdminNumber();
     
     return {
@@ -77,7 +77,7 @@ const Bantuan = ({adminNum})=> {
                                     <p className={style.titleContact}>Detail Kontak</p>
                                     <hr className={style.hr}/>
                                     <div className={style.contactDetail}>
-                                        <p><b>Alamat:</b> Jl. Sri Palas, Rumbai Bukit, Kec. Rumbai, Kota Pekanbaru, Riau 28264</p>
+                                        <p><b>Alamat:</b> Jln. Sri Amanah RT 01/03 - Kal.Agrowisata - Kec. Rumbai Barat - Pekanbaru kode pos 28264</p>
                                     </div>
                                     <div className={style.contactDetail}>
                                         <p><b>Email:</b> albarakh@gmail.com</p>

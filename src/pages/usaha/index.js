@@ -8,6 +8,7 @@ import WhatsApp from "../../components/Whatsapp/WhatsApp"
 import { Accordion, AccordionDetails, AccordionSummary, Box, Card, Divider, List, ListItem, ListItemButton, ListItemText, Typography, Button,ThemeProvider,createTheme } from "@mui/material";
 import { useState } from "react";
 import { useRouter } from 'next/router'
+import { setCookie } from "cookies-next";
 const poppins = Poppins({
   weight: '500',
   subsets: ['latin'],
@@ -123,7 +124,7 @@ const UnitUsaha = ({ data }) => {
                   profil == '' ? '' : (
                     <>
                       <Box sx={{ display: 'flex', flexDirection: 'row' , alignItems: 'center', columnGap: '1em'}} >
-                        <img className={style.imageLogo} src={process.env.NEXT_PUBLIC_BACKEND_URL + '/storage/unitUsaha/logo/' + profil.unit_usaha.unitUsahaLogo} alt="Gambar"></img>
+                        <img className={style.imageLogoContent} src={process.env.NEXT_PUBLIC_BACKEND_URL + '/storage/unitUsaha/logo/' + profil.unit_usaha.unitUsahaLogo} alt="Gambar"></img>
                         <Typography  fontWeight="600" sx={{ textAlign: 'left', fontSize:{xs: '1.05em', md:'2.2em',  lg:'2.2em' }}} >{
                           (
                             <span style={{ color: '#94B60F' }}>{profil.unit_usaha.usahaName}</span>
@@ -136,26 +137,11 @@ const UnitUsaha = ({ data }) => {
                       <Box sx={{ display: 'flex', justifyContent: 'flex-end', margin: '1em 1em' }}>
                         <Button variant='contained' color='success' onClick={
                           ()=> {
+                            setCookie('usahaCookie',{unit_usaha_id: profil.unit_usaha.id})
                             router.push('/katalog')
                           }
                         } >Lihat Produk</Button>
                       </Box>
-
-                      {/* {
-                                        profil.unit_usaha.products.map((product,index)=>{
-                                          return (
-                                            <>
-                                            <Typography  fontWeight="600">
-                                    
-                                            {++index}.{product.productName}
-                                    
-                                            </Typography>
-                                            <img className={style.product_usaha} src={process.env.NEXT_PUBLIC_BACKEND_URL+'/storage/product/'+product.product_images[0]?.path}></img>
-                                            </>
-
-                                          )
-                                        })
-                                      } */}
                     </>
                   )
                 }

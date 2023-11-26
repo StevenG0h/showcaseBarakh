@@ -19,9 +19,7 @@ export default function UsahaTableRow({row, num, onShowImage, onDelete, onEdit, 
                     {created_at}
                 </TableCell> */}
                 <TableCell>
-                    <Button onClick={()=>{router.replace(router.asPath+'/'+row.id)}} sx={{textAlign:'left'}} color="success">
                     {usahaName}
-                    </Button>
                 </TableCell>
                 <TableCell>
                     {usahaDesc}

@@ -8,6 +8,7 @@ import { formatCurrency } from "../../helper/currency";
 import { fDate } from "../../helper/date";
 
 export default function PenjualanTableRow({row, num, onShowImage, onDelete, onEdit, onDetail}){
+    console.log(row)
     const router = useRouter();
     let {transactionStatus, sales} = row;
     let [newTransactionStatus, setNewTransactionStatus] = useState('');
@@ -29,11 +30,12 @@ export default function PenjualanTableRow({row, num, onShowImage, onDelete, onEd
             transactionStatus: newTransactionStatus
         }
         try{
-            let update = await axios.put(process.env.NEXT_PUBLIC_BACKEND_URL+'/api/transaksi/'+row.id,data)
+            let update = await axios.put(process.env.NEXT_PUBLIC_BACKEND_URL+'/api/transaksi/'+row.id,data).then((r)=>{
+                router.replace(router.asPath);
+            })
         }catch(e){
 
         }finally{
-            router.replace(router.asPath);
         }
     }
     const status = [

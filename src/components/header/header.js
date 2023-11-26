@@ -16,7 +16,6 @@ import Head from "next/head";
 const Header = () => {
     let cart = getCookie('barakh-cart-cookie');
     cart = cart == undefined ? [] : JSON.parse(cart);
-    console.log(cart);
     const [active, setActive] = useState(false);
     const router = useRouter();
     const [searchActive, setSearchActive] = useState(false);
@@ -70,7 +69,6 @@ const Header = () => {
                                 <Link className={style.navitem} style={{color: router.pathname.includes('/profil') ? '#94B60F' : ''}} href="">Profil</Link>
                                 <div className={style.dropdownContent}>
                                     <Link className={style.dropdownItem} href="/profil">Tentang</Link>
-                                    <Link className={style.dropdownItem} href={"https://ibnualmubarok.site123.me/"} target="_blank">Lembaga Pendidikan</Link>
                                     <Link className={style.dropdownItem} href="/galeri">Galeri</Link>
                                 </div>
                             </div>

@@ -11,7 +11,7 @@
     display: flex;
     flex-direction: column;
     width: 28em;
-    height: 14em;
+    height: auto;
     padding: 2em 3em 3em 3em;
     background-color: #fff;
     border-radius: 15px;
@@ -49,8 +49,13 @@
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+    align-items: center;
 }
 
+.Total{
+	font-size: 20px;
+	color: #94B60F;	
+}
 .button{
     padding: 11px;
     border-radius: 4px;

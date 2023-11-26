@@ -1,7 +1,6 @@
 import Header from "../../components/header/header";
 import Footer from "../../components/footer/footer";
 import style from "./product.module.css"
-import imageDetail from "../../../public/assets/images/imgDetailProduct.png"
 import Image from "next/image";
 import {formatCurrency} from "../../helper/currency";
 import { Poppins } from 'next/font/google'

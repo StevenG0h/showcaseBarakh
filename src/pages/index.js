@@ -66,11 +66,11 @@ export default function Home({data}) {
         <div className={style.hero}>
           <div className={style.content}>
             <p className={style.titleHero}>Ciptakan Produk Lokal <br /><span style={{ color: '#94B60F' }}>Ramah Lingkungan</span></p>
-            <Button onClick={
+            <button onClick={
               ()=>{
                 router.push('/katalog')
               }
-            } className={style.button} >Belanja Sekarang!</Button>
+            } className={style.button} >Belanja Sekarang!</button>
           </div>
           <div className={style.contentImage}>
             <SliderImages produk={produk} />

@@ -3,7 +3,7 @@ import Edit from "@mui/icons-material/Edit";
 import {Button, IconButton, TableCell, TableRow} from "@mui/material"
 
 export default function RoleTableRow({row, num, onShowImage, onDelete, onEdit}){
-    let {roleName} = row;
+    let {roleName, permission} = row;
     return (
         <>
         
@@ -18,9 +18,14 @@ export default function RoleTableRow({row, num, onShowImage, onDelete, onEdit}){
                     <IconButton onClick={onEdit} sx={{marginX:'0.5em'}} variant="contained" color="warning" >
                         <Edit></Edit>
                     </IconButton>
-                    <IconButton onClick={onDelete} sx={{marginX:'0.5em'}} variant="contained" color="error" >
-                        <Delete></Delete>
-                    </IconButton>
+                    {
+                        permission == 0 ? (
+                            <IconButton onClick={onDelete} sx={{marginX:'0.5em'}} variant="contained" color="error" >
+                                <Delete></Delete>
+                            </IconButton>
+                        ) : ''
+                    }
+                    
                 </TableCell>
             </TableRow>
         </>

@@ -12,8 +12,9 @@ import axios from "../../utils/axios";
 import { Accordion, AccordionDetails, AccordionSummary, Box, Button, Card, Collapse, FormControl, Grid, IconButton, InputBase, List, ListItem, ListItemButton, ListItemIcon, ListItemText, SvgIcon, TextField, ThemeProvider, Typography, createTheme } from "@mui/material";
 import WhatsApp from "../../components/Whatsapp/WhatsApp"
 
-import {useState} from "react";
+import {useState, useEffect} from "react";
 import Head from "next/head";
+import { deleteCookie, getCookie } from "cookies-next";
 
 const poppins = Poppins({
     weight: '500',
@@ -48,6 +49,7 @@ const Katalog = ({products, unitUsaha, productsLinks}) => {
     let handleSearch = async (data)=>{
         let unitUsaha = await axios.post('/api/produk/search',data);
         setProducts(unitUsaha?.data?.data)
+        setProductsLinks(unitUsaha?.data?.links)
     }
 
     const theme = createTheme({
@@ -73,6 +75,22 @@ const Katalog = ({products, unitUsaha, productsLinks}) => {
         }
     }
 
+    let handleCheckCookie = async()=>{
+        let usahaId = await getCookie('usahaCookie');
+        if(usahaId != undefined){
+            usahaId = JSON.parse(usahaId);
+            let data = search;
+            data.id = usahaId.unit_usaha_id;
+            handleSearch(data)
+            setSearch(data)
+            deleteCookie('usahaCookie')
+        }
+    }
+
+    useEffect(()=>{
+        handleCheckCookie();
+    });
+
     return (
         <ThemeProvider theme={theme}>
             <main className={poppins.className}>
@@ -94,19 +112,24 @@ const Katalog = ({products, unitUsaha, productsLinks}) => {
                         <Card sx={{width:{
                                 lg:'30%',
                                 xs:'100%'
-                            },borderRadius:'5em',display:'flex',flexDirection:'row',justifyContent:'stretch'}}>
-                            <FormControl sx={{backgroundColor:'white',width:'100%'}}>
-                                <InputBase placeholder="ketik untuk mencari produk" defaultValue={search.keyword} onChange={(e)=>{
-                                    let data = search;
-                                    data.keyword =e.target.value;
-                                    setSearch(data);
-                                }} sx={{borderRadius:'5em', paddingY:'0.5em',width:'100%',outline:'none',"& fieldset": { border: 'none' },paddingLeft:'1em'}}>
-                                
-                                </InputBase>
-                            </FormControl>
-                            <IconButton onClick={()=>handleSearch(search)} variant="contained" color="success" sx={{height:'100%',paddingY:'0.5em', borderRadius:'0'}}>
-                                <Search></Search>
-                            </IconButton>
+                            },borderRadius:'5em'}}>
+                            <form onSubmit={(e)=>{
+                                e.preventDefault()
+                                handleSearch(search)
+                            }} style={{height:'fit-content',display:'flex',flexDirection:'row',justifyContent:'stretch'}}>
+                                <FormControl sx={{backgroundColor:'white',width:'100%'}}>
+                                    <InputBase placeholder="ketik untuk mencari produk" defaultValue={search.keyword} onChange={(e)=>{
+                                        let data = search;
+                                        data.keyword =e.target.value;
+                                        setSearch(data);
+                                    }} sx={{borderRadius:'5em', paddingY:'0.5em',width:'100%',outline:'none',"& fieldset": { border: 'none' },paddingLeft:'1em'}}>
+                                    
+                                    </InputBase>
+                                </FormControl>
+                                <IconButton type="submit" variant="contained" color="success" sx={{height:'100%',paddingY:'0.5em', borderRadius:'0'}}>
+                                    <Search></Search>
+                                </IconButton>
+                            </form>
                         </Card>
                         {/* <Button color="success" variant="contained" sx={{borderRadius:'5em'}}>
                             Produk Terbaru
@@ -141,7 +164,7 @@ const Katalog = ({products, unitUsaha, productsLinks}) => {
                                                 let data = search;
                                                 data.id = 'all';
                                                 setSearch(data);
-                                                handleSearch(search);
+                                                handleSearch(data);
                                             }}>
                                                 <Box sx={{width:'2.5em',aspectRatio:'1/1',marginRight:'0.5em',padding:0, borderRadius:'100%',overflow:'hidden',display:'flex',justifyContent:"start",alignItems:"center",backgroundColor:'#ffffff'}}>
                                                     <Ballot color="success" ></Ballot>
@@ -258,10 +281,10 @@ const Katalog = ({products, unitUsaha, productsLinks}) => {
                                     )
                                 }) :
                                 <Box sx={{display:'flex', flexDirection:'column', width:'100%'}}>
-                                <Typography sx={{color:'white'}} marginBottom={'-12%'} variant="h4" fontWeight={600} textAlign={'center'}>
+                                <Typography sx={{color:'white'}} variant="h4" fontWeight={600} textAlign={'center'}>
                                     Produk Tidak Ditemukan
                                 </Typography>
-                                <img style={{width:'60%',margin:'auto'}} src={'http://localhost:3000/assets/image/Business, Startup, workflow, error _ exhaustion, exhausted, work, laptop, computer, support 1.png'}></img>
+                                <img style={{width:'60%',margin:'auto'}} src={'https://albarakh.com/assets/images/keranjangkosong.png'}></img>
                                 </Box>
                             }
                             <Box sx={{display:'flex', width:'100%', flexDirection:'row', justifyContent:'center'}}>

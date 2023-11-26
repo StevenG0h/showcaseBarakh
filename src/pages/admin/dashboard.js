@@ -259,7 +259,6 @@ export async function getServerSideProps({req,res}){
     }).catch((e)=>{
         console.log(e)
     })
-    console.log(dashboard.data)
     let unitUsaha = await getAllUnitUsahaAdmin(token)
     let provinsi = await getAllProvinsi();
     return {
@@ -554,7 +553,7 @@ export default function Dashboard({isSuper,admin,data, options}){
                             </Grid>
                             
                             <Grid item xs={'12'} sx={{marginBottom:'3em'}}>
-                                <Paper sx={{padding:'1em',overflow:'scroll'}}>
+                                <Paper sx={{padding:'1em'}}>
                                     <Button onClick={()=>{
                                         setFilter({"from":"2018-01-01",
                                         "to":"2025-01-01",
@@ -568,68 +567,68 @@ export default function Dashboard({isSuper,admin,data, options}){
                                     }} variant="contained" color="success">
                                         Reset Filter
                                     </Button>
-                                    <Table sx={{overflowX:'auto'}}>
-                                        <TableContainer sx={{width:'100%'}}>
-                                        <CustomTableHead tableHead={tableHead}>
+                                    <TableContainer sx={{width:'100%'}}>
+                                        <Table>
+                                            <CustomTableHead tableHead={tableHead}>
 
-                                        </CustomTableHead>
-                                        {
-                                            dashboardData?.pelangganDetail?.map((data,index)=>{
-                                                return (
-                                                    <TableRow sx={{width:'100%'}}>
-                                                        <TableCell>
-                                                                {index+1}
-                                                        </TableCell>
-                                                        <TableCell>
-                                                            <Button onClick={()=>{
-                                                                let filter = filterData;
-                                                                if(dashboardData.scope == 'global'){
-                                                                    filter.provinsi = data.provinsiId
-                                                                }
-                                                                if(dashboardData.scope == 'provinsi'){
-                                                                    filter.kota = data.kotaId
-                                                                }
-                                                                if(dashboardData.scope == 'kota'){
-                                                                    filter.kecamatan = data.kecamatanId
-                                                                }
-                                                                if(dashboardData.scope == 'kecamatan'){
-                                                                    filter.kelurahan = data.kelurahanId
-                                                                    setTableHead(SECONDTABLEHEAD)
-                                                                }
-                                                                setFilter(filter);
-                                                                handleChange()
-                                                            }} color="success">
-                                                                {dashboardData.scope == 'global' ? data.provinsi : dashboardData.scope == 'provinsi' ? data.kota : dashboardData.scope == 'kota' ? data.kecamatan : dashboardData.scope == 'kecamatan' ? data.kelurahan : dashboardData.scope == 'kelurahan' ? data.nama : ''}
-                                                            </Button>
-                                                        </TableCell>
-                                                        <TableCell>
-                                                            {data.total}
-                                                        </TableCell>
-                                                        <TableCell>
-                                                            {data.totalTransaksi}
-                                                        </TableCell>
-                                                        <TableCell>
-                                                            {data?.unitUsaha.map((unit)=>{
-                                                            
-                                                                return (
-                                                                    <Button onClick={()=>{
-                                                                        let filter = filterData;
-                                                                        filter.unitUsaha = unit.id
-                                                                        setFilter(filter);
-                                                                        handleChange()
-                                                                    }} color="success">
-                                                                        {unit.label}
-                                                                    </Button>
-                                                                )
-                                                            })}
-                                                        </TableCell>
-                                                    </TableRow>
-                                                )
-                                            })
-                                        }
-                                        </TableContainer>
-                                        
-                                    </Table>
+                                            </CustomTableHead>
+                                            {
+                                                dashboardData?.pelangganDetail?.map((data,index)=>{
+                                                    return (
+                                                        <TableRow sx={{width:'100%'}}>
+                                                            <TableCell>
+                                                                    {index+1}
+                                                            </TableCell>
+                                                            <TableCell>
+                                                                <Button onClick={()=>{
+                                                                    let filter = filterData;
+                                                                    if(dashboardData.scope == 'global'){
+                                                                        filter.provinsi = data.provinsiId
+                                                                    }
+                                                                    if(dashboardData.scope == 'provinsi'){
+                                                                        filter.kota = data.kotaId
+                                                                    }
+                                                                    if(dashboardData.scope == 'kota'){
+                                                                        filter.kecamatan = data.kecamatanId
+                                                                    }
+                                                                    if(dashboardData.scope == 'kecamatan'){
+                                                                        filter.kelurahan = data.kelurahanId
+                                                                        setTableHead(SECONDTABLEHEAD)
+                                                                    }
+                                                                    setFilter(filter);
+                                                                    handleChange()
+                                                                }} color="success">
+                                                                    {dashboardData.scope == 'global' ? data.provinsi : dashboardData.scope == 'provinsi' ? data.kota : dashboardData.scope == 'kota' ? data.kecamatan : dashboardData.scope == 'kecamatan' ? data.kelurahan : dashboardData.scope == 'kelurahan' ? data.nama : ''}
+                                                                </Button>
+                                                            </TableCell>
+                                                            <TableCell>
+                                                                {data.total}
+                                                            </TableCell>
+                                                            <TableCell>
+                                                                {data.totalTransaksi}
+                                                            </TableCell>
+                                                            <TableCell>
+                                                                {data?.unitUsaha.map((unit)=>{
+                                                                
+                                                                    return (
+                                                                        <Button onClick={()=>{
+                                                                            let filter = filterData;
+                                                                            filter.unitUsaha = unit.id
+                                                                            setFilter(filter);
+                                                                            handleChange()
+                                                                        }} color="success">
+                                                                            {unit.label}
+                                                                        </Button>
+                                                                    )
+                                                                })}
+                                                            </TableCell>
+                                                        </TableRow>
+                                                    )
+                                                })
+                                            }
+                                            
+                                        </Table>
+                                    </TableContainer>
                                 </Paper>
                             </Grid>
                         </Grid>

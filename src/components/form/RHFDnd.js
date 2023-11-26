@@ -6,7 +6,7 @@ import { Controller } from "react-hook-form";
 
 const fileTypes = ["JPG", "PNG", "GIF"];
 
-function RHFDnd({name,control, files='', onDelete, required = false}) {
+function RHFDnd({name,control, files='', onDelete, preventDelete = false, required = false}) {
   const [file, setFile] = useState(files);
   const [disableRequire, setRequired] = useState(required);
   const handleChange = (file) => {
@@ -30,7 +30,7 @@ function RHFDnd({name,control, files='', onDelete, required = false}) {
         )=>(
             <Box>
                 {
-                    file == '' ? '': 
+                    file == '' || preventDelete  ? '': 
                     <>
                             <IconButton  onClick={(e)=>{
                                 e.preventDefault()
