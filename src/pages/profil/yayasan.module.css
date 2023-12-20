@@ -63,6 +63,7 @@
 
 .descriptionVisi{
     font-size: 1.1em;
+    text-align: justify;
 }
 
 .ol{
@@ -71,6 +72,7 @@
 
 .li{
     font-size: 1.1em;
+    text-align: justify;
 }   
 
 .colTeamYayasan{
@@ -156,7 +158,7 @@
         font-size: 1em;
     }
 
-    .colVisiMisi{
+    .colVisiMisi{       
         gap: 3em;
     }
 

@@ -8,22 +8,57 @@ import { Poppins } from 'next/font/google';
 import ImageVisiMisi from "../../../public/assets/images/Imagevisimisi.png";
 import Link from "next/link";
 import WhatsApp from "../../components/Whatsapp/WhatsApp"
+import Head from "next/head";
+import { getAdminNumber } from "../../helper/dataOptions";
+import axios from "../../utils/axios";
 const poppins = Poppins({
     weight: '500',
     subsets: ['latin'],
 })
 
-const Profile = () => {
+export async function getServerSideProps() { 
+    let adminNum = await getAdminNumber();
+    let unitUsaha = await axios.get('/api/unit-usaha')
+    return {
+        props:{
+            unitUsaha: unitUsaha.data.data.data,
+            adminNum:adminNum.data.adminNum
+        }
+    }
+}
+
+const Profile = ({adminNum, unitUsaha}) => {
     return (
         <main className={poppins.className}>
             <Header />
+            <Head>
+                <title>Albarakh | Tentang</title>
+            </Head>
             <div className={style.container}>
                 <div className={style.containerProfile}>
                     <div className={style.fieldSekilas}>
                         <div className={style.fieldSekilasEx}>
                             <p className={style.sekilas} >Sekilas Tentang</p>
                             <div className={style.wrapDescSekilas} >
-                                <p className={style.descriptions}>Al-Mubarok merupakan unit usaha yang dimiliki oleh pesantren Ibnu Al-Mubarkh, yang berdiri sejak 2020. Awal mula terbentuknya Unit Usaha ini adalah karena ide dari orang tua siswa dan pemilik yayasan. Al-Mubarakh bergerak di bidang agama dan produk yang dimiliki merupakan produk lokal yang ramah lingkungan.</p>
+                                <p className={style.descriptions}>
+                                    Bank Sampah Agrowisata (BSA) Ibnu Al Mubarok berdiri sejak tahun 2021 
+                                    sebagai salah satu program Yayasan yaitu Enterpreneur dan Lifeskill. 
+                                    Kemudian pada tahun yang sama di bulan Desember 2021 menjadi binaan 
+                                    PT Pertamina Hulu Rokan (PT PHR) yang berkolaborasi dengan Bank Sampah Unilak. 
+                                    Dalam pengelolaannya Bank Sampah Agrowisata Ibnu Al Mubarok melibatkan masyarakat 
+                                    sekitar dan juga yayasan Ibnu disabilitas. <br></br>
+                                    <br></br>
+
+                                    Dalam perkembangannya Bank Sampah Agrowisata Ibnu Al Mubarok berkembang pesat dan memiliki beberapa unit usaha yang menghasilkan produk ramah lingkungan untuk mendukung kelestarian lingkungan.
+                                    <br></br>
+                                    <br></br>
+                                    Unit Usaha yang dikelola oleh Bank Sampah Agrowisata Ibnu Al-Mubarok antara lain membuka  Diklat Kewirausahaan , budidaya maggot, ternak ayam kampung ,pupuk kompos, kasgot, pupuk cair Lindi , lele bioflok . Selain itu unit usaha yang terbaru pengembangan dari unit usaha BSA adalah  Produksi Briket Arang, Produksi Sabun Ramah Lingkungan di bawah Binaan PT PHR dan Politeknik Caltex Riau.  Fashion & Craft menjadi salah satu produk UMKM yang saat ini mulai berkembang. Produk unit usaha BSA diberi merek "Barakh" yang artinya Anugerah.
+                                    <br></br>
+                                    <br></br>
+
+                                    Dari semua kegiatan tersebut sudah terjadi sirkulasi aktivitas ekonomi dari pengelolaan sampah.
+
+                                </p>
                             </div>
                         </div>
                     </div>
@@ -34,24 +69,24 @@ const Profile = () => {
                         </div>
                     </div>
                     <div className={style.containerInformation}>
-                        <Image src={profileImg} alt="Gambar" className={style.profileImage} />
+                        {/* <Image src={profileImg} alt="Gambar" className={style.profileImage} /> */}
                         <div className={style.wrapInformation}>
                             <div className={style.field1}>
                                 <div className={style.columInfo}>
                                     <p className={style.titleInfo}>Nama UMKM</p>
-                                    <p className={style.description}>Barakh Sentra Usaha A.S.I.K.</p>
+                                    <p className={style.description}>Bank Sampah Agrowisata Ibnu Al-Mubarok</p>
                                 </div>
                                 <div className={style.columInfo}>
-                                    <p className={style.titleInfo}>Tanggal Pendirian</p>
-                                    <p className={style.description}>Sejak 2002</p>
+                                    <p className={style.titleInfo}>Tahun Pendirian</p>
+                                    <p className={style.description}>Sejak 2022</p>
                                 </div>
                                 <div className={style.columInfo}>
                                     <p className={style.titleInfo}>Email</p>
-                                    <p className={style.description}>Mubarakh@gmail.com</p>
+                                    <p className={style.description}>albarakhpku@gmail.com</p>
                                 </div>
                                 <div className={style.columInfo}>
                                     <p className={style.titleInfo}>Alamat</p>
-                                    <p className={style.description}>Jl. Sri Palas, Rumbai Bukit, Kec. Rumbai, Kota Pekanbaru, Riau 28264</p>
+                                    <p className={style.description}>Jln. Sri Amanah RT 01/03 - Kal.Agrowisata - Kec. Rumbai Barat - Pekanbaru kode pos 28264</p>
                                 </div>
                             </div>
                             <div className={style.field2}>
@@ -61,27 +96,31 @@ const Profile = () => {
                                 <div className={style.columInfo}>
                                     <p className={style.titleInfo}>Bidang Usaha</p>
                                     <ul className={style.ul}>
-                                        <li className={style.li}><Link href="" className={style.listUnitUsaha}>Rumah Jahit</Link></li>
-                                        <li className={style.li}><Link href="" className={style.listUnitUsaha}>Pendidikan</Link></li>
-                                        <li className={style.li}><Link href="" className={style.listUnitUsaha}>Pertanian</Link></li>
-                                        <li className={style.li}><Link href="" className={style.listUnitUsaha}>Perternakan</Link></li>
-                                        <li className={style.li}><Link href="" className={style.listUnitUsaha}>Perikanan</Link></li>
-                                        <li className={style.li}><Link href="" className={style.listUnitUsaha}>Dapur UTI</Link></li>
-                                        <li className={style.li}><Link href="" className={style.listUnitUsaha}>Bank Sampah</Link></li>
+                                    {
+                                        unitUsaha.map((map)=>{
+                                                return (
+                                                    <li className={style.li}><Link href="/usaha" className={style.listUnitUsaha}>{map.usahaName}</Link></li>
+                                                )
+                                        })
+                                    };kjekrlrem ipsum dolor sit amet constectur adipisicing eliet set d
                                     </ul>
                                 </div>
                                 <div className={style.columInfo}>
                                     <p className={style.titleInfo}>Instagram</p>
-                                    <p className={style.description}>@ibnualmubarok</p>
+                                    <Link href="https://instagram.com/banksampah_agrowisata?utm_source=qr&igshid=MzNlNGNkZWQ4Mg==" style={{margin:0, padding:0, fontStyle:'italic'}}><p className={style.description}>banksampah_agrowisata</p></Link>
+                                </div>
+                                <div className={style.columInfo}>
+                                    <p className={style.titleInfo}>TikTok</p>
+                                    <Link href="https://www.tiktok.com/@banksampah_agrowisata" style={{margin:0, padding:0, fontStyle:'italic'}}><p className={style.description}>banksampah_agrowisata</p></Link>
                                 </div>
                                 <div className={style.columInfo}>
                                     <p className={style.titleInfo}>Whatsapp</p>
-                                    <p className={style.description}>081392248571</p>
+                                    <p className={style.description}>0821 2257 9634</p>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div className={style.containerVisiMisi}>
+                    {/* <div className={style.containerVisiMisi}>
                         <div className={style.fieldImage}>
                             <Image src={ImageVisiMisi} alt="Gambar" className={style.ImageVisiMisi} />
                         </div>
@@ -101,13 +140,13 @@ const Profile = () => {
                                 <div className={style.descriptionMisi}>
                                     <ol className={style.ol}>
                                         <li className={style.list}>Menghidupkan semangat Beragama 'Islam'</li>
-                                        <li className={style.list}>Menciptakan UMKM bersyarikat Islam dnegan Produk yang mengikuti tren terkini</li>
+                                        <li className={style.list}>Menciptakan UMKM bersyarikat Islam dengan Produk yang mengikuti tren terkini</li>
                                         <li className={style.list}>Membantu pengngguran mendapatkan pekerjaan melalui banyaknya unit usaha</li>
                                     </ol>
                                 </div>
                             </div>
                         </div>
-                    </div>                
+                    </div>                 */}
                 </div>
             </div>
             <Footer />

@@ -15,6 +15,7 @@
     display: flex;
     width: 75%;
     justify-content: center;
+    margin: 4em 0 5em 0;
 }
 
 .wrapForm{
@@ -26,18 +27,17 @@
     border: 5px solid #94B60F;
     background-color: #fff;
     column-gap: 3em;
-    padding: 2em 2em;
-    margin: 4em 0 5em 0;
+    padding: 1em 2em 0em 2em;
     border-radius: 1em; 
 }
 
 .row1{
-    padding: 1em 0;
+
     width: 50%;
 }
 
 .row2{
-    padding: 2.6em 0;
+    padding: 2.6em 0 2em 0;
     width: 50%;
 }
 
@@ -45,9 +45,9 @@
     font-size: 2.4em;
     font-weight: 700;
     color: #081B1C;
-    margin: 0px;
+    margin: 0;
     letter-spacing: 0.06em;
-    margin-bottom: 0.2em;
+    margin-bottom: 0.4em;
 }
 
 .map{
@@ -90,7 +90,7 @@
 .Button{
     display: flex;
     flex-direction: row;
-    justify-content: end;
+    justify-content: flex-end;
     gap: 10px;
 
 }
@@ -146,16 +146,19 @@
 @media screen and (max-width: 480px){
     .containerBeranda{
         width: 90%;
+        margin: 2em 0;
     }
 
     .wrapForm{
         border: 4px solid #94B60F;
-        padding: 1.5em 1em;
+        padding: 1em;
     }
 
     .title{
         font-size: 1.6em;
         margin-bottom: 0.6em;
+        letter-spacing: 0.02em;
+        /* text-align: center; */
     }
 
     .titleContact{
@@ -164,5 +167,10 @@
 
     .contactDetail{
         font-size: 0.9em;
+    }
+
+    .formInput{
+        margin-top: 1em;
+        gap: 1em;
     }
 }

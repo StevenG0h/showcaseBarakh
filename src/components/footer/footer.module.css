@@ -1,21 +1,31 @@
 .footer {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     justify-content: center;
-    padding: 3em 0;
+    align-items: center;
     height: auto;
     background: #081B1C;
     box-shadow: 0px -18px 25px 0px rgba(0, 0, 0, 0.25);
     background-image: url('../../../public/assets/images/PropertiDark.png');
     background-size: 60%; 
     background-repeat: no-repeat;
-    background-position: left -35em  ;
+    background-position: left -15em bottom -9em ;
     width: 100%;
 } 
 
 .columnContainer{
     width: 75%;
     justify-content: center;
+    padding: 20px 0;
+}
+
+.copyrightContainer{
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    padding: 20px 0;
+    border-top: 1px solid #03565B;
+    background: rgba(7, 22, 23, 0.71)
 }
 
 .columns {
@@ -37,7 +47,6 @@
 .columnLogo{
     display: flex;
     flex-direction: column;
-    gap: 1em;
 }
 
 .rowsLogo{
@@ -45,6 +54,10 @@
     flex-direction: row;
     gap: 1.6em;
     align-items: center;
+}
+
+.logoBrand{
+    height: auto ;
 }
 
 .logoBrand:nth-child(2){
@@ -105,9 +118,29 @@
     font-weight: 300;
     letter-spacing: 0.03em;
     margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+@media screen and (max-width: 768px){
+    .footer{
+        background-size: 70%; 
+        background-repeat: no-repeat;
+        background-position:  left -15em bottom -3em  ;
+        width: 100%;
+    }
 }
 
 @media screen and (max-width: 480px){
+    .footer{
+        background-size: 100%; 
+        background-repeat: no-repeat;
+        background-position:  left 4em bottom 7em  ;
+        width: 100%;
+    }
+
+
     .columnContainer{
         justify-content: center;
         width: 90%;
@@ -143,19 +176,22 @@
     .rowsLogo{
         display: flex;
         flex-direction: row;
-        gap: 1.6em;
+        gap: 1em;
         align-items: center;
     }
-    
+
+/*     
+    .logoBrand:nth-child(1){
+        width: 30%;
+    }
+
     .logoBrand:nth-child(2){
         width: 40%;
-        height: 70%;
     }
     
     .logoBrand:nth-child(3){
         width: 8%;
-        height: 70%;
-    }
+    } */
 
     .icon{
         width: 1.9em;

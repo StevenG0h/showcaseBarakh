@@ -11,13 +11,43 @@ export async function getAllUnitUsaha(){
     return unitUsahas;
 }
 
+export async function getAllUnitUsahaAdmin(token){
+    let unitUsahas = await axios.get(process.env.NEXT_PUBLIC_BACKEND_URL+'/api/admin/unit-usaha/options',{
+        headers:{
+            Authorization: 'Bearer '+token,
+        },
+        withCredentials:true
+    }).catch(e=>{
+        console.log(e)
+    });
+    unitUsahas = unitUsahas?.data?.data.map((unitUsaha)=>{
+        return {
+            id: unitUsaha.id,
+            label: unitUsaha.usahaName
+        }
+    })
+    return unitUsahas;
+}
+
+export async function getAllRole(){
+    let unitUsahas = await axios.get(process.env.NEXT_PUBLIC_BACKEND_URL+'/api/role/options');
+    unitUsahas = unitUsahas?.data.map((unitUsaha)=>{
+        return {
+            id: unitUsaha.id,
+            label: unitUsaha.roleName
+        }
+    })
+    return unitUsahas;
+}
+
 export async function getAllUnitUsahaProduct(id){
-    let unitUsahas = await axios.get(process.env.NEXT_PUBLIC_BACKEND_URL+'/api/unit-usaha/'+id);
-    unitUsahas = unitUsahas?.data.products.map((product)=>{
+    let unitUsahas = await axios.get(process.env.NEXT_PUBLIC_BACKEND_URL+'/api/unit-usaha/product-option/'+id);
+    unitUsahas = unitUsahas?.data.map((product)=>{
         return {
             id: product.id,
             label: product.productName,
-            price: product.productPrice
+            price: product.productPrice,
+            disc: product.productDisc == null ? 0 : product.productDisc
         }
     })
     return unitUsahas;
@@ -65,4 +95,16 @@ export async function getAllKelurahanById(id){
         }
     })
     return provinsis;
+}
+
+export async function setVisitor(){
+    let visitor = await axios.get(process.env.NEXT_PUBLIC_BACKEND_URL+'/api/visitor/');
+    return visitor;
+}
+
+export async function getAdminNumber(){
+    let admin = await axios.get(process.env.NEXT_PUBLIC_BACKEND_URL+'/api/get-number').catch(e=>{
+        console.log(e)
+    });
+    return admin;
 }

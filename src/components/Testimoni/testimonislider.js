@@ -4,11 +4,7 @@ import "slick-carousel/slick/slick-theme.css";
 import "../../app/testimonislider.css";
 import Card from "../card/page";
 
-const theme = {
-    
-}
-
-export default function Testimoni() {
+export default function Testimoni({testimoni}) {
     const settings = {
         dots: false,
         infinite: true,
@@ -16,7 +12,7 @@ export default function Testimoni() {
         slidesToShow: 3,
         slidesToScroll: 3,
         autoplay: true,
-        autoplaySpeed: 4000,
+        autoplaySpeed: 2500,
         pauseOnHover: true,
         centerMode: true,
         responsive: [
@@ -35,10 +31,11 @@ export default function Testimoni() {
         <div className="containerTest">
             <h2 className="titleTest">Komentar Mereka</h2>
             <Slider  {...settings}>
-                <Card />
-                <Card />
-                <Card />
-                <Card />
+                {
+                    testimoni.map((map)=>{
+                        return <Card row={map}></Card>
+                    })
+                }
             </Slider>
         </div>
         </div>

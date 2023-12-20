@@ -8,39 +8,42 @@ import AdminLayout from "../../../layouts/adminLayout/AdminLayout";
 import { Box, Button, Card, Dialog, DialogContent, FormControl, Grid, IconButton, ImageList, ImageListItem, ImageListItemBar, Input, MenuItem, Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
 import RHFTextField from "../../../components/form/RHFTextField";
 import CustomTableHead from "../../../components/table/CustomTableHead";
-import ProfilUsahaTableRow from "../../../sections/profilUsaha/ProfilUsahaTableRow";
 import  Delete  from "@mui/icons-material/Delete";
 import  Star  from "@mui/icons-material/Star";
 import RHFDnd from "../../../components/form/RHFDnd";
 import { getAllUnitUsaha } from "../../../helper/dataOptions";
 import {getCookie} from 'cookies-next';
 import GaleriTableRow from "../../../sections/galeri/GaleriTableRow";
+import  ChevronRight  from "@mui/icons-material/ChevronRight";
+import  ChevronLeft  from "@mui/icons-material/ChevronLeft";
+import { useEffect } from "react";
+import { ConfirmDialog } from "../../../components/dialog/ConfirmDialog";
+import { checkPrivilege } from "../../../helper/admin";
 
 export async function getServerSideProps({req,res}){
     let token = getCookie('token',{req,res});
     if(token == undefined){
         return {
             redirect: {
-              permanent: false,
-              destination: "/auth",
+                permanent: false,
+                destination: "/auth",
             },
             props:{},
           };
     }
-    await axios.get('/user',{
-        headers:{
-            Authorization: 'Bearer '+token,
-        },
-        withCredentials:true
+    let admin = '';
+await checkPrivilege(token).then((r)=>{
+        admin = r;
     }).catch((e)=>{
+        console.log(e)
         return {
             redirect: {
-              permanent: false,
-              destination: "/auth",
+                permanent: false,
+                destination: "/auth",
             },
             props:{},
-          };
-    })
+        };
+    });
     try{
         let galeri = await axios.get('/api/admin/galeri',{
             headers:{
@@ -48,9 +51,10 @@ export async function getServerSideProps({req,res}){
             },
             withCredentials:true
         });
-        console.log(galeri);
         return {
             props:{
+                isSuper: admin.adminLevel == '1' ? true : false,
+                admin: admin,
                 data: galeri.data.data
             }
         }
@@ -66,12 +70,15 @@ export async function getServerSideProps({req,res}){
     }
 }
 
-export default function galeri({data}){
-    let [galeris, setprofilUsahas] = useState(data?.data);
+export default function galeri({isSuper,admin,data}){
+    const token = getCookie('token');
+    let [loading, setLoading] = useState(false)
+    let [galeris, setgaleriUsahas] = useState(data?.data);
     let [links, setUnitUsahaLink] = useState(data?.links);
     let [imageData, setImage] = useState([]);
     let [deletedImage, setDeletedImage] = useState([]);
     let [imageBackup, setImageBackup] = useState([]);
+    let [deleteId, setDelete] = useState('');
     //Next router
     const router = useRouter();
 
@@ -92,18 +99,17 @@ export default function galeri({data}){
       })
     
       const onSubmit = async (data) => {
-        let token = getCookie('token');
-        console.log(data)
+        setLoading(true)
         if(editMode == false){
             await axios.get('/sanctum/csrf-cookie',{
                 headers: { Authorization: `Bearer `+token},
                 withCredentials: true
             }).then(async (r)=>{
-                await axios.post('/api/admin/galeri/',data,{
+                await axios.post('/api/admin/galeri',data,{
                     headers: { Authorization: `Bearer `+token, "Content-Type":'multipart/form-data'},
                     withCredentials: true,
                 }).then((r)=>{
-                    console.log(r.data)
+                    handleCloseAddForm();
                 }).catch((e)=>{
                     console.log(e);
                 })
@@ -115,11 +121,11 @@ export default function galeri({data}){
                 headers: { Authorization: `Bearer `+token},
                 withCredentials: true
             }).then(async (r)=>{
-                await await axios.post('/api/admin/galeri/edit/'+data.id,data,{
+                await axios.post('/api/admin/galeri/edit/'+data.id,data,{
                     headers: { Authorization: `Bearer `+token, "Content-Type":'multipart/form-data'},
                     withCredentials: true,
                 }).then((r)=>{
-                    console.log(r.data)
+                handleCloseAddForm(); 
                 }).catch((e)=>{
                     console.log(e);
                 })
@@ -128,7 +134,10 @@ export default function galeri({data}){
             })
             
         }
-        // router.reload();
+
+        handleCloseAddForm()
+        router.replace(router.asPath);
+        setLoading(false)
       }
       
       //states
@@ -136,12 +145,21 @@ export default function galeri({data}){
     const [AddForm, setAddForm] = useState(false);
     const [editMode, setEditMode] = useState(false);
     const [usahaId, setUsahaId] = useState('');
-    
+
     //handler
     async function handleDelete(id){
-        const csrf = await axios.get('/sanctum/csrf-cookie')
-        const deleteUnitUsaha = await axios.delete('/api/admin/profil/'+id);
-        router.reload()
+        const csrf = await axios.get('/sanctum/csrf-cookie',{
+            withCredentials:true
+        }).then(async (r)=>{
+            const deleteUnitUsaha = await axios.delete('/api/admin/galeri/'+id,{
+                headers:{
+                    Authorization: `Bearer `+token
+                }
+            }).then((r)=>{
+                router.replace(router.asPath)
+                setDelete('');
+            });
+        })
     }
 
     //state handler
@@ -156,11 +174,12 @@ export default function galeri({data}){
         setValue('galeriTitle','');
         setValue('galeriDate','');
         setImage('path');
+        setShowImage('')
     }
     
     let handleOpenEditForm = (data)=>{
         setEditMode(true);
-        setValue('id',data?.profil?.id);
+        setValue('id',data.id);
         setValue('galeriTitle',data?.galeriTitle);
         setValue('galeriDate',data?.galeriDate);
         setValue('galeriDate',data?.galeriDate);
@@ -202,12 +221,21 @@ export default function galeri({data}){
     
     let num = 0;
 
+    useEffect(() => {
+        setgaleriUsahas(data.data)
+        setUnitUsahaLink(data.links)
+      }, [data]);
+
     return (
         <>
-            <AdminLayout>
+            <ConfirmDialog open={deleteId != ''} onCancel={()=>{setDelete('')}} onConfirm={()=>{handleDelete(deleteId)}} msg={'Anda yakin ingin menghapus?'}></ConfirmDialog>
+            <AdminLayout isSuper={isSuper} admin={admin} handleLoading={loading}>
+                <Dialog open={showImage != ''} onClose={handleCloseShowImage} fullWidth maxWidth={'md'}>
+                        <img height={"100%"} style={{objectFit:'contain'}} src={showImage}></img>
+                </Dialog>
                 <Dialog open={AddForm} sx={{overflow:'hidden'}} onClose={handleCloseAddForm} fullWidth maxWidth='xs'>
                     <DialogContent>
-                        <Typography variant="h5" sx={{marginBottom:'1em'}} fontWeight={600}>Tambah Profil</Typography>
+                        <Typography variant="h5" sx={{marginBottom:'1em'}} fontWeight={600}>{editMode? 'Edit Galeri' : 'Tambah Galeri'}</Typography>
                         <form onSubmit={handleSubmit(onSubmit)}>
                             <FormControl sx={{width:'100%', marginY:'0.5em'}}>
                                 <RHFTextField hiddenLabel={false} label={'Judul'} name={"galeriTitle"} control={control}></RHFTextField>
@@ -215,19 +243,22 @@ export default function galeri({data}){
                             <FormControl sx={{width:'100%', marginY:'0.5em'}}>
                                 <RHFTextField type="date" hiddenLabel={false} label={'Tanggal'} name={"galeriDate"} control={control}></RHFTextField>
                             </FormControl>
+                            <Typography>
+                                Gambar(max 1MB)
+                            </Typography>
                             <FormControl sx={{marginY:'0.5em',display:'flex', flexDirection:'row', flexWrap:'wrap', width:'99%',overflow:'hidden'}}>
                                 <Box sx={{width:'100%'}}>
-                                    <RHFDnd name="path" files={process.env.NEXT_PUBLIC_BACKEND_URL+'/storage/galeri/'+getValues('path')} control={control}></RHFDnd>
+                                    <RHFDnd preventDelete={true} name="path" files={process.env.NEXT_PUBLIC_BACKEND_URL+'/storage/galeri/'+getValues('path')} control={control}></RHFDnd>
                                 </Box>
                             </FormControl>
-                            <Button variant="contained" color="success" sx={{width:'100%'}} type="submit">{editMode ? 'Simpan Perubahan' : 'Tambah Unit Usaha'}</Button>
+                            <Button variant="contained" color="success" sx={{width:'100%'}} type="submit">{editMode ? 'Simpan Perubahan' : 'Tambah Galeri'}</Button>
                         </form>
                     </DialogContent>
                 </Dialog>
-                <Typography variant="h3" fontWeight={400}>Profil Unit Usaha</Typography>
-                <Box sx={{display:'flex',flexDirection:'row',alignItems:'center'}}>
+                <Typography variant="h3" color={'#94B60F'} sx={{textDecoration:'underline'}} fontWeight={400}>Galeri</Typography>
+                <Box sx={{display:'flex',flexDirection:'row',alignItems:'center', marginY:'1em'}}>
                     <Button onClick={handleOpenAddForm} color="success" variant="contained" startIcon="">
-                        Tambah Profil
+                        Tambah Galeri
                     </Button>
                 </Box>
                 <Card sx={{marginY:'1em'}}>
@@ -245,7 +276,7 @@ export default function galeri({data}){
                                         return ( <>
                                             <GaleriTableRow 
                                             key={map.id} 
-                                            onDelete={() => handleDelete(map.id)} 
+                                            onDelete={() => setDelete(map.id)} 
                                             onEdit={() => handleOpenEditForm(map)} 
                                             onShowImage={()=> handleShowImage(map.path)}
                                             num={++num} row={map}>
@@ -258,15 +289,17 @@ export default function galeri({data}){
                             </TableBody>
                         </Table>
                     </TableContainer>
-                    {
-                        links.map((link,index)=>{
-                            return (
-                                <Button key={link.label} sx={{color:link.active ? '' : 'grey' }} onClick={()=> handleChangePage(link.url)}>{
-                                    link.label == '&laquo; Previous'? '' : link.label == 'Next &raquo;' ? '' : link.label
-                                }</Button>
-                            )
-                        })
-                    }
+                    <Box sx={{display:'flex', flexDirection:'row', justifyContent:'center'}}>
+                        {
+                            links.map((link)=>{
+                                return (
+                                    <Button fullWidth size="sm" sx={{margin:'0.5em',paddingY:'1em', paddingX:'0', width:0, height:0}} key={link.label} variant={link.active ? 'contained' : 'outlined'} color={'success'} onClick={()=> handleChangePage(link.url)}>{
+                                        link.label == '&laquo; Previous'? <ChevronLeft ></ChevronLeft> : link.label == 'Next &raquo;' ? <ChevronRight></ChevronRight> : link.label
+                                    }</Button>
+                                )
+                            })
+                        }
+                    </Box>
                 </Card>
             </AdminLayout>
         </>

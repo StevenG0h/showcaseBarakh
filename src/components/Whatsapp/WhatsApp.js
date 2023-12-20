@@ -6,7 +6,7 @@ import Image from 'next/image';
 const WhatsApp = () => {
     return(
         <>
-        <a href='' className={style.container}>
+        <a href='/bantuan' className={style.container}>
             <Image src={WhatsAPpImage} alt='Gambar' className={style.WhatsApp}/>
         </a>
         </>

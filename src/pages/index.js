@@ -8,9 +8,11 @@ import SliderImages from "../components/sliderImage/slider";
 import ProductCategory from "../components/KategorProduct/kategori";
 import Testimoni from "../components/Testimoni/testimonislider"
 import axios from '../utils/axios'
-import { Button } from '@mui/material'
+import { Box, Button, Divider, Typography } from '@mui/material'
 import WhatsApp from '../components/Whatsapp/WhatsApp'
-
+import { setVisitor } from '../helper/dataOptions'
+import { useRouter } from 'next/router'
+import Head from 'next/head'
 
 const poppins = Poppins({
   weight: '500',
@@ -22,10 +24,26 @@ const inter = Inter({ subsets: ['latin'] })
 
 export async function getServerSideProps(){
   let unitUsaha = await axios.get('/api/unit-usaha');
+  let testimoni = await axios.get('/api/testimoni');
+  let produk = await axios.get('/api/produk/home');
+  let counter = await axios.get('/api/visitor/counter')
+  if(process.env.IS_DEVELOPMENT == 'true'){
+    return {
+      redirect: {
+        permanent: false,
+        destination: "/coming-soon",
+      },
+      props:{}
+   }
+  }
+  setVisitor()
   return {
     props:{
       data:{
-        unitUsaha: unitUsaha.data.data
+        unitUsaha: unitUsaha.data.data,
+        testimoni: testimoni.data.data,
+        produk: produk.data.data,
+        counter: counter.data[0]
       }
     }
   }
@@ -33,23 +51,42 @@ export async function getServerSideProps(){
 
 export default function Home({data}) {
   let unitUsaha = data.unitUsaha.data;
+  let testimoni = data.testimoni.data;
+  let produk = data.produk.data;
+  let counter = data.counter.total
+  const router = useRouter()
   return (
     <main className={poppins.className}>
       <Header/>
+      <Head>
+      <title>Albarakh | Beranda</title>
+      </Head>
       <div className={style.container}>
         <div className={style.hero}>
           <div className={style.content}>
             <p className={style.titleHero}>Ciptakan Produk Lokal <br /><span style={{ color: '#94B60F' }}>Ramah Lingkungan</span></p>
-            <p className={style.description}>Al-Mubarok merupakan unit usaha yang dimiliki oleh pesantren Ibnu Al-Mubarkh, yang berdiri sejak 2020. Awal mula terbentuknya Unit Usaha ini adalah...</p>
-            <Button sx={{width: '30%', padding: '0.8em', backgroundColor: '#94B60F', color: '#fff'}} className={style.button} >Selengkapnya</Button>
+            <button onClick={
+              ()=>{
+                router.push('/katalog')
+              }
+            } className={style.button} >Belanja Sekarang!</button>
           </div>
           <div className={style.contentImage}>
-            <SliderImages />
+            <SliderImages produk={produk} />
           </div>
         </div>
       </div>
+      <Box sx={{textAlign:'center', mb:'5em', mt:'-3em'}}>
+        <Divider></Divider>
+        <Typography fontWeight={'bold'} variant='h3'  sx={{color:'#94B60F'}}>
+          {counter}x
+        </Typography>
+        <Typography fontWeight={'bold'} variant='h6' color="white">
+          Dilihat
+        </Typography>
+      </Box>
       <ProductCategory unitUsaha={unitUsaha} />
-      <Testimoni />
+      <Testimoni testimoni={testimoni} />
       <Footer />
       <WhatsApp />
     </main>

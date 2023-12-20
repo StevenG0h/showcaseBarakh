@@ -4,6 +4,7 @@ import Details from "@mui/icons-material/Details";
 import {Button, IconButton, TableCell, TableRow} from "@mui/material"
 import { useState } from "react";
 import { ConfirmDialog } from "../../components/dialog/ConfirmDialog";
+import { formatCurrency } from "../../helper/currency";
 
 export default function DetailPenjualanTableRow({row, num, onShowImage, onDelete, onEdit, onDetail}){
     let {productPrice, product, productCount} = row;
@@ -11,26 +12,17 @@ export default function DetailPenjualanTableRow({row, num, onShowImage, onDelete
     let handleChangeStatus = (data)=>{
         setNewTransactionStatus(data)
     }
-    let handleCloseDialog = (data)=>{
-        setNewTransactionStatus(true)
+    let handleCloseDialog = ()=>{
+        setNewTransactionStatus(false)
     }
     let msg = 'Anda yakin ingin menghapus data penjualan ini?'
-    let handleUpdateTransaction = async ()=>{
-        let data = {
-            transactionStatus: newTransactionStatus
-        }
-        try{
-            let update = await axios.put(process.env.NEXT_PUBLIC_BACKEND_URL+'/api/transaksi/'+row.id,data)
-        }catch(e){
-
-        }finally{
-            router.replace(router.asPath);
-        }
-    }
     return (
         <>
             <TableRow>
-                <ConfirmDialog onConfirm={()=>{onDelete()}} onCancel={()=>{handleCloseDialog()}} msg={msg} open={newTransactionStatus}></ConfirmDialog>
+                <ConfirmDialog onConfirm={()=>{
+                onDelete()
+                handleCloseDialog()
+                }} onCancel={()=>{handleCloseDialog()}} msg={msg} open={newTransactionStatus}></ConfirmDialog>
                 <TableCell width={'25px'}>
                     {num}
                 </TableCell>
@@ -38,19 +30,19 @@ export default function DetailPenjualanTableRow({row, num, onShowImage, onDelete
                     {product.productName}
                 </TableCell>
                 <TableCell>
-                    {productPrice}
+                    Rp.{formatCurrency(productPrice)}
                 </TableCell>
                 <TableCell>
                     {productCount}
                 </TableCell>
                 <TableCell>
-                    {Number(productCount) * Number(productPrice)}
+                    Rp.{formatCurrency(Number(productCount) * Number(productPrice))}
                 </TableCell>
                 <TableCell align="center">
                     <IconButton onClick={onEdit} sx={{marginX:'0.5em'}} variant="contained" color="warning" >
                         <Edit></Edit>
                     </IconButton>
-                    <IconButton onClick={onDelete} sx={{marginX:'0.5em'}} variant="contained" color="error" >
+                    <IconButton onClick={()=>setNewTransactionStatus(true)} sx={{marginX:'0.5em'}} variant="contained" color="error" >
                         <Delete></Delete>
                     </IconButton>
                 </TableCell>

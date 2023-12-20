@@ -14,6 +14,11 @@ import Pagination from '@mui/material/Pagination';
 import Stack from '@mui/material/Stack';
 import Tooltip from '@mui/material/Tooltip';
 import WhatsApp from "../../components/Whatsapp/WhatsApp"
+import axios from "../../utils/axios";
+import { Button } from "@mui/material";
+import  ChevronRight  from "@mui/icons-material/ChevronRight";
+import  ChevronLeft  from "@mui/icons-material/ChevronLeft";
+import Head from "next/head";
 const poppins = Poppins({
     weight: '500',
     subsets: ['latin'],
@@ -59,7 +64,18 @@ function a11yProps(index) {
 //         },
 //     }));
 
-const GaleriTestimoni = () => {
+export async function getServerSideProps(serverSide) {
+    let galeri = await axios.get('/api/galeri');
+    return {
+        props:{
+            galeri: galeri.data.data
+        }
+    }
+}
+
+const GaleriTestimoni = ({galeri}) => {
+    let [galeriData, setGaleri] = useState(galeri.data)
+    let [galeriLink, setGaleriLink] = useState(galeri.links)
     const second = lightGreen[500];
 
     const [value, setValue] = React.useState(0);
@@ -68,55 +84,53 @@ const GaleriTestimoni = () => {
         setValue(newValue);
     };
 
+    let handleChangePage = async (link)=>{
+        if(link != null){
+            let unitUsaha = await axios.get(link,{
+                headers:{
+                    Authorization: 'Bearer '+token,
+                },
+                withCredentials:true
+            });
+            setGaleri(unitUsaha?.data?.data?.data)
+            setGaleriLink(unitUsaha?.data?.data?.links)
+        }
+    }
+
     return (
         <main className={poppins.className}>
             <Header />
+            <Head>
+                <title>Albarakh | Galeri</title>
+            </Head>
             <div className={style.container}>
                 <div className={style.containerBase}>
                     <div className={style.textGaleri}>
                         <p className={style.title}>Galeri Kegiatan dan Acara</p>
-                        <p className={style.description}>Telusuri kegiatan kami dengan pesantren di Indonesia. Kami siap mendigitalisasikan pesantren di Indonesia.</p>
+                        {/* <p className={style.description}>Telusuri kegiatan kami dengan pesantren di Indonesia. Kami siap mendigitalisasikan pesantren di Indonesia.</p> */}
                     </div>
                     <div className={style.listWrap} >
                         <Box sx={{ width: '100%' }}>
-                            <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-                                <Tabs value={value} onChange={handleChange} aria-label="basic tabs example" centered
-                                    sx={{
-                                        "&:hover": { color: "#94B60F" },
-                                        " .Mui-selected": {
-                                            color: "#94B60F !important",
-                                        },
-                                        "& button:active": {
-                                            color: "#94B60F"
-                                        }
-                                    }}
-                                    TabIndicatorProps={{ style: { backgroundColor: "#94B60F" } }}
-                                >
-                                    <Tab sx={{ textTransform: "none" }} label="Semua" {...a11yProps(0)} />
-                                    <Tab sx={{ textTransform: "none" }} label="Foto" {...a11yProps(1)} />
-                                    <Tab sx={{ textTransform: "none" }} label="Video" {...a11yProps(2)} />
-                                </Tabs>
-                            </Box>
-                            <TabPanel className={style.tabPanel} value={value} index={0}>
-                                <div className={style.boxGaleri}>
-                                    <GaleriCard/>
-                                    <GaleriCard/>
-                                    <GaleriCard/>
-                                    <GaleriCard/>
-                                    <GaleriCard/>
-                                    <GaleriCard/>
-                                </div>       
-                            </TabPanel>
-                            <TabPanel value={value} index={1}>
-                                Item Two
-                            </TabPanel>
-                            <TabPanel value={value} index={2}>
-                                Item Three
-                            </TabPanel>
-                                <Stack spacing={2}>
-                                    <Pagination count={10} variant="outlined" shape="rounded" sx={{display: 'flex', justifyContent: 'center', placeItems: 'center'}}/>
-                                </Stack>
+                            <div className={style.boxGaleri}>
+                                {
+                                    galeriData.map((data)=>{
+                                        return <GaleriCard data={data}/>
+                                    })
+                                }
+                            </div>       
+                            
                         </Box>
+                        <Box sx={{display:'flex', flexDirection:'row', justifyContent:'center', marginTop:'1em'}}>
+                    {
+                        galeriLink.map((link)=>{
+                            return (
+                                <Button fullWidth size="sm" sx={{margin:'0.5em',paddingY:'1em', paddingX:'0', width:0, height:0}} key={link.label} variant={link.active ? 'contained' : 'outlined'} color={'success'} onClick={()=> handleChangePage(link.url)}>{
+                                    link.label == '&laquo; Previous'? <ChevronLeft ></ChevronLeft> : link.label == 'Next &raquo;' ? <ChevronRight></ChevronRight> : link.label
+                                }</Button>
+                            )
+                        })
+                    }
+                    </Box>
                     </div>
                 </div>
             </div>

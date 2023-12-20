@@ -1,3 +1,17 @@
+
+.slick-track
+{
+    display: flex !important;
+}
+
+.slick-slide
+{
+    height: inherit !important;
+}
+.slick-slide > div
+{
+    height: 100% !important;
+}
 .container{
     width: 100%;
     display: flex;
@@ -9,7 +23,7 @@
     background-repeat: no-repeat, no-repeat;
     background-position: bottom 19em right 55em, bottom 4em right -27em;
 }
-.containerTest{
+.containerTest{ 
     display: flex;
     flex-direction: column;
     width: 75%;
@@ -160,7 +174,7 @@
 }
 
 .slider_image  .slick-dots > li.slick-active button{
-    background-color: #081B1C;
+    background-color: #94B60F;
     /* width: 1.3rem;
     border-radius: 10px; */
     transition: 0.4s;
@@ -170,7 +184,10 @@
 
 @media screen and (max-width: 768px){
     .container{
-        margin-bottom: 6em;
+        margin-bottom: 2em;
+        background-size: 70%, 75% ; 
+        background-repeat: no-repeat, no-repeat;
+        background-position: bottom 25em right 24em, bottom 20em right -17em;
     }
     .containerTest{
         width: 90%;
@@ -264,7 +281,10 @@
 
 @media screen and (max-width: 480px) {
     .container{
-        margin-bottom: 5em;
+        margin-bottom: 0;   
+        background-size: 80%, 80% ; 
+        background-repeat: no-repeat, no-repeat;
+        background-position: bottom 25em right 12em, bottom 18em right -11em;  
     }
 
     .containerTest{
@@ -274,6 +294,7 @@
 
     .titleTest{
         font-size: 1.6em;
+        margin: 0;
     }
     
     .slick-arrow {
@@ -303,6 +324,7 @@
     .containerTest  .slick-slide {
         margin: 50px -1px;
     }
+    
 
     /* the parent */
     .containerTest  .slick-list {
@@ -348,6 +370,7 @@
     
     .slider_image .slick-slide > div {
         margin: 0;
+
     }
 
     .slider_image  .slick-slide{

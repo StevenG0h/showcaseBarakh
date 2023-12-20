@@ -1,6 +1,7 @@
 import style from "./cart.module.css"
 import { useState } from "react";
 import * as yup from "yup";
+import Delete from "@mui/icons-material/Delete";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 import Header from "../../components/header/header";
@@ -13,15 +14,18 @@ import { Poppins } from 'next/font/google'
 import { getCookie, setCookie } from "cookies-next";
 import axios from "../../utils/axios";
 import { formatCurrency } from "../../helper/currency";
-import { Box, Button, Checkbox, Container, Dialog, DialogContent, DialogTitle, FormControl, Grid, IconButton, StepIcon, Typography } from "@mui/material";
+import { Box, Button, Checkbox, Container, Dialog, DialogContent, DialogTitle, FormControl, Grid, IconButton, StepIcon, ThemeProvider, Typography, createTheme } from "@mui/material";
+import {useEffect} from 'react'
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faMinus, faPlus, faShoppingCart } from "@fortawesome/free-solid-svg-icons";
+import { faMinus, faPlus, faShoppingCart, faCheck } from "@fortawesome/free-solid-svg-icons";
 import RHFTextField from '../../components/form/RHFTextField';
 import RHFAutocomplete from '../../components/form/RHFAutocomplete';
 import { getAllKecamatanById, getAllKelurahanById, getAllKotaById, getAllProvinsi } from '../../helper/dataOptions';
 import KatalogCard from "../../components/card/KatalogCard/KatalogCard";
 import { Router, useRouter } from "next/router";
+import Head from "next/head";
+import { ConfirmDialog } from "../../components/dialog/ConfirmDialog";
 // import {Checkbox} from "@mui/material";
 // import WhatsApp from "../../components/Whatsapp/WhatsApp"
 
@@ -33,33 +37,60 @@ const poppins = Poppins({
 
 export async function getServerSideProps({ req, res }) {
     let cookie = getCookie('barakh-cart-cookie', { req, res })
-    let product = await axios.get('/api/produk');
+    console.log('hehe',cookie == "")
+    let product = await axios.get('/api/produk/katalog').catch(e=>{
+        console.log(e)
+    });
     let provinsi = await getAllProvinsi();
     let count = 0;
-    if (cookie != undefined) {
+    let cartUpdate = "";
+    if(cookie != undefined && cookie != ""){
         cookie = JSON.parse(cookie)
+        let productIds = [];
         cookie.map((data) => {
-            count += data.item * Number(data.productData.productPrice)
+            productIds.push(data.productId.toString());
+            console.log(Number(data.productData.productPrice))
+            count += data.item * (Number(data.productData.productPrice) - (Number(data.productData.productPrice) * (Number(data.productData.productDisc) / 100)))
+        })
+        cartUpdate = await axios.post('/api/produk/cart',{
+            productIds: productIds
+        }).catch(e=>{
+            console.log(e)
         })
     }
+    cartUpdate = cartUpdate?.data?.map(data=>{
+        let filtered  = cookie.filter(cookieData=>{
+            if(cookieData.productId == data.id){
+                return true;
+            }
+            return false;
+        })
+        filtered[0].productData.productName = data.productName;
+        filtered[0].productData.productPrice = data.productPrice;
+        filtered[0].productData.productDisc = data.productDisc;
+        filtered[0].productData.productStock = data.productStock;
+        return filtered[0];
+    })
+    setCookie('barakh-cart-cookie', cartUpdate, {req,res});
     return {
         props: {
             cookie: cookie === undefined ? [] : cookie,
             option: {
                 provinsi: provinsi
-            }, totalPayment: count,
-            product: product.data.data
+            },totalPayment: count,
+            products: product.data.data.data
         }
     }
 }
 
-const Cart = ({ cookie, option, totalPayment, product }) => {
+const Cart = ({ cookie, option, totalPayment, products }) => {
     let [cartList, setCart] = useState(cookie);
+    let [product, setProduct] = useState(products);
     let [showCheckout, setShowCheckout] = useState(cookie.length != 0)
+    let [showAlert, setShowAlert] = useState(false);
     let [total, setTotal] = useState(totalPayment);
     const router = useRouter()
     let [checked, setChecked] = useState([]);
-    let [deleteCart, setDelete] = useState([]);
     let [checkoutDialog, setCheckoutDialog] = useState(false);
     let [location, setLocation] = useState({
         provinsi: '',
@@ -71,11 +102,12 @@ const Cart = ({ cookie, option, totalPayment, product }) => {
     let [kecamatan, setKecamatan] = useState([]);
     let [kelurahan, setKelurahan] = useState([]);
     const [showNotice, setShowNotice] = useState(false);
+    const [showConfirm, setShowConfirm] = useState(false);
 
     const handleChangeItem = (id, change) => {
         let newCartList = cartList.map((cart) => {
             if (cart.productData.id === id) {
-                if (cart.item + change < cart.productData.productStock) {
+                if (cart.item + change <= cart.productData.productStock) {
                     cart.item += change
                     if (cart.item > 0 == false) {
                         cart.item = 1;
@@ -84,11 +116,13 @@ const Cart = ({ cookie, option, totalPayment, product }) => {
                         if (map.productId === id) {
                             map.item = cart.item
                         }
+
                         return map;
                     })
                     setCookie('barakh-cart-cookie', newCookie)
                 }
             }
+            
             return cart
         })
         setCart(newCartList);
@@ -97,8 +131,8 @@ const Cart = ({ cookie, option, totalPayment, product }) => {
 
     const schema = yup.object().shape({
         clientName: yup.string().required('Nama tidak boleh kosong'),
-        clientEmail: yup.string().required('Email tidak boleh kosong'),
-        clientNum: yup.string().required('Nomor WhatsApp tidak boleh kosong'),
+        clientEmail: yup.string(),
+        clientNum: yup.string().required('Nomor WhatsApp tidak boleh kosong').min(9,'nomor whatsapp anda tidak valid'),
         provinsi: yup.string().required('Nomor WhatsApp tidak boleh kosong'),
         kota: yup.string().required('Nomor WhatsApp tidak boleh kosong'),
         kecamatan: yup.string().required('Nomor WhatsApp tidak boleh kosong'),
@@ -121,29 +155,67 @@ const Cart = ({ cookie, option, totalPayment, product }) => {
     })
 
     const onSubmit = async (data) => {
-        cartList.map((product) => {
-
-        })
-        const createproduk = await axios.post('/api/client/', data, {
+        data.productPrice = (Number(data.productPrice) - (Number(data.productPrice) * Number(data.productDisc) / 100))
+        console.log(data)
+        const createproduk = await axios.post('/api/client', data, {
             headers: {
                 'Content-Type': 'multipart/form-data'
             }
         });
-        data.transactionType = "PENJUALAN"
-        data.product = cartList;
-        data.transactionAddress = data.clientAddress;
-        data.kelurahan_id = data.clientKelurahan;
-        data.client_id = createproduk.data.id;
-        const createTransaction = await axios.post('/api/transaksi', data, {
-            Headers: {
-                'Content-Type': 'multipart/form-data'
+        let unitUsahas = [];
+        let cart = cartList.filter((cartData)=>{
+            if(unitUsahas.includes(cartData.productData.unit_usaha_id) == false){
+                unitUsahas.push(cartData.productData.unit_usaha_id)
+            }
+            if(checked.includes(cartData.productData.id)== true){
+                return true;
             }
         })
-
-        setCookie('barakh-cart-cookie', []);
-        setCart([]);
-
-        // router.replace(router.asPath);
+        data.transactionType = "PENJUALAN"
+        data.transactionAddress = data.clientAddress;
+        data.provinsi_id = location.provinsi;
+        data.kota_id = location.kota;
+        data.kecamatan_id = location.kecamatan;
+        data.client_id = createproduk.data.id;
+        data.kelurahan_id = data.clientKelurahan;
+        await unitUsahas.map(async(unitUsaha)=>{
+            let unitUsahaProduct = cart.filter((cartData)=>{
+                if(cartData.productData.unit_usaha_id == unitUsaha){
+                    return true;
+                }
+            })
+            data.product = unitUsahaProduct;
+            const createTransaction = await axios.post('/api/transaksi', data, {
+                Headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            })
+            let msg = 'Halo, '+data.clientName+', berikut ini data diri dan belanjaan kamu'+'%0a'+
+            'Alamat: '+data.clientAddress +'%0a'+
+            'Nama: '+data.clientName + '%0a'+
+            'No.Hp: '+data.clientNum + '%0a'+
+	    'Email: '+data.clientEmail + '%0a' +	
+            'Keranjang: '+'\n';
+            let total = 0;
+            let product = cart.map((produk)=>{
+                let cart = '- '+produk.productData.productName + ' ' + produk.item + 'x '+produk.productData.productPrice+'%0a'
+                total += (produk.productData.productPrice - (produk.productData.productPrice * produk.productData.productDisc)) * produk.item
+                return msg+= cart
+            })
+            msg = msg+'%0a'+ 'total: Rp.' + total
+        
+            window.open('https://api.whatsapp.com/send/?phone='+createTransaction.data.adminNumber.unit_usaha.admin.adminNum+"&text="+msg);
+            
+        })
+        let newCart = cartList.filter((cartData)=>{
+            if(checked.includes(cartData.productData.id)!=true){
+                return cartData
+            }
+        })
+        setCookie('barakh-cart-cookie', newCart);
+        setCart(newCart);
+        handleCloseCheckoutDialog()
+        router.replace('/katalog');
     }
 
     const handleNextDialog = () => {
@@ -153,6 +225,7 @@ const Cart = ({ cookie, option, totalPayment, product }) => {
 
     const handleCloseCheckoutDialog = () => {
         setCheckoutDialog(false)
+        setTotal(0  )
     }
 
     const handleProvinsi = async (id) => {
@@ -187,14 +260,18 @@ const Cart = ({ cookie, option, totalPayment, product }) => {
         let addChecked = checked
         addChecked.push(id);
         setChecked(addChecked);
+        countTotal();
     }
 
     const handleCartUnchecked = (id) => {
         let addChecked = checked.filter((checkedId) => {
             return checkedId != id
         })
-        setChecked(addChecked);
+        setChecked(addChecked)
+        countTotalUnCheck(addChecked)
     }
+
+    
 
     const handleDeleteCart = () => {
         let cookie = getCookie('barakh-cart-cookie')
@@ -207,12 +284,12 @@ const Cart = ({ cookie, option, totalPayment, product }) => {
                     isInCart = true
                 }
             })
-            console.log(isInCart)
             return isInCart !== true
         })
         setCookie('barakh-cart-cookie', newCookie);
         setCart(newCookie);
-        countTotal(newCookie)
+        setShowConfirm(false)
+        setTotal(0)
         if (newCookie.length === 0) {
             setShowCheckout(false)
         }
@@ -220,20 +297,83 @@ const Cart = ({ cookie, option, totalPayment, product }) => {
 
     const countTotal = (cart) => {
         let count = 0;
+         cart = cartList.filter((cartData)=>{
+            if(checked.includes(cartData.productData.id)== true){
+                return true;
+            }
+        })
         if (cart == undefined) {
             cartList.map((data) => {
-                count += data.item * Number(data.productData.productPrice)
+                console.log(data);
+                count += data.item * Number(data.productData.productPrice) - (Number(data.productData.productPrice) * Number(data.productData.productDisc))
             })
         } else {
             cart.map((data) => {
-                count += data.item * Number(data.productData.productPrice)
+                console.log(Number(data.productData.productDisc));
+                count += data.item * (Number(data.productData.productPrice) - (Number(data.productData.productPrice) * (Number(data.productData.productDisc) / 100)))
             })
         }
         setTotal(count)
     }
 
+    const countTotalUnCheck = (check) => {
+        let count = 0;
+        console.log(check)
+        let cart = cartList.filter((cartData)=>{
+            if(check.includes(cartData.productData.id)== true){
+                return true;
+            }
+        })
+        console.log(cart)
+        if (cart == undefined) {
+            cartList.map((data) => {
+                count += data.item * (Number(data.productData.productPrice) - (Number(data.productData.productPrice) * (Number(data.productData.productDisc) / 100)))
+            })
+        } else {
+            cart.map((data) => {
+                count += data.item * (Number(data.productData.productPrice) - (Number(data.productData.productPrice) * (Number(data.productData.productDisc) / 100)))
+            })
+        }
+        setTotal(count)
+    }
+
+    useEffect(() => {
+        setCart(cookie)
+        setShowCheckout(cookie.length !=0)
+        setTotal(totalPayment)
+        setProduct(product)
+        handleCheckAll()
+      }, [cookie, option, totalPayment, product]);
+
+      function handleCheckAll(){
+            let total = 0;
+            if(checked.length < cartList.length){
+                let check = [];
+                cartList.map((cart)=>{
+                    total += cart.item * (Number(cart.productData.productPrice) - (Number(cart.productData.productPrice) * (Number(cart.productData.productDisc) / 100)))
+                    check.push(cart.productId)
+                })
+            setChecked(check)
+        }
+      }
+
+      const theme = createTheme({
+        palette:{
+          main:'#94B60F',
+          success: {
+            main:'#94B60F',
+            contrastText: '#ffffff'
+          }
+        }
+      })
+
     return (
+        <ThemeProvider theme={theme}>
         <main className={poppins.className} style={{ backgroundColor: '#fff' }}>
+            <ConfirmDialog open={showAlert} onCancel={()=>setShowAlert(false)} onConfirm={()=>setShowAlert(false)} msg={"Anda harus memilih salah satu produk untuk melanjutkan checkout"}></ConfirmDialog>
+            <Head>
+                <title>Albarakh | Keranjang</title>
+            </Head>
             <Header />
             {
                 showCheckout === true ?
@@ -242,29 +382,33 @@ const Cart = ({ cookie, option, totalPayment, product }) => {
                             <div className={style.containerCart} >
                                 <p className={style.title}>Keranjang</p>
                                 <div className={style.topCart}>
-                                    <div className={style.pilih}>
-                                        <input className={style.input} type="checkbox" />
-                                        <p className={style.textPilih}>Pilih Semua</p>
-                                    </div>
-                                    <button onClick={() => { handleDeleteCart() }} className={style.buttonHapus}>Hapus</button>
+                                    <Box sx={{display:'flex', flexDirection:'column', gap:'1em'}} >
+                                        <Button color="success" variant="contained" startIcon={<FontAwesomeIcon icon={faCheck}></FontAwesomeIcon>} onClick={()=>handleCheckAll()}>
+                                            Pilih Semua
+                                        </Button>
+                                            <Button variant="contained" color="error" onClick={() => { setShowConfirm(true) }}  startIcon={<Delete></Delete>}>
+                                            Hapus
+                                        </Button>
+                                    </Box>
+                                    
                                 </div>
                                 <hr className={style.garis} />
                                 <div className={style.mainCart}>
                                     <div className={style.fieldList}>
                                         {
-                                            cartList.map(({ item, productData }) => {
+                                            cartList.map(({ item, productData, productId }) => {
                                                 return (
-                                                    <div key={productData.id} onChange={(e) => handleChangeItem(e.target.value)} className={style.fieldListProduct}>
-                                                        <input onChange={(e) => {
+                                                    <div key={productData.id}  className={style.fieldListProduct}>
+                                                        <input onChange={(e) => {   
                                                             if (e.target.checked === true) {
-                                                                handleCartChecked(e.target.value)
+                                                                handleCartChecked(Number(e.target.value))
                                                             } else {
-                                                                handleCartUnchecked(e.target.value)
+                                                                handleCartUnchecked(Number(e.target.value))
                                                             }
-                                                        }} className={style.inputt} type="checkbox" value={productData.id} />
+                                                        }} className={style.inputt} checked={checked.includes(Number(productId))} type="checkbox" value={productData.id} />
                                                         <div className={style.list}>
                                                             <div className={style.image}>
-                                                                <img style={{ aspectRatio: '2/2', objectFit: 'cover', margin: 'auto', borderRadius: '0.6em', width: '100%', height: '100%' }} src={process.env.NEXT_PUBLIC_BACKEND_URL + "/storage/product/" + productData.product_images[0].path} alt="Gambar" className={style.imageCart} />
+                                                                <img style={{ aspectRatio: '2/2', objectFit: 'cover', margin: 'auto', borderRadius: '0.6em', width: '100%', height: '100%' }} src={process.env.NEXT_PUBLIC_BACKEND_URL + "/storage/product/" + productData?.product_images[0]?.path} alt="Gambar" className={style.imageCart} />
                                                             </div>
                                                             <div className={style.detailProductCart}>
                                                                 <Link href={"/detail-produk/" + productData.id} className={style.link}>
@@ -272,7 +416,19 @@ const Cart = ({ cookie, option, totalPayment, product }) => {
                                                                 </Link>
                                                                 <div className={style.remaining}>
                                                                     <p className={style.remainingCheck}>sisa {productData.productStock}</p>
-                                                                    <p className={style.price}>{formatCurrency(Number(productData.productPrice))}</p>
+                                                                    <p className={style.price}>Harga : 
+                                                                        {
+                                                                            productData.productDisc != 0 && productData.productDisc != null ? (
+                                                                                <span style={{paddingRight:'1em'}} className={productData.productDisc == 0 ? "" :style.nominal}>
+                                                                                    {formatCurrency(productData.productPrice - ((productData.productDisc / 100) * productData.productPrice)) }
+                                                                                </span>
+                                                                            ) : (
+                                                                                <span className={ productData.productDisc != 0  && productData.productDisc != null ? "" :style.nominal} style={{textDecoration: productData.productDisc != 0 && productData.productDisc != null ? 'line-through' : ''}}>
+                                                                                    Rp.{formatCurrency(productData.productPrice)}
+                                                                                </span>
+                                                                            )
+                                                                        }
+                                                                    </p>
                                                                 </div>
                                                                 <div className={style.detailSetProduct}>
                                                                     <div className={style.setAmount}>
@@ -301,10 +457,16 @@ const Cart = ({ cookie, option, totalPayment, product }) => {
                                             <p className={style.titleRingkasan}>Ringkasan Belanja</p>
                                             <div className={style.detailPrice}>
                                                 <div className={style.textTotal}>Total Belanja Anda : </div>
-                                                <div className={style.total}>{formatCurrency(total)}</div>
+                                                <div className={style.total}>Rp.{formatCurrency(total)}</div>
                                             </div>
                                         </div>
-                                        <Button onClick={() => setShowNotice(true)} sx={{ py: '1em' }} className={style.buttonBuy} variant="contained" startIcon={<FontAwesomeIcon icon={faShoppingCart}></FontAwesomeIcon>}>
+                                        <Button onClick={() => {
+                                            if(checked.length > 0){
+                                                setShowNotice(true)
+                                            }else{
+                                                setShowAlert(true)
+                                            }
+                                        }} sx={{ py: '1em' }} color="success" variant="contained" startIcon={<FontAwesomeIcon icon={faShoppingCart}></FontAwesomeIcon>}>
                                             Lanjutkan Pembayaran
                                         </Button>
                                     </div>
@@ -313,9 +475,9 @@ const Cart = ({ cookie, option, totalPayment, product }) => {
                         </div>
                     ) :
                     <Container>
-                        <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-                            <img style={{ width: '45%', margin: 'auto', marginTop: '-8em' }} src={'http://localhost:3000/assets/image/Business, Startup, workflow, error _ exhaustion, exhausted, work, laptop, computer, support 1.png'}></img>
-                            <Typography textAlign={'center'}>
+                        <Box sx={{ display: 'flex', flexDirection: 'column', marginBottom: '2em' }}>
+                            <img className={style.imageProdukKosong} src={'../../assets/images/keranjangkosong.png'}></img>
+                            <Typography textAlign={'center'} >
                                 Yuk isi dengan produk produk unggulan!
                             </Typography>
                             <Box sx={{ display: 'flex', justifyContent: 'center', margin: '1em' }}>
@@ -328,14 +490,14 @@ const Cart = ({ cookie, option, totalPayment, product }) => {
             }
             <Container sx={{ marginBottom: '4em'}} className={style.containerRekomendasi}>
                 <Typography variant="h5" sx={{fontSize: '2em', fontWeight: '600', textDecoration: 'underline', textUnderlineOffset: '0.4em', textDecorationColor: '#94B60F', marginBottom: '1em'}} className={style.titleRekom}>
-                    Produk Rekomendasi
+                    Produk Lainnya
                 </Typography>
                 <Grid container xs={'12'} columns={12} sx={{ width: '100%' }}>
                     {
                         product.map((data) => {
                             return (
                                 <Grid item xs={6} sm={4} lg={3} sx={{ padding: '0.4em' }}>
-                                    <KatalogCard row={data} style={style}></KatalogCard>
+                                    <KatalogCard isCart={true} row={data} style={style}></KatalogCard>
                                 </Grid>
                             )
                         })
@@ -344,6 +506,7 @@ const Cart = ({ cookie, option, totalPayment, product }) => {
             </Container>
             <Footer />
             <NoticeModal total={total} handleNext={() => handleNextDialog()} isVisible={showNotice} CloseClick={() => setShowNotice(false)} />
+            <ConfirmDialog onCancel={()=>{setShowConfirm(false)}} msg={'Anda yakin ingin menghapus keranjang?'} open={showConfirm} onConfirm={handleDeleteCart}></ConfirmDialog>
             <Dialog open={checkoutDialog} maxWidth={'xs'} onClose={() => { handleCloseCheckoutDialog() }} fullWidth>
                 <DialogTitle>
                     Form data diri
@@ -381,6 +544,7 @@ const Cart = ({ cookie, option, totalPayment, product }) => {
                 </DialogContent>
             </Dialog>
         </main>
+        </ThemeProvider>
     )
 }
 

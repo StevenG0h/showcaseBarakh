@@ -5,7 +5,7 @@ export function ConfirmDialog({open, msg, onCancel, onConfirm, title="Konfirmasi
         <>
             <Dialog maxWidth={'xs'} open={open} onClose={()=>{onCancel()}}>
                 <DialogTitle>
-                    {title}
+                    <Typography variant={'h5'} fontWeight={'bold'}>{title}</Typography>
                 </DialogTitle>
                 <DialogContent>
                     <Typography>

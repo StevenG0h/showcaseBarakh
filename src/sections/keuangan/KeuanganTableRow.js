@@ -6,6 +6,8 @@ import { ConfirmDialog } from "../../components/dialog/ConfirmDialog";
 import { useState } from "react";
 import axios from "../../utils/axios";
 import { useRouter } from "next/router";
+import { fDate } from "../../helper/date";
+import { formatCurrency } from "../../helper/currency";
 
 export default function KeuanganTableRow({row, num, onShowImage, onDelete, onEdit, onDetail}){
     const router = useRouter();
@@ -53,10 +55,15 @@ export default function KeuanganTableRow({row, num, onShowImage, onDelete, onEdi
                     {clientName}
                 </TableCell>
                 <TableCell>
-                    {row.sales[0].transactionAddress}
+                    {fDate(row.created_at)}
                 </TableCell>
                 <TableCell>
-                    {total}
+                    {row.transactionType}
+                </TableCell>
+                <TableCell>
+                    Rp.{formatCurrency(total)}
+                </TableCell> 
+                <TableCell>
                 </TableCell> 
             </TableRow>
         </>

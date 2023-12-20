@@ -1,31 +1,29 @@
 import React, { useState } from "react";
 import style from './header.module.css';
 import Image from 'next/image';
-import ImageBrand from '../../../public/assets/images/White.svg';
+import ImageBrand from '../../../public/assets/images/Group 5.png';
 import Link from 'next/link';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-    faSearch,
-    faCartShopping,
-    faBars
+    faCartShopping
 } from "@fortawesome/free-solid-svg-icons";
-import { IconButton } from "@mui/material";
-import MenuIcon from '@mui/icons-material/Menu'; 
 import { useRouter } from "next/router";
 import HeaderMobile from "./HeaderMobile/HeaderMobile";
 import Badge from "@mui/material/Badge";
+import { getCookie } from "cookies-next";
+import Head from "next/head";
 
 const Header = () => {
-
+    let cart = getCookie('barakh-cart-cookie');
+    cart = cart == undefined || cart == "" ? [] : JSON.parse(cart);
     const [active, setActive] = useState(false);
     const router = useRouter();
-    console.log(router.pathname);
     const [searchActive, setSearchActive] = useState(false);
-
     const [activeLink, setActiveLink] = useState('');
      const handleLinkClick = (path) => {
                 setActiveLink(path);
     };
+    
 
     // const [anchorX, setAnchorX] = useState(false);
 
@@ -38,7 +36,11 @@ const Header = () => {
     // }
 
     return (
-        <div className={style.header}>
+        <>
+            <Head>
+            <link rel="icon" type="image/x-icon" href={'http://localhost:3000/assets/images/MESJIDBSA.png'}/>
+            </Head>
+            <div className={style.header}>
             <div className={style.container}>
                 {/* <IconButton onClick={handleDrawerOpen} onClose={handleDrawerClose}>
                     <MenuIcon sx={{color: 'white', fontSize: '1.3em'}}/>
@@ -66,9 +68,7 @@ const Header = () => {
                             <div className={style.dropdown}>
                                 <Link className={style.navitem} style={{color: router.pathname.includes('/profil') ? '#94B60F' : ''}} href="">Profil</Link>
                                 <div className={style.dropdownContent}>
-                                    <Link className={style.dropdownItem} href="/profil">Unit Usaha</Link>
-                                    <Link className={style.dropdownItem} href="/profil/yayasan">Yayasan</Link>
-                                    <Link className={style.dropdownItem} href="/profil/pesantren">Pesantren</Link>
+                                    <Link className={style.dropdownItem} href="/profil">Tentang</Link>
                                     <Link className={style.dropdownItem} href="/galeri">Galeri</Link>
                                 </div>
                             </div>
@@ -86,7 +86,7 @@ const Header = () => {
                     </ul>
                 </div>
                 <div className={style.srccart}>
-                    <Badge badgeContent={3} sx={{
+                    <Badge badgeContent={cart.length} sx={{
                         '& .MuiBadge-badge':{
                             backgroundColor: '#94B60F',
                             color: '#ffffff'
@@ -101,6 +101,8 @@ const Header = () => {
                 </div>  */}
             </div>
         </div>
+        </>
+        
     )
 }
 

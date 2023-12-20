@@ -16,4 +16,71 @@
     max-width: 100%;
     height: 100%;
   }
+
+  .container{
+    width: 100%;
+    padding: 5em 0;
+    display: flex ;
+    justify-content: center;
+    /* background-image: url('../../../public/assets/images/PropertiLight.png'),
+    url('../../../public/assets/images/PropertiLight.png');
+    background-size: 50%, 60% ; 
+    background-repeat: no-repeat, no-repeat;
+    background-position: top 1em right 77em, bottom 9em right -27em; */
+  }
+
+  .containerDetailUsaha{
+    display: flex;
+    width: 75%;
+    justify-content: center;
+    flex-direction: column;
+  }
   
+  .namaUsaha{
+    font-size: 2.2em ;
+  }
+
+  .profilUsaha{
+    font-size: 1.1em;
+  }
+  
+  .namaProduk{
+    font-size:1.8em;
+    margin: 0.7em 0;
+  }
+
+  .imageProduk{
+    width: 100%;
+    aspect-ratio: 16/6;
+    object-fit: cover;
+    border-radius: 1em;
+  }
+
+  @media screen and (max-width: 768px) {
+    .containerDetailUsaha{
+      width: 90%;
+    }
+  }
+
+  
+  @media screen and (max-width: 480px) {
+    .container{
+      padding: 2em 0;
+    }
+
+    .containerDetailUsaha{
+      width: 85%;
+    }
+
+    .namaUsaha{
+      font-size: 1.6em;
+    }
+
+    .namaProduk{
+      font-size: 1.3em;
+    }
+
+    .imageProduk{
+      border-radius: 0.5em;
+    }
+  }

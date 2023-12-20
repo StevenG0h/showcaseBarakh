@@ -1,5 +1,4 @@
-import { faCartShopping } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import { formatCurrency } from "../../../helper/currency";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -15,9 +14,9 @@ import { ConfirmDialog } from "../../dialog/ConfirmDialog";
 import RatingLabel from "../../Rating/rating_label";
 
 
-export default function KatalogCard({ row }) {
+export default function KatalogCard({ row, isCart=false, handleAddCart }) {
     const router = useRouter();
-    let { id, product_images, productName, productDesc, productPrice, unit_usaha } = row;
+    let { id, product_images, productName, productDisc, productPrice, unit_usaha } = row;
     const settings = {
         arrows: false,
         dots: true,
@@ -44,6 +43,11 @@ export default function KatalogCard({ row }) {
                 { productId: data.id, item: 1, productData: data }
             ]
             setCookie('barakh-cart-cookie', cart);
+        } else if(cookie === ""){
+            let cart = [
+                { productId: data.id, item: 1, productData: data }
+            ]
+            setCookie('barakh-cart-cookie', cart);
         } else {
             let cookieDatas = JSON.parse(cookie);
             let isInCart = false;
@@ -53,15 +57,35 @@ export default function KatalogCard({ row }) {
                 }
             })
             if (isInCart == false) {
-                cookieDatas.push({ productId: data.id, item: 1, productData: data });
-                setCookie('barakh-cart-cookie', cookieDatas);
+                let images = data.product_images.map(data=>{
+                    return {
+                        path: data.path
+                    }
+                })
+                cookieDatas.push({ productId: data.id, item: 1, productData: {
+                    id: data.id,
+                    productName: data.productName,
+                    productPrice: data.productPrice,
+                    productStock: data.productStock,
+                    productDisc: data.productDisc,
+                    product_images: [{path: images[0].path}],
+                    unit_usaha_id: data.unit_usaha_id
+                } });
+                try{
+                    setCookie('barakh-cart-cookie', cookieDatas);
+                }catch(e){
+                    console.log(e)
+                }
             }
-            console.log(cookieDatas);
         }
     }
 
     let [newTransactionStatus, setNewTransactionStatus] = useState(false);
     let handleChangeStatus = (data) => {
+        if(isCart){
+            addItem(data)
+            return router.reload();
+        }
         addItem(data)
         setNewTransactionStatus(true)
     }
@@ -75,27 +99,36 @@ export default function KatalogCard({ row }) {
             <ConfirmDialog onConfirm={() => { router.replace('/cart') }} onCancel={() => { handleCloseDialog() }} msg={msg} open={newTransactionStatus}></ConfirmDialog>
             <div className={style.imageCarousel}>
                 <div className="sliderKatalog">
-                    <Slider {...settings}
-                    >
-                        {
-                            product_images.map((image) => {
-                                return <img src={process.env.NEXT_PUBLIC_BACKEND_URL + '/storage/product/' + image.path} alt="Gambar" className={style.image} />
-                            })
-                        }
-                    </Slider>
+                    <img src={process.env.NEXT_PUBLIC_BACKEND_URL + '/storage/product/' + product_images[0]?.path} alt="Gambar" className={style.image} />
+                    
                 </div>
             </div>
             <div className={style.caption}>
                 <p className={style.kategoriProduct}>{unit_usaha.usahaName}</p>
                 <p className={style.titleCard}>{productName}</p>
-                <RatingLabel />
-                <p className={style.price}>Harga : <span className={style.nominal}>{formatCurrency(productPrice)}</span></p>
-                <p className={style.descriptionCard}>{
+                <RatingLabel value={row.rating} />
+                <p className={style.price}>Harga : 
+                        {
+                            productDisc != 0 && productDisc != null ? (
+                                <span style={{paddingRight:'1em'}} className={productDisc == 0 ? "" :style.nominal}>
+                                    {formatCurrency(productPrice - ((productDisc / 100) * productPrice)) }
+                                </span>
+                            ) : "" 
+                        }
+                    <span className={ productDisc != 0  && productDisc != null ? "" :style.nominal} style={{textDecoration: productDisc != 0 && productDisc != null ? 'line-through' : ''}}>
+                        Rp.{formatCurrency(productPrice)}
+                    </span>
+                        
+                        
+                </p>
+                {/* <p className={style.descriptionCard}>{
                     productDesc
-                }</p>
+                }</p> */}
                 <div className={style.directButton}>
-                    <button onClick={() => { productDetail(id) }} className={style.detil}>Selengkapnya</button>
-                    <button onClick={() => handleChangeStatus(row)} className={style.cart}><FontAwesomeIcon icon={faCartShopping} /></button>
+                    <button onClick={() => { productDetail(id) }} className={style.detil} >Selengkapnya</button>
+                    <button onClick={() => handleChangeStatus(row)} className={style.cart}>
+                        <ShoppingCartIcon fontSize='12px'></ShoppingCartIcon>
+                    </button>
                 </div>
             </div>
         </div>

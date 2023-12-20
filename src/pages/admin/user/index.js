@@ -5,14 +5,25 @@ import * as yup from "yup";
 import {yupResolver} from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 import AdminLayout from "../../../layouts/adminLayout/AdminLayout";
-import { Alert, Button, Card, Dialog, DialogContent, FormControl, MenuItem, Select, Table, TableBody, TableCell, TableContainer, TableRow, Typography } from "@mui/material";
+import { Alert, Box, Button, Card, Dialog, DialogContent, FormControl, InputLabel, MenuItem, Select, Table, TableBody, TableCell, TableContainer, TableRow, Typography } from "@mui/material";
 import RHFTextField from "../../../components/form/RHFTextField";
+import RHFSelect from "../../../components/form/RHFSelect";
+import RHFAutocomplete from "../../../components/form/RHFAutocomplete";
 import CustomTableHead from "../../../components/table/CustomTableHead";
 import UserTableRow from "../../../sections/user/UserTableRow";
 import {getCookie} from 'cookies-next';
 
+import  ChevronRight  from "@mui/icons-material/ChevronRight";
+import  ChevronLeft  from "@mui/icons-material/ChevronLeft";
+import { useEffect } from "react";
+import { getAllRole, getAllUnitUsaha } from "../../../helper/dataOptions";
+import { ConfirmDialog } from "../../../components/dialog/ConfirmDialog";
+import { checkPrivilege } from "../../../helper/admin";
+import RHFPassword from "../../../components/form/RHFPassword";
+
 export async function getServerSideProps({req,res}){
     let token = getCookie('token',{req,res});
+    let admin = '';
     if(token == undefined){
         return {
             redirect: {
@@ -22,20 +33,20 @@ export async function getServerSideProps({req,res}){
             props:{},
           };
     }
-    await axios.get('/user',{
-        headers:{
-            Authorization: 'Bearer '+token,
-        },
-        withCredentials:true
+
+    await checkPrivilege(token).then((r)=>{
+        admin = r;
     }).catch((e)=>{
+        console.log(e)
         return {
             redirect: {
-              permanent: false,
-              destination: "/auth",
+                permanent: false,
+                destination: "/auth",
             },
             props:{},
-          };
-    })
+        };
+    });
+    
     try{
         let user = await axios.get('/api/admin/admin',{
             headers:{
@@ -43,9 +54,17 @@ export async function getServerSideProps({req,res}){
             },
             withCredentials:true
         });
+        let role = await getAllRole();
+        let unitusaha = await getAllUnitUsaha();
         return {
             props:{
+                isSuper: admin.adminLevel == '1' ? true : false,
+                admin: admin,
                 user: user.data,
+                options:{
+                    unitUsaha: unitusaha,
+                    role:role
+                }
             }
         }
     }catch(e){
@@ -60,12 +79,17 @@ export async function getServerSideProps({req,res}){
     }
 }
 
-export default function product({user}){
+export default function user({user,options, isSuper, admin}){
+    let [loading, setLoading] = useState(false)
     let token = getCookie('token');
-    let title = 'User';
-    let [products, setProducts] = useState(user);
-    let [formTitle, setFormTitle] = useState('');
+    let title = 'Pegawai';
+    let [Data, setData] = useState(user.data);
+    let [DataLink, setDataLink] = useState(user.links);
     let [error, setError] = useState('');
+    let [adminData, setAdminData] = useState('');
+    let [activateAdmin, setActivateAdmin] = useState('');
+    let [destroyAdmin, setDestroyAdmin] = useState('');
+    let [filterActive, setActive] = useState(true);
     //Next router
     const router = useRouter();
 
@@ -76,33 +100,46 @@ export default function product({user}){
         adminNum: yup.string().required('Nomor WhatsApp tidak boleh kosong'),
         email: yup.string().email().required('Email tidak boleh kosong'),
         password: yup.string(),
+        unit_usaha_id: yup.string(),
+        role_id: yup.string(),
         password_confirmation : yup.string().oneOf([yup.ref('password')], 'Password Anda tidak cocok')
     })
 
-    const { control, handleSubmit, setValue, reset, register , formState:{errors}} = useForm({
+    const { control, handleSubmit, setValue, getValues, reset, register , formState:{errors}} = useForm({
         defaultValues: {
-          id:'',
-          productStock:0,
-          productPrice:0,
+            id: '',
+            adminName: '',
+            adminNum: '',
+            email: '',
+            password: '',
+            unit_usaha_id: '',
+            role_id: '',
+            password_confirmation : ''
         },
         resolver: yupResolver(schema)
       })
     
       const onSubmit = async (data) => {
-        
+        let finalData = data;
+        if(finalData.password == ''){
+            delete finalData.password;
+        }
+        setLoading(true)
         if(editMode == false){
+            console.log(finalData)
             await axios.get('/sanctum/csrf-cookie',{
                 headers: { Authorization: `Bearer `+token},
                 withCredentials: true
             }).then(async (r)=>{
-                await axios.post('/api/admin/register',data,{
+                await axios.post('/api/admin/register',finalData,{
                     headers: { Authorization: `Bearer `+token,
                     'Content-Type': 'multipart/form-data'
                     },
                     withCredentials: true
                 }).then((r)=>{
                     console.log(r.data)
-                    router.reload();
+                    router.replace(router.asPath)
+                    handleCloseAddForm()
                 }).catch((e)=>{
                     console.log(e);
                     setError(e.response.data.message)
@@ -111,17 +148,19 @@ export default function product({user}){
                 console.log(e)
             })
         }else{
+            console.log(finalData)
             await axios.get('/sanctum/csrf-cookie',{
                 headers: { Authorization: `Bearer `+token},
                 withCredentials: true
             }).then(async (r)=>{
-                await axios.put('/api/admin/admin/'+data.id,data,{
+                await axios.put('/api/admin/admin/'+data.id,finalData,{
                     headers: { Authorization: `Bearer `+token
                     },
                     withCredentials: true
                 }).then((r)=>{
                     console.log(r.data)
-                    router.reload();
+                    router.replace(router.asPath)
+                    handleCloseAddForm()
                 }).catch((e)=>{
                     console.log(e);
                     setError(e.response.data.message)
@@ -130,6 +169,8 @@ export default function product({user}){
                 console.log(e)
             })
         }
+        setLoading(false)
+        
       }
       
       //states
@@ -145,6 +186,7 @@ export default function product({user}){
     let handleCloseAddForm = ()=>{
         setEditMode(false);
         setAddForm(false);
+        setError('');
         setValue('id','');
         setValue('adminName','');
         setValue('adminNum','');
@@ -157,7 +199,8 @@ export default function product({user}){
         setValue('adminName',data.admins.adminName);
         setValue('adminNum',data.admins.adminNum);
         setValue('email',data.email);
-        setFormTitle(data.productName);
+        setValue('unit_usaha_id',data.admins.unit_usaha_id)
+        setValue('role_id',data.admins.role_id)
         setAddForm(true)
     }
 
@@ -172,33 +215,104 @@ export default function product({user}){
                 withCredentials: true
             }).then((r)=>{
                 console.log(r.data)
-                router.reload()
+                router.replace(router.asPath)
             }).catch((e)=>{
                 console.log(e);
             })
         }).catch((e)=>{
             console.log(e)
         })
+        setAdminData('')
+        setActivateAdmin('')
     }
+
+    let handleDestroy = async (data)=>{
+        await axios.get('/sanctum/csrf-cookie',{
+            headers: { Authorization: `Bearer `+token},
+            withCredentials: true
+        }).then(async (r)=>{
+            await axios.delete('/api/admin/admin/destroy/'+data,{
+                headers: { Authorization: `Bearer `+token
+                },
+                withCredentials: true
+            }).then((r)=>{
+                console.log(r.data)
+                router.replace(router.asPath)
+            }).catch((e)=>{
+                console.log(e);
+            })
+        }).catch((e)=>{
+            console.log(e)
+        })
+        setDestroyAdmin('')
+    }
+
+    let handleChangePage = async (link)=>{
+        if(link != null){
+            let unitUsaha = await axios.get(link,{
+                headers:{
+                    Authorization: 'Bearer '+token,
+                },
+                withCredentials:true
+            });
+            setData(unitUsaha?.data?.data?.data)
+            setDataLink(unitUsaha?.data?.data?.links)
+        }
+    }
+
+    let handleChangeFilter = async (data)=>{
+        if(data == true){
+            let unitUsaha = await axios.get('/api/admin/admin', {
+                headers:{
+                    Authorization: 'Bearer '+token
+                },
+                withCredentials:true
+            });
+            setData(unitUsaha?.data?.data)
+            setDataLink(unitUsaha?.data.links)
+            setActive(true)
+        }else{
+            let unitUsaha = await axios.get('/api/admin/admin/deleted', {
+                headers:{
+                    Authorization: 'Bearer '+token
+                },
+                withCredentials:true
+            });
+            setData(unitUsaha?.data.data)
+            setDataLink(unitUsaha?.data.links)
+            setActive(false)
+        }   
+    }
+
     //utils
 
     let TABLEHEAD = [
         {value: 'No',align: 'left'},
         {value: 'Nama',align: 'left'},
-        {value: 'Email',align: 'left'},
-        {value: 'Nomor Whatsapp',align: 'left'},
-        {value: 'Level',align: 'left'},
+        {value: 'Whatsapp',align: 'left'},
+        {value: 'Departemen',align: 'left'},
+        {value: 'Jabatan',align: 'left'},
+        {value: 'Tanggal Bergabung',align: 'left'},
         {value: 'Action',align: 'center'}
     ]
     
+
     let num = 0;
+
+    useEffect(() => {
+        setData(user.data)
+        setDataLink(user.links)
+      }, [user]);
 
     return (
         <>
-            <AdminLayout>
+            <ConfirmDialog onConfirm={()=>handleDelete(adminData.id)} onCancel={()=>{setAdminData('')}} open={adminData != ''} msg={'Anda yakin ingin menonaktifkan '+adminData?.admins?.adminName+' ?'}></ConfirmDialog>
+            <ConfirmDialog onConfirm={()=>handleDelete(activateAdmin.id)} onCancel={()=>{setActivateAdmin('')}} open={activateAdmin != ''} msg={'Anda yakin ingin mengaktifkan '+activateAdmin?.admins?.adminName+' ?'}></ConfirmDialog>
+            <ConfirmDialog onConfirm={()=>handleDestroy(destroyAdmin.id)} onCancel={()=>{setDestroyAdmin('')}} open={destroyAdmin != ''} msg={'Anda yakin ingin menghapus '+destroyAdmin?.admins?.adminName+' ?'}></ConfirmDialog>
+            <AdminLayout isSuper={isSuper} admin={admin} handleLoading={loading}>
                 <Dialog open={AddForm} onClose={handleCloseAddForm} fullWidth maxWidth='xs'>
                     <DialogContent>
-                        <Typography variant="h5" sx={{marginBottom:'1em'}} fontWeight={600}>Edit Admin</Typography>
+                        <Typography variant="h5" sx={{marginBottom:'1em'}} fontWeight={600}>{editMode == true ? 'Edit' : 'Tambah'} Pegawai</Typography>
                         <form onSubmit={handleSubmit(onSubmit)}>
                             {
                                 error != '' ?
@@ -216,35 +330,58 @@ export default function product({user}){
                             <FormControl sx={{width:'100%', marginY:'0.5em'}}>
                                 <RHFTextField hiddenLabel={false} label={'Email'} name={"email"} control={control}></RHFTextField>
                             </FormControl>
+
                             <FormControl sx={{width:'100%', marginY:'0.5em'}}>
-                                <RHFTextField type={'password'} hiddenLabel={false} label={'Password'} name={"password"} control={control}></RHFTextField>
+                                <Typography>Departemen</Typography>
+                                <RHFSelect name={'unit_usaha_id'} control={control} option={options.unitUsaha} />
+                            </FormControl>
+
+                            <FormControl sx={{width:'100%', marginY:'0.5em'}}>
+                                <Typography>Jabatan</Typography>
+                                <RHFSelect name={'role_id'} control={control} option={options.role} />
+                            </FormControl>
+
+                            <FormControl sx={{width:'100%', marginY:'0.5em'}}>
+                                <RHFPassword type={'password'} hiddenLabel={false} label={'Password'} name={"password"} control={control}></RHFPassword>
                             </FormControl>
                             <FormControl sx={{width:'100%', marginY:'0.5em'}}>
-                                <RHFTextField type={'password'} hiddenLabel={false} label={'Ketik Ulang Password'} name={"password_confirmation"} control={control}></RHFTextField>
+                                <RHFPassword type={'password'} hiddenLabel={false} label={'Ketik Ulang Password'} name={"password_confirmation"} control={control}></RHFPassword>
                             </FormControl>
-                            <Button variant="contained" color="success" sx={{width:'100%'}} type="submit">{editMode ? 'Simpan Perubahan' : 'Tambah Unit Usaha'}</Button>
+                            <Button variant="contained" color="success" sx={{width:'100%'}} type="submit">{editMode ? 'Simpan Perubahan' : 'Tambah Pegawai'}</Button>
                         </form>
                     </DialogContent>
                 </Dialog>
-                <Typography variant="h3" fontWeight={400}>{title}</Typography>
-                <Button onClick={()=>{handleOpenAddForm()}}>Tambah Admin</Button>
+                <Typography variant="h3" color={'#94B60F'} sx={{textDecoration:'underline'}} fontWeight={400}>{title}</Typography>
+                
+                <Box sx={{display:'flex', gap:'1em', marginY:'1em', flexDirection:'row',flexWrap:'wrap'}}>
+                    <Button color="success" variant={filterActive == true ? 'contained' :'outlined'} sx={{borderRadius:'5em'}} onClick={()=>{handleChangeFilter(true)}}>Aktif</Button>
+                    <Button color="success" variant={filterActive == false ? 'contained' :'outlined'} sx={{borderRadius:'5em'}} onClick={()=>{handleChangeFilter(false)}}>Non-aktif</Button>
+                </Box>
+		{
+			isSuper == true ? (
+				<Button sx={{marginTop:'1em'}} variant="contained" color="success" onClick={()=>handleOpenAddForm()}>Tambah Pegawai</Button>
+			) : ""
+		}
+                
                 <Card sx={{marginY:'1em'}}>
                     <TableContainer>
                         <Table>
                             <CustomTableHead tableHead={TABLEHEAD}></CustomTableHead>
                             <TableBody>
                                 {
-                                    products === [] || products==='' || products === undefined ? (
+                                    Data.length == 0 ? (
                                         <TableRow>
                                             <TableCell>Data kosong</TableCell>
                                         </TableRow>
                                     ) :
-                                    products?.map((map)=>{
+                                    Data?.map((map)=>{
                                         return ( <>
                                             <UserTableRow 
                                             key={num} 
                                             onEdit={() => handleOpenEditForm(map)} 
-                                            onDelete={()=>{handleDelete(map.id)}}
+                                            onDelete={()=>{setAdminData(map)}}
+                                            onActive={()=>{setActivateAdmin(map)}}
+                                            onDestroy={()=>{setDestroyAdmin(map)}}
                                             num={++num} row={map}>
 
                                             </UserTableRow>
@@ -255,6 +392,17 @@ export default function product({user}){
                             </TableBody>
                         </Table>
                     </TableContainer>
+                    <Box sx={{display:'flex', flexDirection:'row', justifyContent:'center'}}>
+                    {
+                        DataLink.map((link)=>{
+                            return (
+                                <Button fullWidth size="sm" sx={{margin:'0.5em',paddingY:'1em', paddingX:'0', width:0, height:0}} key={link.label} variant={link.active ? 'contained' : 'outlined'} color={'success'} onClick={()=> handleChangePage(link.url)}>{
+                                    link.label == '&laquo; Previous'? <ChevronLeft ></ChevronLeft> : link.label == 'Next &raquo;' ? <ChevronRight></ChevronRight> : link.label
+                                }</Button>
+                            )
+                        })
+                    }
+                    </Box>
                 </Card>
             </AdminLayout>
         </>

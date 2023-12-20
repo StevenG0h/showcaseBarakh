@@ -4,30 +4,15 @@
 
 .CardArea{
     position: relative;
-    overflow: hidden;
-    width: 26em;
-    height: 16em;
+    height: fit-content;
     border-radius: 0.4em;
 }
 
 .image{
+    aspect-ratio: 4/3;
     position: relative;
-    overflow: hidden;
     width: 100%;
     object-fit: cover;
+    object-position: center;
     /* object-fit: cover; */
-}
-
-@media screen and (max-width: 768px) {
-    .CardArea{
-        width: 23em;
-        height:13em ;
-    }
-}
-
-@media screen and (max-width: 480px) {
-    .CardArea{
-        width: 24em;
-        height:14em ;
-    }
 }

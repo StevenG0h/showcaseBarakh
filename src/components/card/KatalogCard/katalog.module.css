@@ -3,10 +3,11 @@
     width: 100%;
     background: #FFFFFF;
     box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.05);
-    border-radius: 28px;
+    border-radius: 1.25em;
     display: flex;
     height: 100%;
     flex-direction: column; 
+    overflow: hidden;
 }
 .imageCarousel{
     height: auto;
@@ -16,16 +17,15 @@
     object-fit: cover;
     width: 100%;
     aspect-ratio: 3/2;
-    border-radius: 28px 28px 0px 0px ;
 } 
 
 .caption{
-    padding: 18px 25px 30px 25px;
+    padding: 6px 25px 30px 25px;
     display: flex;
     height: 100%;
     flex-direction: column;
     justify-content: space-between;
-    gap: 12px;
+    gap: 0.6em;
     height: auto;
 }
 
@@ -79,6 +79,7 @@
     text-decoration: none;
     font-size: 0.7em;
     border-radius: 0.5em;
+    border-color: #fff;
     padding: 0.4em;
     cursor: pointer;
 }
@@ -90,7 +91,7 @@
     border-radius: 0.5em;
     cursor: pointer;
     outline: none;
-    border-color: white !important;
+    border-color: #fff;
 }
 
 
@@ -102,6 +103,7 @@
     
     .caption{
         padding: 0.8em;
+        padding-top: 0;
         gap: 0.4em;
     }
 
@@ -122,19 +124,15 @@
 }
 
 @media screen and (max-width: 480px){
-    .containerBase{
-        width: 90%;
+    .card{
+        border-radius: 0.5em;
     }
 
-    .textBanner{
-        font-size: 20px
+    .titleCard{
+        font-size: 0.8em;
     }
 
-    .ul{
-        gap: 16px;
-    }
-
-    .a{
-        font-size: 15px;
+    .descriptionCard {
+        line-height: 1.6em;
     }
 }
