@@ -15,13 +15,13 @@ const ProductCategory = ({unitUsaha}) => {
                 {
                     unitUsaha.map((data)=>{
                         return (
-                <Link href="usaha" className={style.link}>
-                    <div className={style.katalogWrapper}>
-                        <img className={style.imageKatalog} src={process.env.NEXT_PUBLIC_BACKEND_URL+"/storage/unitUsaha/"+data.usahaImage} alt='Gambar' />
-                        <p className={style.titleKatalog}>{data.usahaName}</p>
-                        <p className={style.descriptionKatalog}>{data.usahaDesc}</p>
-                    </div>
-                </Link>
+                        <Link href={"usaha/"+data.id} className={style.link}>
+                            <div className={style.katalogWrapper}>
+                                <img className={style.imageKatalog} src={process.env.NEXT_PUBLIC_BACKEND_URL+"/storage/unitUsaha/"+data.usahaImage} alt='Gambar' />
+                                <p className={style.titleKatalog}>{data.usahaName}</p>
+                                <p className={style.descriptionKatalog}>{data.usahaDesc}</p>
+                            </div>
+                        </Link>
                     )    
                     })
                 }

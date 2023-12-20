@@ -15,9 +15,14 @@ const poppins = Poppins({
   // display: 'swap'
 })
 
-export async function getServerSideProps({req,res}) {
+export async function getServerSideProps({query}) {
   let unitUsaha = await axios.get('/api/unit-usaha');
-  let profil = await axios.get('/api/profil/' + unitUsaha.data.data.data[0].id);
+  let profil = "";
+  if(query.usahaId == undefined || query.usahaId == null){
+    profil = await axios.get('/api/profil/' + unitUsaha.data.data.data[0].id);
+  }
+  profil = await axios.get('/api/profil/' + query.usahaId);
+  console.log("profil",profil)
   return {
     props: {
       data: {

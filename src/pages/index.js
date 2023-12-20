@@ -27,7 +27,6 @@ export async function getServerSideProps(){
   let testimoni = await axios.get('/api/testimoni');
   let produk = await axios.get('/api/produk/home');
   let counter = await axios.get('/api/visitor/counter')
-  console.log(counter)
   if(process.env.IS_DEVELOPMENT == 'true'){
     return {
       redirect: {

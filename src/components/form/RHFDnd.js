@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { FileUploader } from "react-drag-drop-files";
 import { Controller } from "react-hook-form";
 
-const fileTypes = ["JPG", "PNG", "GIF"];
+const fileTypes = ["JPG", "PNG", "GIF","JPEG"];
 
 function RHFDnd({name,control, files='', onDelete, preventDelete = false, required = false}) {
   const [file, setFile] = useState(files);

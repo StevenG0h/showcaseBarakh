@@ -77,11 +77,11 @@ export default function NavVertical({isSuper, admin, open, handleOpenMobile}){
                             Dashboard
                         </ListItemText>
                     </ListItemButton>
-                    <ListItemButton onClick={()=>{handleChangePage('/admin/stok')}} sx={{paddingRight:"5em",paddingLeft:'0'}}>
+                    <ListItemButton onClick={()=>{handleChangePage('/admin/produk')}} sx={{paddingRight:"5em",paddingLeft:'0'}}>
                         <ListItemIcon>
-                            <Inventory style={{color: router.pathname === '/admin/stok' ? '#94B60F' : ''}} sx={{m:'auto',color:'white'}}></Inventory>
+                            <Inventory style={{color: router.pathname === '/admin/produk' ? '#94B60F' : ''}} sx={{m:'auto',color:'white'}}></Inventory>
                         </ListItemIcon>
-                        <ListItemText style={{color: router.pathname === '/admin/stok' ? '#94B60F' : ''}}>
+                        <ListItemText style={{color: router.pathname === '/admin/produk' ? '#94B60F' : ''}}>
                             Produk
                         </ListItemText>
                     </ListItemButton>
@@ -119,16 +119,16 @@ export default function NavVertical({isSuper, admin, open, handleOpenMobile}){
                     </ListItemButton>
                     
                    
-                    {
-                        isSuper == true ? (<ListItemButton onClick={()=>{handleChangePage('/admin/user')}} sx={{paddingRight:"5em",paddingLeft:'0'}}>
+                    
+                        <ListItemButton onClick={()=>{handleChangePage('/admin/user')}} sx={{paddingRight:"5em",paddingLeft:'0'}}>
                         <ListItemIcon>
                             <People style={{color: router.pathname.includes('/admin/user') == true ? '#94B60F' : ''}} sx={{m:'auto',color:'white'}}></People>
                                 </ListItemIcon>
                                 <ListItemText style={{color: router.pathname.includes('/admin/user') == true ? '#94B60F' : ''}}>
                                     Pegawai
                                 </ListItemText>
-                        </ListItemButton>) :''
-                    }
+                        </ListItemButton>
+                    
                     
                     {
                         isSuper == true ? (
@@ -240,7 +240,7 @@ export default function NavVertical({isSuper, admin, open, handleOpenMobile}){
                             Dashboard
                         </ListItemText>
                     </ListItemButton>
-                    <ListItemButton onClick={()=>{handleChangePage('/admin/stok')}} sx={{paddingRight:"5em",paddingLeft:'0'}}>
+                    <ListItemButton onClick={()=>{handleChangePage('/admin/produk')}} sx={{paddingRight:"5em",paddingLeft:'0'}}>
                         <ListItemIcon>
                             <Inventory sx={{m:'auto',color:'white'}}></Inventory>
                         </ListItemIcon>

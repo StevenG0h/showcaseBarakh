@@ -90,8 +90,23 @@ const detailProduct = ({data}) => {
                             <div className={style.fieldDetailProduct}>
                                 <p className={style.titleProduct}>{data.productName}</p>
                                  <RatingLabel value={data.rating} />
-                                <p className={style.stockProduct}>Stock: <span className={style.stockAmount}>{data.productStock} Pcs</span></p>
-                                <p className={style.priceProduct}>Harga: <span className={style.priceAmount}>{formatCurrency(Number(data.productPrice))}</span></p>
+                                <p className={style.stockProduct}>Stock: <span className={style.stockAmount}>{data.productStock} {data?.satuan == undefined ? 'Pcs' : data.satuan}</span></p>
+                                <p className={style.priceProduct}>Harga: 
+                                    {
+                                        data.productDisc != 0 && data.productDisc != null ? (
+                                        <>
+                                    
+                                            <span style={{paddingRight:'1em'}} className={data.productDisc == 0 ? "" :style.nominal}>
+                                                Rp.{formatCurrency(data.productPrice - ((data.productDisc / 100) * data.productPrice)) }
+                                            </span>
+                                            <span style={{textDecoration:'line-through'}}>Rp.{formatCurrency(Number(data.productPrice))}</span>
+                                        </>
+                                        ) : (
+                                            <span className={style.priceAmount}>Rp.{formatCurrency(Number(data.productPrice))}</span>
+                                        )
+                                    }
+                                    
+                                    </p>
                                 <p className={style.unitUsaha}>Unit Usaha: <span className={style.nameUnitUsaha}>{data.unit_usaha.usahaName}</span></p>
                                 {/* <p className={style.weightProduct}>Berat : <span className={style.weightAmount}>0.1 Kg</span></p> */}
                                 <p className={style.descriptionProduct}>Deskripsi : <span className={style.description}><br />{data.productDesc}</span></p>

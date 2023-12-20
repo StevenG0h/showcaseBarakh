@@ -15,7 +15,7 @@ import Head from "next/head";
 
 const Header = () => {
     let cart = getCookie('barakh-cart-cookie');
-    cart = cart == undefined ? [] : JSON.parse(cart);
+    cart = cart == undefined || cart == "" ? [] : JSON.parse(cart);
     const [active, setActive] = useState(false);
     const router = useRouter();
     const [searchActive, setSearchActive] = useState(false);

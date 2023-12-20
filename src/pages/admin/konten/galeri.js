@@ -34,7 +34,6 @@ export async function getServerSideProps({req,res}){
     let admin = '';
 await checkPrivilege(token).then((r)=>{
         admin = r;
-        console.log('admin',admin)
     }).catch((e)=>{
         console.log(e)
         return {
@@ -52,7 +51,6 @@ await checkPrivilege(token).then((r)=>{
             },
             withCredentials:true
         });
-        console.log(galeri);
         return {
             props:{
                 isSuper: admin.adminLevel == '1' ? true : false,
@@ -102,19 +100,16 @@ export default function galeri({isSuper,admin,data}){
     
       const onSubmit = async (data) => {
         setLoading(true)
-        console.log(data)
         if(editMode == false){
             await axios.get('/sanctum/csrf-cookie',{
                 headers: { Authorization: `Bearer `+token},
                 withCredentials: true
             }).then(async (r)=>{
-                console.log(data)
                 await axios.post('/api/admin/galeri',data,{
                     headers: { Authorization: `Bearer `+token, "Content-Type":'multipart/form-data'},
                     withCredentials: true,
                 }).then((r)=>{
                     handleCloseAddForm();
-                    console.log(r.data)
                 }).catch((e)=>{
                     console.log(e);
                 })
@@ -130,8 +125,7 @@ export default function galeri({isSuper,admin,data}){
                     headers: { Authorization: `Bearer `+token, "Content-Type":'multipart/form-data'},
                     withCredentials: true,
                 }).then((r)=>{
-                handleCloseAddForm();
-                    console.log(r.data)
+                handleCloseAddForm(); 
                 }).catch((e)=>{
                     console.log(e);
                 })

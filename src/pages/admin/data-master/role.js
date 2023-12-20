@@ -100,7 +100,6 @@ export default function product({isSuper,admin,unitUsaha,product}){
       const onSubmit = async (data) => {
         setLoading(true)
         if(editMode == false){
-            console.log(data)
             await axios.get('/sanctum/csrf-cookie',{
                 headers: { Authorization: `Bearer `+token},
                 withCredentials: true
@@ -111,7 +110,6 @@ export default function product({isSuper,admin,unitUsaha,product}){
                     },  
                     withCredentials: true
                 }).then((r)=>{
-                    console.log(r.data)
                 }).catch((e)=>{
                     console.log(e);
                 })
@@ -129,7 +127,6 @@ export default function product({isSuper,admin,unitUsaha,product}){
                 },
                     withCredentials: true
                 }).then((r)=>{
-                    console.log(r.data)
                 }).catch((e)=>{
                     console.log(e);
                 })
@@ -192,7 +189,6 @@ export default function product({isSuper,admin,unitUsaha,product}){
                     },
                     withCredentials:true
                 });
-                console.log(unitUsaha.data)
                 setProducts(unitUsaha?.data.product.data)
                 setProductsLink(unitUsaha?.data.product.links)
             }catch(e){

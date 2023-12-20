@@ -62,15 +62,51 @@ function formatDashboardData(dashboard){
 
     const labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July','August','September','October','November','December'];
     let totalProdukTerjual = 0;
-    dashboard.data.penjualan.map((data)=>{
+    let dataPenjualan = dashboard.data.penjualan;
+    let dataPengeluaran = dashboard.data.pengeluaran;
+    let transaksi=(dataPenjualan?.map(
+        data => {
+            let checkPengeluaran =  dataPengeluaran.filter(pengeluaran => {
+
+                     if (pengeluaran.year === data.year){
+                        if (pengeluaran.month === data.month){
+                            return true
+                        }
+                    }
+                    return false;
+                
+            });
+            return Object.assign({}, data, {
+                pengeluaran:checkPengeluaran[0] == undefined ? 0 : checkPengeluaran[0].pengeluaran,
+                month: checkPengeluaran[0] == undefined ? data.month : checkPengeluaran[0].month ,
+                year: checkPengeluaran[0] == undefined ? data.year : checkPengeluaran[0].year
+            })
+        }
+    ))
+    dataPengeluaran?.map(pengeluaranData=>{
+        let filtered = transaksi.filter(transaksiData=>{
+            if( transaksiData.month == pengeluaranData.month){
+                return true;
+            }
+            return false;
+        })
+        if(filtered.length == 0){
+            pengeluaranData.total = 0;
+            pengeluaranData.countPenjualan = 0;
+            pengeluaranData.pengeluaran = pengeluaranData?.pengeluaran;
+            transaksi.push(pengeluaranData)
+        }
+    })
+    transaksi = transaksi.sort(function(a,b){
+        return parseInt(a.year.toString()+a.month.toString()) - parseInt(b.year.toString()+b.month.toString())
+    })
+    transaksi?.map(data=>{
         penjualan.labels.push(labels[data.month-1])
         penjualan.datasets[0].data.push(data.total)
+        penjualan.datasets[1].data.push(data.pengeluaran)
+        total.datasets[0].data.push(data.countPenjualan)
         total.labels.push(labels[data.month-1])
-        total.datasets[0].data.push(data.total)
-        totalProdukTerjual += data.countPenjualan;
-    })
-    dashboard.data.pengeluaran.map((data)=>{
-        penjualan.datasets[1].data.push(data.total)
+        totalProdukTerjual += parseInt(data.countPenjualan);
     })
     dashboard.data.produkTerlaris.map((data,index)=>{
         produkTerlaris.datasets[0].data.push(data.total);
@@ -290,7 +326,6 @@ export default function Dashboard({isSuper,admin,data, options}){
     let [kecamatan, setkecamatan] = useState([])
     let [kelurahan, setKelurahan] = useState([])
     let handleChange = async ()=>{
-        console.log(filterData);
         let dashboard = await axios.post('/api/admin/dashboard',filterData,{
         headers:{
             Authorization: 'Bearer '+token,
@@ -300,7 +335,6 @@ export default function Dashboard({isSuper,admin,data, options}){
         setData(formatDashboardData(dashboard))
     }
     let handleDownload = async ()=>{
-        console.log(filterData);
         let dashboard = await axios.post('/api/admin/dashboard/download',filterData,{
         headers:{
             Authorization: 'Bearer '+token,
@@ -308,7 +342,6 @@ export default function Dashboard({isSuper,admin,data, options}){
         withCredentials:true,
         responseType: 'blob'
     }).then((r)=>{
-        console.log(r)
         fileDownload(r.data, 'dashboard.xlsx');
     })
     }
@@ -414,7 +447,6 @@ export default function Dashboard({isSuper,admin,data, options}){
                         onChange={async(e, unitUsahaData) => {
                             let filter = filterData;
                             filter.kota = unitUsahaData.id
-                            console.log(unitUsahaData)
                             setFilter(filter);
                             setkecamatan(await getAllKecamatanById(unitUsahaData.id))
                             return unitUsahaData
@@ -434,7 +466,6 @@ export default function Dashboard({isSuper,admin,data, options}){
                         onChange={async(e, unitUsahaData) => {
                             let filter = filterData;
                             filter.kecamatan = unitUsahaData.id
-                            console.log(unitUsahaData)
                             setFilter(filter);
                             setKelurahan(await getAllKelurahanById(unitUsahaData.id))
                             return unitUsahaData
@@ -454,7 +485,6 @@ export default function Dashboard({isSuper,admin,data, options}){
                         onChange={(e, unitUsahaData) => {
                             let filter = filterData;
                             filter.kelurahan = unitUsahaData.id
-                            console.log(unitUsahaData)
                             setFilter(filter);
                             return unitUsahaData
                         }}
@@ -470,7 +500,7 @@ export default function Dashboard({isSuper,admin,data, options}){
                                 <Typography variant="h3" color={'#94B60F'} sx={{textDecoration:'underline'}} fontWeight={400}>
                                     Dashboard
                                 </Typography>
-                                <Box sx={{display:'flex',marginBottom:'1em',width:'100%', height:'100%', gap:'1em', flexDirection:'row', justifyContent:'end'}}>
+                                <Box sx={{display:'flex',marginBottom:'1em',width:'100%', height:'100%', gap:'1em', flexDirection:'row', justifyContent:'flex-end'}}>
                                     <Button variant="contained" color="success" sx={{height:'0',marginY:'auto'}} onClick={()=>{handleDownload()}} startIcon={<ArrowDownward></ArrowDownward>}>
                                         Export Ke Excel
                                     </Button>

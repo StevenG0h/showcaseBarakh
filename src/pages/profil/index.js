@@ -41,24 +41,24 @@ const Profile = ({adminNum, unitUsaha}) => {
                             <p className={style.sekilas} >Sekilas Tentang</p>
                             <div className={style.wrapDescSekilas} >
                                 <p className={style.descriptions}>
-Bank Sampah Agrowisata (BSA) Ibnu Al Mubarok berdiri sejak tahun 2021 
-sebagai salah satu program Yayasan yaitu Enterpreneur dan Lifeskill. 
-Kemudian pada tahun yang sama di bulan Desember 2021 menjadi binaan 
-PT Pertamina Hulu Rokan (PT PHR) yang berkolaborasi dengan Bank Sampah Unilak. 
-Dalam pengelolaannya Bank Sampah Agrowisata Ibnu Al Mubarok melibatkan masyarakat 
-sekitar dan juga yayasan Ibnu disabilitas. <br></br>
-<br></br>
+                                    Bank Sampah Agrowisata (BSA) Ibnu Al Mubarok berdiri sejak tahun 2021 
+                                    sebagai salah satu program Yayasan yaitu Enterpreneur dan Lifeskill. 
+                                    Kemudian pada tahun yang sama di bulan Desember 2021 menjadi binaan 
+                                    PT Pertamina Hulu Rokan (PT PHR) yang berkolaborasi dengan Bank Sampah Unilak. 
+                                    Dalam pengelolaannya Bank Sampah Agrowisata Ibnu Al Mubarok melibatkan masyarakat 
+                                    sekitar dan juga yayasan Ibnu disabilitas. <br></br>
+                                    <br></br>
 
-Dalam perkembangannya Bank Sampah Agrowisata Ibnu Al Mubarok berkembang pesat dan memiliki beberapa unit usaha yang menghasilkan produk ramah lingkungan untuk mendukung kelestarian lingkungan.
-<br></br>
-<br></br>
-Unit Usaha yang dikelola oleh Bank Sampah Agrowisata Ibnu Al-Mubarok antara lain membuka  Diklat Kewirausahaan , budidaya maggot, ternak ayam kampung ,pupuk kompos, kasgot, pupuk cair Lindi , lele bioflok . Selain itu unit usaha yang terbaru pengembangan dari unit usaha BSA adalah  Produksi Briket Arang, Produksi Sabun Ramah Lingkungan di bawah Binaan PT PHR dan Politeknik Caltex Riau.  Fashion & Craft menjadi salah satu produk UMKM yang saat ini mulai berkembang. Produk unit usaha BSA diberi merek "Barakh" yang artinya Anugerah.
-<br></br>
-<br></br>
+                                    Dalam perkembangannya Bank Sampah Agrowisata Ibnu Al Mubarok berkembang pesat dan memiliki beberapa unit usaha yang menghasilkan produk ramah lingkungan untuk mendukung kelestarian lingkungan.
+                                    <br></br>
+                                    <br></br>
+                                    Unit Usaha yang dikelola oleh Bank Sampah Agrowisata Ibnu Al-Mubarok antara lain membuka  Diklat Kewirausahaan , budidaya maggot, ternak ayam kampung ,pupuk kompos, kasgot, pupuk cair Lindi , lele bioflok . Selain itu unit usaha yang terbaru pengembangan dari unit usaha BSA adalah  Produksi Briket Arang, Produksi Sabun Ramah Lingkungan di bawah Binaan PT PHR dan Politeknik Caltex Riau.  Fashion & Craft menjadi salah satu produk UMKM yang saat ini mulai berkembang. Produk unit usaha BSA diberi merek "Barakh" yang artinya Anugerah.
+                                    <br></br>
+                                    <br></br>
 
-Dari semua kegiatan tersebut sudah terjadi sirkulasi aktivitas ekonomi dari pengelolaan sampah.
+                                    Dari semua kegiatan tersebut sudah terjadi sirkulasi aktivitas ekonomi dari pengelolaan sampah.
 
-</p>
+                                </p>
                             </div>
                         </div>
                     </div>

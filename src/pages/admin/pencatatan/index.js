@@ -19,7 +19,6 @@ import { formatCurrency } from "../../../helper/currency";
 import { useEffect } from "react";
 import { checkPrivilege } from "../../../helper/admin";
 import RHFSelect from "../../../components/form/RHFSelect";
-import { Label } from "@mui/icons-material";
 
 export async function getServerSideProps({req,res}){
     let token = getCookie('token',{req,res});
@@ -45,9 +44,10 @@ await checkPrivilege(token).then((r)=>{
         };
     });
     try{
-        let transaksi = await axios.post('/api/admin/transaksi/pencatatan-detail',{
-            "year": ''
-        },{
+        let transaksi = await axios.get('/api/admin/transaksi/pencatatan-detail',{
+            params: {
+                year: ''
+            },
             headers:{
                 Authorization: 'Bearer '+token,
             },
@@ -59,9 +59,10 @@ await checkPrivilege(token).then((r)=>{
             },
             withCredentials:true
         });
-        let stat = await axios.post('/api/admin/transaksi/pencatatan',{        
-            "year": ''
-        },{
+        let stat = await axios.get('/api/admin/transaksi/pencatatan',{
+            params: {
+                year: ''
+            },
             headers:{
                 Authorization: 'Bearer '+token,
             },
@@ -94,7 +95,6 @@ await checkPrivilege(token).then((r)=>{
 }
 
 export default function keuangan({isSuper,admin,transaksi, stat, options,year}){
-    console.log(options)
     let [loading, setLoading] = useState(false)
     const router = useRouter();
     let token = getCookie('token');
@@ -180,7 +180,6 @@ export default function keuangan({isSuper,admin,transaksi, stat, options,year}){
                 },
                 withCredentials: true
             }).then((r)=>{
-                console.log(r.data)
                 router.replace(router.asPath)
             }).catch((e)=>{
                 console.log(e);
@@ -205,7 +204,6 @@ export default function keuangan({isSuper,admin,transaksi, stat, options,year}){
     let handleOpenUpdateForm = (data)=>{
         setAddForm(true);
         setEditMode(true);
-        console.log(data);
         setValue('unit_usaha_id',data.spending.unit_usaha_id);
         setValue('id',data.spending.id);
         setValue('SpendingName',data.spending.SpendingName);
@@ -231,12 +229,15 @@ export default function keuangan({isSuper,admin,transaksi, stat, options,year}){
 
     let handleChangePage = async (link)=>{
         if(link != null){
-            let unitUsaha = await axios.get(link,{
+            let unitUsaha = await axios.get(link,{params: {
+                year: year
+                },
                 headers:{
                     Authorization: 'Bearer '+token,
                 },
                 withCredentials:true
             });
+            console.log(unitUsaha)
             setData(unitUsaha?.data?.data?.data)
             setDataLink(unitUsaha?.data?.data?.links)
         }
@@ -244,17 +245,16 @@ export default function keuangan({isSuper,admin,transaksi, stat, options,year}){
 
     let handleChangeFilter = async (year)=>{
         setYear(year);
-        let stat = await axios.post('/api/admin/transaksi/pencatatan',{        
-            "year": year
-        },{
+        let stat = await axios.get('/api/admin/transaksi/pencatatan',{
+            params: {
+                year: year
+            },
             headers:{
                 Authorization: 'Bearer '+token,
             },
             withCredentials:true
         });
-        let produk = await axios.post('/api/admin/transaksi/pencatatan-detail',{
-            "year": year
-        },{
+        let produk = await axios.get('/api/admin/transaksi/pencatatan-detail',{
             headers:{
                 Authorization: 'Bearer '+token,
             },

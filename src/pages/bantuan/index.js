@@ -29,7 +29,7 @@ const Bantuan = ({adminNum})=> {
 
     const schema = yup.object().shape({
         nama: yup.string().required('Nama tidak boleh kosong'),
-        alamat: yup.string().required('Alamat tidak boleh kosong'),
+        alamat: yup.string(),
         nohp: yup.string().required('No.WhatsApp tidak boleh kosong').matches(/^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/, 'No. WhatsApp Tidak Valid'),
         email: yup.string().required('Email tidak boleh kosong').email('Email tidak valid'),
         pesan: yup.string().required('Pesan tidak boleh kosong')

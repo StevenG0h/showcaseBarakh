@@ -6,7 +6,7 @@ import { fDate } from "../../helper/date";
 import { formatCurrency } from "../../helper/currency";
 
 export default function ProductTableRow({row, num, onShowImage, onDelete, onEdit}){
-    let {productName, productPrice, productStock, created_at, updated_at} = row;
+    let {productName, productPrice,productDisc, productStock, created_at, updated_at} = row;
     return (
         <>
         
@@ -18,10 +18,13 @@ export default function ProductTableRow({row, num, onShowImage, onDelete, onEdit
                     {productName}
                 </TableCell>
                 <TableCell>
-                    {productStock}
+                    {productStock < 0 ? 0 : productStock}
                 </TableCell>
                 <TableCell>
                     Rp.{formatCurrency(productPrice)}
+                </TableCell>
+                <TableCell>
+                    {productDisc == null ? 0 : productDisc}%
                 </TableCell>
                 <TableCell>
                     {fDate(created_at)}

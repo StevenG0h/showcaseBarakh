@@ -37,18 +37,41 @@ const poppins = Poppins({
 
 export async function getServerSideProps({ req, res }) {
     let cookie = getCookie('barakh-cart-cookie', { req, res })
+    console.log('hehe',cookie == "")
     let product = await axios.get('/api/produk/katalog').catch(e=>{
         console.log(e)
     });
     let provinsi = await getAllProvinsi();
     let count = 0;
-    console.log(product)
-    if(cookie != undefined){
+    let cartUpdate = "";
+    if(cookie != undefined && cookie != ""){
         cookie = JSON.parse(cookie)
+        let productIds = [];
         cookie.map((data) => {
-            count += data.item * Number(data.productData.productPrice)
+            productIds.push(data.productId.toString());
+            console.log(Number(data.productData.productPrice))
+            count += data.item * (Number(data.productData.productPrice) - (Number(data.productData.productPrice) * (Number(data.productData.productDisc) / 100)))
+        })
+        cartUpdate = await axios.post('/api/produk/cart',{
+            productIds: productIds
+        }).catch(e=>{
+            console.log(e)
         })
     }
+    cartUpdate = cartUpdate?.data?.map(data=>{
+        let filtered  = cookie.filter(cookieData=>{
+            if(cookieData.productId == data.id){
+                return true;
+            }
+            return false;
+        })
+        filtered[0].productData.productName = data.productName;
+        filtered[0].productData.productPrice = data.productPrice;
+        filtered[0].productData.productDisc = data.productDisc;
+        filtered[0].productData.productStock = data.productStock;
+        return filtered[0];
+    })
+    setCookie('barakh-cart-cookie', cartUpdate, {req,res});
     return {
         props: {
             cookie: cookie === undefined ? [] : cookie,
@@ -93,6 +116,7 @@ const Cart = ({ cookie, option, totalPayment, products }) => {
                         if (map.productId === id) {
                             map.item = cart.item
                         }
+
                         return map;
                     })
                     setCookie('barakh-cart-cookie', newCookie)
@@ -131,7 +155,8 @@ const Cart = ({ cookie, option, totalPayment, products }) => {
     })
 
     const onSubmit = async (data) => {
-        
+        data.productPrice = (Number(data.productPrice) - (Number(data.productPrice) * Number(data.productDisc) / 100))
+        console.log(data)
         const createproduk = await axios.post('/api/client', data, {
             headers: {
                 'Content-Type': 'multipart/form-data'
@@ -174,7 +199,7 @@ const Cart = ({ cookie, option, totalPayment, products }) => {
             let total = 0;
             let product = cart.map((produk)=>{
                 let cart = '- '+produk.productData.productName + ' ' + produk.item + 'x '+produk.productData.productPrice+'%0a'
-                total += produk.productData.productPrice * produk.item
+                total += (produk.productData.productPrice - (produk.productData.productPrice * produk.productData.productDisc)) * produk.item
                 return msg+= cart
             })
             msg = msg+'%0a'+ 'total: Rp.' + total
@@ -279,15 +304,15 @@ const Cart = ({ cookie, option, totalPayment, products }) => {
         })
         if (cart == undefined) {
             cartList.map((data) => {
-                count += data.item * Number(data.productData.productPrice)
+                console.log(data);
+                count += data.item * Number(data.productData.productPrice) - (Number(data.productData.productPrice) * Number(data.productData.productDisc))
             })
         } else {
             cart.map((data) => {
-                count += data.item * Number(data.productData.productPrice)
+                console.log(Number(data.productData.productDisc));
+                count += data.item * (Number(data.productData.productPrice) - (Number(data.productData.productPrice) * (Number(data.productData.productDisc) / 100)))
             })
         }
-        console.log(cart)
-        console.log(count)
         setTotal(count)
     }
 
@@ -302,11 +327,11 @@ const Cart = ({ cookie, option, totalPayment, products }) => {
         console.log(cart)
         if (cart == undefined) {
             cartList.map((data) => {
-                count += data.item * Number(data.productData.productPrice)
+                count += data.item * (Number(data.productData.productPrice) - (Number(data.productData.productPrice) * (Number(data.productData.productDisc) / 100)))
             })
         } else {
             cart.map((data) => {
-                count += data.item * Number(data.productData.productPrice)
+                count += data.item * (Number(data.productData.productPrice) - (Number(data.productData.productPrice) * (Number(data.productData.productDisc) / 100)))
             })
         }
         setTotal(count)
@@ -325,7 +350,7 @@ const Cart = ({ cookie, option, totalPayment, products }) => {
             if(checked.length < cartList.length){
                 let check = [];
                 cartList.map((cart)=>{
-                    total += cart.item * parseInt(cart.productData.productPrice)
+                    total += cart.item * (Number(cart.productData.productPrice) - (Number(cart.productData.productPrice) * (Number(cart.productData.productDisc) / 100)))
                     check.push(cart.productId)
                 })
             setChecked(check)
@@ -383,7 +408,7 @@ const Cart = ({ cookie, option, totalPayment, products }) => {
                                                         }} className={style.inputt} checked={checked.includes(Number(productId))} type="checkbox" value={productData.id} />
                                                         <div className={style.list}>
                                                             <div className={style.image}>
-                                                                <img style={{ aspectRatio: '2/2', objectFit: 'cover', margin: 'auto', borderRadius: '0.6em', width: '100%', height: '100%' }} src={process.env.NEXT_PUBLIC_BACKEND_URL + "/storage/product/" + productData.product_images[0].path} alt="Gambar" className={style.imageCart} />
+                                                                <img style={{ aspectRatio: '2/2', objectFit: 'cover', margin: 'auto', borderRadius: '0.6em', width: '100%', height: '100%' }} src={process.env.NEXT_PUBLIC_BACKEND_URL + "/storage/product/" + productData?.product_images[0]?.path} alt="Gambar" className={style.imageCart} />
                                                             </div>
                                                             <div className={style.detailProductCart}>
                                                                 <Link href={"/detail-produk/" + productData.id} className={style.link}>
@@ -391,7 +416,19 @@ const Cart = ({ cookie, option, totalPayment, products }) => {
                                                                 </Link>
                                                                 <div className={style.remaining}>
                                                                     <p className={style.remainingCheck}>sisa {productData.productStock}</p>
-                                                                    <p className={style.price}>Rp.{formatCurrency(Number(productData.productPrice))}</p>
+                                                                    <p className={style.price}>Harga : 
+                                                                        {
+                                                                            productData.productDisc != 0 && productData.productDisc != null ? (
+                                                                                <span style={{paddingRight:'1em'}} className={productData.productDisc == 0 ? "" :style.nominal}>
+                                                                                    {formatCurrency(productData.productPrice - ((productData.productDisc / 100) * productData.productPrice)) }
+                                                                                </span>
+                                                                            ) : (
+                                                                                <span className={ productData.productDisc != 0  && productData.productDisc != null ? "" :style.nominal} style={{textDecoration: productData.productDisc != 0 && productData.productDisc != null ? 'line-through' : ''}}>
+                                                                                    Rp.{formatCurrency(productData.productPrice)}
+                                                                                </span>
+                                                                            )
+                                                                        }
+                                                                    </p>
                                                                 </div>
                                                                 <div className={style.detailSetProduct}>
                                                                     <div className={style.setAmount}>
@@ -420,7 +457,7 @@ const Cart = ({ cookie, option, totalPayment, products }) => {
                                             <p className={style.titleRingkasan}>Ringkasan Belanja</p>
                                             <div className={style.detailPrice}>
                                                 <div className={style.textTotal}>Total Belanja Anda : </div>
-                                                <div className={style.total}>Rp.{total}</div>
+                                                <div className={style.total}>Rp.{formatCurrency(total)}</div>
                                             </div>
                                         </div>
                                         <Button onClick={() => {

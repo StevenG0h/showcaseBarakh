@@ -30,7 +30,6 @@ export async function getServerSideProps({req,res}){
     let admin = '';
 await checkPrivilege(token).then((r)=>{
         admin = r;
-        console.log('admin',admin)
     }).catch((e)=>{
         console.log(e)
         return {
@@ -48,7 +47,6 @@ await checkPrivilege(token).then((r)=>{
             },
             withCredentials:true
         });
-        console.log(testimoni);
         return {
             props:{
                 isSuper: admin.adminLevel == '1' ? true : false,
@@ -97,7 +95,6 @@ export default function testimoni({isSuper,admin,data}){
     
       const onSubmit = async (data) => {
         setLoading(true);
-        console.log(data)
         if(editMode == false){
             await axios.get('/sanctum/csrf-cookie',{
                 headers: { Authorization: `Bearer `+token},
@@ -106,10 +103,7 @@ export default function testimoni({isSuper,admin,data}){
                 await axios.post('/api/admin/testimoni',data,{
                     headers: { Authorization: `Bearer `+token, "Content-Type":'multipart/form-data'},
                     withCredentials: true,
-                }).then((r)=>{
-                    console.log(r.data)
-                
-                    
+                }).then((r)=>{           
                     router.replace(router.asPath);
                     handleCloseAddForm()
                 }).catch((e)=>{
@@ -127,8 +121,6 @@ export default function testimoni({isSuper,admin,data}){
                     headers: { Authorization: `Bearer `+token},
                     withCredentials: true,
                 }).then((r)=>{
-                    console.log(r.data)
-                
                     router.replace(router.asPath);
                     handleCloseAddForm()
                 }).catch((e)=>{

@@ -27,10 +27,9 @@ const SliderImages = ({produk}) => {
             <Slider {...settings}>
                 {
                     produk.map((data)=>{
-                        console.log(data.product_images)
                         return (
                             <div key={data.id} className={style.wrap}>
-                                <img className={style.imageProduct} src={process.env.NEXT_PUBLIC_BACKEND_URL+"/storage/product/"+data.product_images[0].path} alt="ProductImage"/>
+                                <img className={style.imageProduct} src={process.env.NEXT_PUBLIC_BACKEND_URL+"/storage/product/"+data?.product_images[0]?.path} alt="ProductImage"/>
                             </div>
                         )
                     })

@@ -11,6 +11,7 @@ import { faInstagram } from '@fortawesome/free-brands-svg-icons';
 import { faYoutube } from '@fortawesome/free-brands-svg-icons';
 import { faTiktok } from "@fortawesome/free-brands-svg-icons";
 import Link from 'next/link';
+import Script from "next/script";
 
 const Footer = () => {
     return (
@@ -44,6 +45,16 @@ const Footer = () => {
                         <p className={style.copyright}> © Al-Mubarok 2023 | Politeknik Caltex Riau</p>
                     </div>
             </footer>
+            <Script async src="https://www.googletagmanager.com/gtag/js?id=G-CJ4RCH467D"></Script>
+            <Script>
+                {
+                `window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+        
+                gtag('config', 'G-CJ4RCH467D');`
+                }
+            </Script>
         </>
     )
 }

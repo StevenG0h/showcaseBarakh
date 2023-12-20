@@ -46,7 +46,8 @@ export async function getAllUnitUsahaProduct(id){
         return {
             id: product.id,
             label: product.productName,
-            price: product.productPrice
+            price: product.productPrice,
+            disc: product.productDisc == null ? 0 : product.productDisc
         }
     })
     return unitUsahas;

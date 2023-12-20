@@ -5,7 +5,7 @@ import * as yup from "yup";
 import {yupResolver} from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 import AdminLayout from "../../../layouts/adminLayout/AdminLayout";
-import { Button, Card, Dialog, DialogTitle, DialogContent, FormControl, Grid, IconButton, ImageList, ImageListItem, ImageListItemBar, Input, MenuItem, Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Box } from "@mui/material";
+import { Button, Card, Dialog, DialogTitle, DialogContent, FormControl, Grid, IconButton, ImageList, ImageListItem, ImageListItemBar, Input, MenuItem, Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Box, Alert } from "@mui/material";
 import RHFTextField from "../../../components/form/RHFTextField";
 import RHFAutocomplete from "../../../components/form/RHFAutocomplete";
 import CustomTableHead from "../../../components/table/CustomTableHead";
@@ -30,9 +30,8 @@ export async function getServerSideProps({req,res}){
           };
     }
     let admin = '';
-await checkPrivilege(token).then((r)=>{
+    await checkPrivilege(token).then((r)=>{
         admin = r;
-        console.log('admin',admin)
     }).catch((e)=>{
         console.log(e)
         return {
@@ -53,10 +52,8 @@ await checkPrivilege(token).then((r)=>{
             },
             withCredentials:true
         })
-        console.log(produk)
         let unitusaha = await getAllUnitUsahaAdmin(token);
             produk = produk.data
-    
         return {
             props:{
                 isSuper: admin.adminLevel == '1' ? true : false,
@@ -135,8 +132,12 @@ export default function product({isSuper,admin,produk, options}){
                 {
                     headers:{Authorization:"Bearer "+token},
                     withCredentials:true
+                }).then(r=>{
+                    handleCloseAddForm()
+                }).catch(e=>{
+
+                    setSalesTransactionErrorMsg(e.response.data.error.msg)
                 });
-                handleCloseAddForm()
             })
         }catch(e){
             console.log(e)
@@ -153,7 +154,8 @@ export default function product({isSuper,admin,produk, options}){
         data.kecamatan_id = addDetailTransactionForm.sales[0].kecamatan_id
         data.kota_id = addDetailTransactionForm.sales[0].kota_id
         data.provinsi_id = addDetailTransactionForm.sales[0].provinsi_id
-        data.transactionAmount = Number(data.productPrice) * data.productCount;
+        data.transactionAmount =  Number(data.productCount) * (Number(data.productPrice) -((Number(data.productPrice) * (Number(data.productDisc) / 100))));
+        data.productPrice = Number(data.productPrice) -((Number(data.productPrice) * (Number(data.productDisc) / 100)));
         try{
             await axios.get('/sanctum/csrf-cookie',{
                 withCredentials:true
@@ -163,7 +165,7 @@ export default function product({isSuper,admin,produk, options}){
                     headers:{Authorization:"Bearer "+token},
                     withCredentials:true
                 }).catch(e=>{
-                    
+                    console.log(e);
                 });
             })
             handleCloseAddForm()
@@ -178,6 +180,7 @@ export default function product({isSuper,admin,produk, options}){
       //states
     const [AddForm, setAddForm] = useState(false);
     const [editMode, setEditMode] = useState(false);
+    const [salesTransactionErrorMsg, setSalesTransactionErrorMsg] = useState("");
 
     
 
@@ -335,6 +338,15 @@ export default function product({isSuper,admin,produk, options}){
           
                     <DialogContent>
                         <form onSubmit={handleSalesTransactionSubmit(onSalesTransactionSubmit)}>
+                            {
+                                salesTransactionErrorMsg != "" ? (
+                                    <>
+                                        <Alert>
+                                            {salesTransactionControl}
+                                        </Alert>
+                                    </>
+                                ) : ''
+                            }
                             <FormControl sx={{width:'100%', marginY:'0.5em'}}>
                                 <RHFAutocomplete
                                     label={'Unit usaha'}
@@ -357,9 +369,10 @@ export default function product({isSuper,admin,produk, options}){
                                     disable={productOption.length == 0}
                                     handleChange={(data)=>{
                                         setSalesTransactionValue('product_id',data);
-                                        productOption.map(({id,price})=>{
+                                        productOption.map(({id,price, disc})=>{
                                             if(id === data){
                                                 setSalesTransactionValue('productPrice', price)
+                                                setSalesTransactionValue('productDisc',disc)
                                             }
                                         })
                                     }}
@@ -434,6 +447,15 @@ export default function product({isSuper,admin,produk, options}){
                     </DialogTitle>
                     <DialogContent>
                         <form onSubmit={handleSubmit(onSubmit)}>
+                            {
+                                salesTransactionErrorMsg != "" ? (
+                                    <>
+                                        <Alert severity="error" >
+                                            {salesTransactionErrorMsg}
+                                        </Alert>
+                                    </>
+                                ) : ''
+                            }
                             <FormControl sx={{width:'100%'}}>
                                 <input type="hidden" name="id"></input>
                                 <RHFTextField type="number" control={control} label={'Jumlah Beli'} name={'productCount'} />
@@ -449,13 +471,12 @@ export default function product({isSuper,admin,produk, options}){
                             <CustomTableHead tableHead={TABLEHEAD}></CustomTableHead>
                             <TableBody>
                                 {
-                                    products === [] || products==='' || products.length === 0 || products === undefined ? (
+                                    products.length === 0 ? (
                                         <TableRow>
                                             <TableCell>Data kosong</TableCell>
                                         </TableRow>
                                     ) :
                                     products?.map((map)=>{
-                                        if(map.sales.length != 0){
                                             return ( <>
                                                 <PenjualanTableRow 
                                                 key={detailNum} 
@@ -465,7 +486,6 @@ export default function product({isSuper,admin,produk, options}){
                                                 </PenjualanTableRow>
                                             </>
                                             )
-                                        }
                                     })
                                 }
                             </TableBody>

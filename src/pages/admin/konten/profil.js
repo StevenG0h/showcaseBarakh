@@ -30,7 +30,6 @@ export async function getServerSideProps({req,res}){
     let admin = '';
 await checkPrivilege(token).then((r)=>{
         admin = r;
-        console.log('admin',admin)
     }).catch((e)=>{
         console.log(e)
         return {
@@ -48,7 +47,6 @@ await checkPrivilege(token).then((r)=>{
             },
             withCredentials:true
         });
-        console.log(UnitUsaha.data)
         return {
             props:{
                 isSuper: admin.adminLevel == '1' ? true : false,
@@ -106,7 +104,6 @@ export default function profil({isSuper,admin,unitUsaha,option}){
     
       const onSubmit = async (data) => {
         let token = getCookie('token');
-        console.log(profileDesc);
         setLoading(true);
         data.profil_usaha_desc = profileDesc
         if(data.id == ''){
@@ -121,7 +118,6 @@ export default function profil({isSuper,admin,unitUsaha,option}){
                 headers: { Authorization: `Bearer `+token},
                 withCredentials: true
             }).then(async (r)=>{
-                console.log(data);
                 await axios.post('/api/admin/profil',data,{
                     headers: { Authorization: `Bearer `+token, "Content-Type":'multipart/form-data'},
                     withCredentials: true,
@@ -146,7 +142,6 @@ export default function profil({isSuper,admin,unitUsaha,option}){
                     headers: { Authorization: `Bearer `+token, "Content-Type":'multipart/form-data'},
                     withCredentials: true,
                 }).then((r)=>{
-                    console.log(r.data)
                     router.replace(router.asPath)
                 }).catch((e)=>{
                     console.log(e);

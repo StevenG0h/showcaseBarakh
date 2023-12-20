@@ -60,16 +60,19 @@ await checkPrivilege(token).then((r)=>{
         });
         let penjualan = produk?.data?.penjualan;
         let pengeluaran = produk?.data?.pengeluaran;
-        console.log(produk.data)
         let transaksi = '';
-
         transaksi=(penjualan?.map(
             data => {
                 let checkPengeluaran =  pengeluaran.filter(pengeluaran => {
                     if(data.penjualan == null){
                         return true;
                     }else{
-                        return pengeluaran.month === data.month && pengeluaran.year === data.year
+                         if (pengeluaran.year === data.year){
+                            if (pengeluaran.month === data.month){
+                                return true
+                            }
+                        }
+                        return false;
                     }
                 });
                 return Object.assign({}, data, {
@@ -80,16 +83,21 @@ await checkPrivilege(token).then((r)=>{
             }
         ))
 
-        pengeluaran?.filter(pengeluaranData=>{
-            transaksi.map(transaksiData=>{
-                let included = transaksiData.month == pengeluaranData.month && transaksiData.year == pengeluaranData.year
-                if(!included){
-                    pengeluaranData.penjualan = 0;
-                    transaksi.push(pengeluaranData);
+        pengeluaran?.map(pengeluaranData=>{
+            let filtered = transaksi.filter(transaksiData=>{
+                if( transaksiData.month == pengeluaranData.month){
+                    return true;
                 }
+                return false;
             })
+            if(filtered.length == 0){
+                pengeluaranData.penjualan = 0;
+                transaksi.push(pengeluaranData)
+            }
         })
-        transaksi = transaksi.sort()
+        transaksi = transaksi.sort(function(a,b){
+            return parseInt(a.year.toString()+a.month.toString()) - parseInt(b.year.toString()+b.month.toString())
+        })
         let unitUsaha = await getAllUnitUsaha();
         return {
             props:{
@@ -200,7 +208,12 @@ export default function keuangan({isSuper,admin,produk, options}){
                     if(data.penjualan == null){
                         return true;
                     }else{
-                        return pengeluaran.month === data.month && pengeluaran.year === data.year
+                         if (pengeluaran.year === data.year){
+                            if (pengeluaran.month === data.month){
+                                return true
+                            }
+                        }
+                        return false;
                     }
                 });
                 return Object.assign({}, data, {
@@ -211,15 +224,21 @@ export default function keuangan({isSuper,admin,produk, options}){
             }
         ))
 
-        pengeluaran?.filter(pengeluaranData=>{
+        pengeluaran?.map(pengeluaranData=>{
             transaksi.map(transaksiData=>{
-                let included = transaksiData.month == pengeluaranData.month && transaksiData.year == pengeluaranData.year
-                if(!included){
-                    pengeluaranData.penjualan = 0;
-                    transaksi.push(pengeluaranData);
+                console.log(pengeluaranData)
+                let included = transaksiData.month == pengeluaranData.month || transaksiData.year == pengeluaranData.year;
+                if( transaksiData.month != pengeluaranData.month){
+                    if(transaksiData.year != pengeluaranData.year){
+                        pengeluaranData.penjualan = 0;
+                        transaksi.push(pengeluaranData);
+                    }
                 }
+
             })
+            console.log(' ')
         })
+        console.log(transaksi)
         transaksi = transaksi.sort()
         setProducts(transaksi)
         setLoading(false);

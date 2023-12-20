@@ -1,5 +1,11 @@
-.sliderKatalog .slick-dots{
-    bottom: 10px;
+.sliderKatalog{
+    height: 250px;
+    aspect-ratio: 3/2;
+}
+
+.sliderKatalog img{
+    width: 100%;
+    height: 100%;
 }
 
 .sliderKatalog .slick-dots li.slick-active button:before{
