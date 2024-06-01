@@ -1,0 +1,384 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model admins {
+  id                  BigInt                @id @default(autoincrement()) @db.UnsignedBigInt
+  user_id             BigInt                @db.UnsignedBigInt
+  adminName           String                @db.VarChar(255)
+  adminNum            String                @db.VarChar(255)
+  adminLevel          String                @db.VarChar(255)
+  created_at          DateTime?             @db.Timestamp(0)
+  updated_at          DateTime?             @db.Timestamp(0)
+  unit_usaha_id       BigInt                @db.UnsignedBigInt
+  isActive            Int                   @default(1)
+  role_id             BigInt?               @db.UnsignedBigInt
+  deleted_at          DateTime?             @db.Timestamp(0)
+  roles               roles?                @relation(fields: [role_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "admins_role_id_foreign")
+  users               users                 @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "admins_user_id_foreign")
+  income_transactions income_transactions[]
+  sales_transactions  sales_transactions[]
+
+  @@index([role_id], map: "admins_role_id_foreign")
+  @@index([user_id], map: "admins_user_id_foreign")
+}
+
+model clients {
+  id                 BigInt               @id @default(autoincrement()) @db.UnsignedBigInt
+  clientName         String               @db.VarChar(255)
+  clientNum          String               @db.VarChar(255)
+  clientEmail        String               @db.VarChar(255)
+  clientAddress      String               @db.VarChar(255)
+  clientKelurahan    BigInt               @db.UnsignedBigInt
+  created_at         DateTime?            @db.Timestamp(0)
+  updated_at         DateTime?            @db.Timestamp(0)
+  sales_transactions sales_transactions[]
+}
+
+model content_imgs {
+  id         BigInt    @id @default(autoincrement()) @db.UnsignedBigInt
+  contentId  BigInt    @db.UnsignedBigInt
+  path       String    @db.Text
+  created_at DateTime? @db.Timestamp(0)
+  updated_at DateTime? @db.Timestamp(0)
+  contents   contents  @relation(fields: [contentId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "content_imgs_contentid_foreign")
+
+  @@index([contentId], map: "content_imgs_contentid_foreign")
+}
+
+model contents {
+  id           BigInt         @id @default(autoincrement()) @db.UnsignedBigInt
+  usahaId      BigInt         @db.UnsignedBigInt
+  title        String         @db.Text
+  content      String         @db.Text
+  created_at   DateTime?      @db.Timestamp(0)
+  updated_at   DateTime?      @db.Timestamp(0)
+  content_imgs content_imgs[]
+  unit_usahas  unit_usahas    @relation(fields: [usahaId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "contents_usahaid_foreign")
+
+  @@index([usahaId], map: "contents_usahaid_foreign")
+}
+
+model failed_jobs {
+  id         BigInt   @id @default(autoincrement()) @db.UnsignedBigInt
+  uuid       String   @unique(map: "failed_jobs_uuid_unique") @db.VarChar(255)
+  connection String   @db.Text
+  queue      String   @db.Text
+  payload    String   @db.LongText
+  exception  String   @db.LongText
+  failed_at  DateTime @default(now()) @db.Timestamp(0)
+}
+
+model galeris {
+  id          BigInt    @id @default(autoincrement()) @db.UnsignedBigInt
+  path        String    @db.VarChar(255)
+  galeriTitle String    @db.VarChar(255)
+  galeriDate  String    @db.VarChar(255)
+  created_at  DateTime? @db.Timestamp(0)
+  updated_at  DateTime? @db.Timestamp(0)
+}
+
+model income_transactions {
+  id                BigInt       @id @default(autoincrement()) @db.UnsignedBigInt
+  usaha_id          BigInt       @db.UnsignedBigInt
+  admin_id          BigInt       @db.UnsignedBigInt
+  transaction_id    BigInt       @db.UnsignedBigInt
+  transactionAmount Int
+  transactionTitle  String       @db.VarChar(255)
+  transactionNote   String       @db.VarChar(255)
+  created_at        DateTime?    @db.Timestamp(0)
+  updated_at        DateTime?    @db.Timestamp(0)
+  admins            admins       @relation(fields: [admin_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "income_transactions_admin_id_foreign")
+  transactions      transactions @relation(fields: [transaction_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "income_transactions_transaction_id_foreign")
+  unit_usahas       unit_usahas  @relation(fields: [usaha_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "income_transactions_usaha_id_foreign")
+
+  @@index([admin_id], map: "income_transactions_admin_id_foreign")
+  @@index([transaction_id], map: "income_transactions_transaction_id_foreign")
+  @@index([usaha_id], map: "income_transactions_usaha_id_foreign")
+}
+
+model kecamatans {
+  id                 BigInt               @id @default(autoincrement()) @db.UnsignedBigInt
+  kecamatanName      String               @db.VarChar(255)
+  kotaId             BigInt               @db.UnsignedBigInt
+  created_at         DateTime?            @db.Timestamp(0)
+  updated_at         DateTime?            @db.Timestamp(0)
+  kotas              kotas                @relation(fields: [kotaId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "kecamatans_kotaid_foreign")
+  kelurahans         kelurahans[]
+  sales_transactions sales_transactions[]
+
+  @@index([kotaId], map: "kecamatans_kotaid_foreign")
+}
+
+model kelurahans {
+  id                 BigInt               @id @default(autoincrement()) @db.UnsignedBigInt
+  kelurahanName      String               @db.VarChar(255)
+  kecamatanId        BigInt               @db.UnsignedBigInt
+  created_at         DateTime?            @db.Timestamp(0)
+  updated_at         DateTime?            @db.Timestamp(0)
+  kecamatans         kecamatans           @relation(fields: [kecamatanId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "kelurahans_kecamatanid_foreign")
+  sales_transactions sales_transactions[]
+
+  @@index([kecamatanId], map: "kelurahans_kecamatanid_foreign")
+}
+
+model kotas {
+  id                 BigInt               @id @default(autoincrement()) @db.UnsignedBigInt
+  kota               String               @db.VarChar(255)
+  provinsiId         BigInt               @db.UnsignedBigInt
+  created_at         DateTime?            @db.Timestamp(0)
+  updated_at         DateTime?            @db.Timestamp(0)
+  kecamatans         kecamatans[]
+  provinsis          provinsis            @relation(fields: [provinsiId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "kotas_provinsiid_foreign")
+  sales_transactions sales_transactions[]
+
+  @@index([provinsiId], map: "kotas_provinsiid_foreign")
+}
+
+model migrations {
+  id        Int    @id @default(autoincrement()) @db.UnsignedInt
+  migration String @db.VarChar(255)
+  batch     Int
+}
+
+model password_reset_tokens {
+  email      String    @id @db.VarChar(255)
+  token      String    @db.VarChar(255)
+  created_at DateTime? @db.Timestamp(0)
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model password_resets {
+  email      String    @db.VarChar(255)
+  token      String    @db.VarChar(255)
+  created_at DateTime? @db.Timestamp(0)
+
+  @@index([email], map: "password_resets_email_index")
+  @@ignore
+}
+
+model personal_access_tokens {
+  id             BigInt    @id @default(autoincrement()) @db.UnsignedBigInt
+  tokenable_type String    @db.VarChar(255)
+  tokenable_id   BigInt    @db.UnsignedBigInt
+  name           String    @db.VarChar(255)
+  token          String    @unique(map: "personal_access_tokens_token_unique") @db.VarChar(64)
+  abilities      String?   @db.Text
+  last_used_at   DateTime? @db.Timestamp(0)
+  expires_at     DateTime? @db.Timestamp(0)
+  created_at     DateTime? @db.Timestamp(0)
+  updated_at     DateTime? @db.Timestamp(0)
+
+  @@index([tokenable_type, tokenable_id], map: "personal_access_tokens_tokenable_type_tokenable_id_index")
+}
+
+model product_imgs {
+  id         BigInt    @id @default(autoincrement()) @db.UnsignedBigInt
+  product_id BigInt    @db.UnsignedBigInt
+  path       String    @db.Text
+  order      Int
+  created_at DateTime? @db.Timestamp(0)
+  updated_at DateTime? @db.Timestamp(0)
+  products   products  @relation(fields: [product_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "product_imgs_product_id_foreign")
+
+  @@index([product_id], map: "product_imgs_product_id_foreign")
+}
+
+model products {
+  id                 BigInt               @id @default(autoincrement()) @db.UnsignedBigInt
+  productName        String               @db.VarChar(255)
+  productDesc        String               @db.VarChar(255)
+  productPrice       String               @db.VarChar(255)
+  productStock       Int
+  unit_usaha_id      BigInt               @db.UnsignedBigInt
+  created_at         DateTime?            @db.Timestamp(0)
+  updated_at         DateTime?            @db.Timestamp(0)
+  isActive           Int                  @default(1)
+  satuan             String?              @db.VarChar(255)
+  productDisc        Int?
+  product_imgs       product_imgs[]
+  unit_usahas        unit_usahas          @relation(fields: [unit_usaha_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "products_unit_usaha_id_foreign")
+  ratings            ratings[]
+  sales_transactions sales_transactions[]
+
+  @@index([unit_usaha_id], map: "products_unit_usaha_id_foreign")
+}
+
+model profil_usaha_images {
+  id              BigInt        @id @default(autoincrement()) @db.UnsignedBigInt
+  profil_usaha_id BigInt        @db.UnsignedBigInt
+  order           Int
+  path            String        @db.VarChar(255)
+  created_at      DateTime?     @db.Timestamp(0)
+  updated_at      DateTime?     @db.Timestamp(0)
+  profil_usahas   profil_usahas @relation(fields: [profil_usaha_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "profil_usaha_images_profil_usaha_id_foreign")
+
+  @@index([profil_usaha_id], map: "profil_usaha_images_profil_usaha_id_foreign")
+}
+
+model profil_usahas {
+  id                  BigInt                @id @default(autoincrement()) @db.UnsignedBigInt
+  unit_usaha_id       BigInt                @db.UnsignedBigInt
+  profil_usaha_desc   String                @db.Text
+  created_at          DateTime?             @db.Timestamp(0)
+  updated_at          DateTime?             @db.Timestamp(0)
+  profil_usaha_images profil_usaha_images[]
+  unit_usahas         unit_usahas           @relation(fields: [unit_usaha_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "profil_usahas_unit_usaha_id_foreign")
+
+  @@index([unit_usaha_id], map: "profil_usahas_unit_usaha_id_foreign")
+}
+
+model provinsis {
+  id                 BigInt               @id @default(autoincrement()) @db.UnsignedBigInt
+  provinsiName       String               @db.VarChar(255)
+  created_at         DateTime?            @db.Timestamp(0)
+  updated_at         DateTime?            @db.Timestamp(0)
+  kotas              kotas[]
+  sales_transactions sales_transactions[]
+}
+
+model ratings {
+  id         BigInt    @id @default(autoincrement()) @db.UnsignedBigInt
+  product_id BigInt    @db.UnsignedBigInt
+  rating     Float
+  created_at DateTime? @db.Timestamp(0)
+  updated_at DateTime? @db.Timestamp(0)
+  products   products  @relation(fields: [product_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "ratings_product_id_foreign")
+
+  @@index([product_id], map: "ratings_product_id_foreign")
+}
+
+model roles {
+  id         BigInt    @id @default(autoincrement()) @db.UnsignedBigInt
+  roleName   String    @db.VarChar(255)
+  created_at DateTime? @db.Timestamp(0)
+  updated_at DateTime? @db.Timestamp(0)
+  permission Int       @default(0)
+  admins     admins[]
+}
+
+model sales_transactions {
+  id                 BigInt       @id @default(autoincrement()) @db.UnsignedBigInt
+  kelurahan_id       BigInt       @db.UnsignedBigInt
+  product_id         BigInt       @db.UnsignedBigInt
+  client_id          BigInt       @db.UnsignedBigInt
+  admin_id           BigInt?      @db.UnsignedBigInt
+  transaction_id     BigInt       @db.UnsignedBigInt
+  transactionAddress String       @db.VarChar(255)
+  productPrice       Int
+  productCount       Int
+  created_at         DateTime?    @db.Timestamp(0)
+  updated_at         DateTime?    @db.Timestamp(0)
+  provinsi_id        BigInt?      @db.UnsignedBigInt
+  kota_id            BigInt?      @db.UnsignedBigInt
+  kecamatan_id       BigInt?      @db.UnsignedBigInt
+  unit_usaha_id      BigInt?      @db.UnsignedBigInt
+  admins             admins?      @relation(fields: [admin_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "sales_transactions_admin_id_foreign")
+  clients            clients      @relation(fields: [client_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "sales_transactions_client_id_foreign")
+  kecamatans         kecamatans?  @relation(fields: [kecamatan_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "sales_transactions_kecamatan_id_foreign")
+  kelurahans         kelurahans   @relation(fields: [kelurahan_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "sales_transactions_kelurahan_id_foreign")
+  kotas              kotas?       @relation(fields: [kota_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "sales_transactions_kota_id_foreign")
+  products           products     @relation(fields: [product_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "sales_transactions_product_id_foreign")
+  provinsis          provinsis?   @relation(fields: [provinsi_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "sales_transactions_provinsi_id_foreign")
+  transactions       transactions @relation(fields: [transaction_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "sales_transactions_transaction_id_foreign")
+  unit_usahas        unit_usahas? @relation(fields: [unit_usaha_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "sales_transactions_unit_usaha_id_foreign")
+
+  @@index([admin_id], map: "sales_transactions_admin_id_foreign")
+  @@index([client_id], map: "sales_transactions_client_id_foreign")
+  @@index([kecamatan_id], map: "sales_transactions_kecamatan_id_foreign")
+  @@index([kelurahan_id], map: "sales_transactions_kelurahan_id_foreign")
+  @@index([kota_id], map: "sales_transactions_kota_id_foreign")
+  @@index([product_id], map: "sales_transactions_product_id_foreign")
+  @@index([provinsi_id], map: "sales_transactions_provinsi_id_foreign")
+  @@index([transaction_id], map: "sales_transactions_transaction_id_foreign")
+  @@index([unit_usaha_id], map: "sales_transactions_unit_usaha_id_foreign")
+}
+
+model spending_transactions {
+  id                  BigInt       @id @default(autoincrement()) @db.UnsignedBigInt
+  unit_usaha_id       BigInt       @db.UnsignedBigInt
+  transaction_id      BigInt       @db.UnsignedBigInt
+  SpendingName        String       @db.VarChar(255)
+  SpendingDescription String       @db.VarChar(255)
+  SpendingValue       String       @db.VarChar(255)
+  created_at          DateTime?    @db.Timestamp(0)
+  updated_at          DateTime?    @db.Timestamp(0)
+  create_time         DateTime     @db.Date
+  transactions        transactions @relation(fields: [transaction_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "spending_transactions_transaction_id_foreign")
+  unit_usahas         unit_usahas  @relation(fields: [unit_usaha_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "spending_transactions_unit_usaha_id_foreign")
+
+  @@index([transaction_id], map: "spending_transactions_transaction_id_foreign")
+  @@index([unit_usaha_id], map: "spending_transactions_unit_usaha_id_foreign")
+}
+
+model testimonies {
+  id            BigInt    @id @default(autoincrement()) @db.UnsignedBigInt
+  testimonyDesc String    @db.VarChar(255)
+  created_at    DateTime? @db.Timestamp(0)
+  updated_at    DateTime? @db.Timestamp(0)
+  clientName    String    @db.VarChar(50)
+}
+
+model transactions {
+  id                    BigInt                         @id @default(autoincrement()) @db.UnsignedBigInt
+  transactionType       transactions_transactionType
+  transactionStatus     transactions_transactionStatus
+  created_at            DateTime?                      @db.Timestamp(0)
+  updated_at            DateTime?                      @db.Timestamp(0)
+  income_transactions   income_transactions[]
+  sales_transactions    sales_transactions[]
+  spending_transactions spending_transactions[]
+}
+
+model unit_usahas {
+  id                    BigInt                  @id @default(autoincrement()) @db.UnsignedBigInt
+  usahaName             String                  @db.VarChar(255)
+  usahaImage            String                  @db.VarChar(255)
+  usahaDesc             String                  @db.VarChar(255)
+  created_at            DateTime?               @db.Timestamp(0)
+  updated_at            DateTime?               @db.Timestamp(0)
+  isActive              Int                     @default(1) @db.SmallInt
+  orders                Int?
+  unitUsahaLogo         String?                 @db.VarChar(255)
+  contents              contents[]
+  income_transactions   income_transactions[]
+  products              products[]
+  profil_usahas         profil_usahas[]
+  sales_transactions    sales_transactions[]
+  spending_transactions spending_transactions[]
+}
+
+model users {
+  id         BigInt    @id @default(autoincrement()) @db.UnsignedBigInt
+  email      String    @unique(map: "users_email_unique") @db.VarChar(255)
+  password   String    @db.VarChar(255)
+  created_at DateTime? @db.Timestamp(0)
+  updated_at DateTime? @db.Timestamp(0)
+  admins     admins[]
+}
+
+model visitor {
+  id         BigInt    @id @default(autoincrement()) @db.UnsignedBigInt
+  count      BigInt    @db.UnsignedBigInt
+  created_at DateTime? @db.Timestamp(0)
+  updated_at DateTime? @db.Timestamp(0)
+}
+
+enum transactions_transactionType {
+  PENGELUARAN
+  PEMASUKANLAIN
+  PENJUALAN
+}
+
+enum transactions_transactionStatus {
+  TERVERIFIKASI
+  BELUMTERVERIFIKASI
+  BATAL
+  PENGIRIMAN
+  SELESAI
+}
