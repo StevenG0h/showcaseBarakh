@@ -255,6 +255,9 @@ export default function keuangan({isSuper,admin,transaksi, stat, options,year}){
             withCredentials:true
         });
         let produk = await axios.get('/api/admin/transaksi/pencatatan-detail',{
+            params: {
+                year: year
+            },
             headers:{
                 Authorization: 'Bearer '+token,
             },
@@ -263,6 +266,7 @@ export default function keuangan({isSuper,admin,transaksi, stat, options,year}){
         setData(produk.data.data.data)
         setDataLink(produk.data.data.links)
         setStat(stat.data)
+        console.log(produk);
     }
 
     let TABLEHEAD = [
@@ -290,13 +294,13 @@ export default function keuangan({isSuper,admin,transaksi, stat, options,year}){
             <Box sx={{justifyContent:'space-between', flexDirection:'row', display:'flex', marginY:'1em', gap:'1em'}}>
                 <Card sx={{width:'100%',padding:'1em'}}>
                     <Typography variant="h6">
-                        Pemasukan
+                        Penjualan
                     </Typography>
                     Rp.{formatCurrency(Number(statData.penjualan?.total))}
                 </Card>
                 <Card sx={{width:'100%',padding:'1em'}}>
                     <Typography variant="h6">
-                        Pengeluaran
+                        Pengeluaran/Pembelian
                     </Typography>
                     Rp.{ formatCurrency(Number(statData.pengeluaran?.total))}
                 </Card>
