@@ -94,13 +94,14 @@ export default function product({isSuper,admin,produk, options}){
     const schema = yup.object().shape({
         id: yup.string().required('Something wrong'),
         productCount: yup.number().required('Harga tidak boleh kosong').min(1),
-
+        created_at: yup.string().required('tanggal tidak boleh kosong')
     })
 
     const { control, handleSubmit, setValue, reset, register , formState:{errors}} = useForm({
         defaultValues: {
           id:'',
           productCount:0,
+          created_at:'2/5/2024'
         },
         resolver: yupResolver(schema)
       })
@@ -117,13 +118,15 @@ export default function product({isSuper,admin,produk, options}){
           productCount:0,
           productPrice:0,
           usaha_id:'',
-          product_id:''
+          product_id:'',
+          created_at:'2/5/2024'
         },
         resolvAuthorizationer: yupResolver(schemaAddSalesTransaction)
       })
     
       const onSubmit = async (data) => {
         setLoading(true)
+        console.log(data);
         try{
             await axios.get('/sanctum/csrf-cookie',{
                 withCredentials:true
@@ -219,6 +222,8 @@ export default function product({isSuper,admin,produk, options}){
         setEditMode(true);
         setValue('id',data.id);
         setValue('productCount',data.productCount);
+        setValue('productPrice',data.productPrice);
+        setValue('created_at', new Date(data.created_at).toISOString().split('T')[0] );
         setAddForm(true)
     }
     //utils
@@ -245,10 +250,9 @@ export default function product({isSuper,admin,produk, options}){
                 });
             })
             handleCloseAddSalesTransactionForm()
+            router.replace(router.asPath)
         }catch(e){
             console.log(e)
-        }finally{
-            router.replace(router.asPath)
         }
     }
 
@@ -388,7 +392,9 @@ export default function product({isSuper,admin,produk, options}){
                                     }
                                 </Select> */}
                             <FormControl sx={{width:'100%', marginY:'0.5em'}}>
+                                <RHFTextField type="number" label={'Harga Beli'} control={salesTransactionControl} name={'productPrice'}></RHFTextField>
                                 <RHFTextField type="number" label={'Jumlah Beli'} control={salesTransactionControl} name={'productCount'}></RHFTextField>
+                                
                                 <Button sx={{witdh:'100%', marginTop:'1em'}} type="submit" variant="contained" color="success">Tambah Transaksi</Button>
                             </FormControl>
                         </form>
@@ -458,7 +464,9 @@ export default function product({isSuper,admin,produk, options}){
                             }
                             <FormControl sx={{width:'100%'}}>
                                 <input type="hidden" name="id"></input>
+                                <RHFTextField type="number" control={control} label={'Harga Beli'} name={'productPrice'} />
                                 <RHFTextField type="number" control={control} label={'Jumlah Beli'} name={'productCount'} />
+                                <RHFTextField hiddenLabel={true} type="date" control={control} label={'Tanggal'} name={'created_at'} />
                                 <Button variant="contained" color="success" type={'submit'} sx={{marginTop: '0.5em'}}>Simpan Perubahan</Button>
                             </FormControl>
                         </form>
@@ -477,6 +485,7 @@ export default function product({isSuper,admin,produk, options}){
                                         </TableRow>
                                     ) :
                                     products?.map((map)=>{
+                                        if(map.sales.length != 0){
                                             return ( <>
                                                 <PenjualanTableRow 
                                                 key={detailNum} 
@@ -486,6 +495,7 @@ export default function product({isSuper,admin,produk, options}){
                                                 </PenjualanTableRow>
                                             </>
                                             )
+                                        }
                                     })
                                 }
                             </TableBody>

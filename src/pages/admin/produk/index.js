@@ -210,7 +210,7 @@ export default function product({isSuper,admin,produk, options}){
         }).catch((e)=>{
             console.log(e);
         })
-        handleChangeFilter(search);
+        router.replace(router.asPath)
         setDeleteProduct('')
     }
 
@@ -239,8 +239,7 @@ export default function product({isSuper,admin,produk, options}){
             productImages: "",
             productDesc: "",
             productStock:0,
-            productPrice:0,
-            productDisc:0
+            productPrice:0
         });
     }
     
